@@ -796,10 +796,10 @@ function PartyRoomScreen({ onNavigate }: { onNavigate: (screen: Screen) => void 
   return (
     <div className="container-mobile bg-surface-950 flex flex-col min-h-screen">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-surface-800">
+      <div className="flex items-center justify-between px-4 py-2 border-b border-surface-800 safe-area-top">
         <button
           onClick={() => onNavigate('home')}
-          className="btn-ghost p-2 -ml-2 rounded-full"
+          className="btn-ghost icon-btn -ml-2 rounded-full"
         >
           <ChevronLeftIcon />
         </button>
@@ -807,15 +807,15 @@ function PartyRoomScreen({ onNavigate }: { onNavigate: (screen: Screen) => void 
           <div className="font-semibold">Saturday Hangout</div>
           <div className="text-xs text-text-muted font-mono">PARTY-X7K</div>
         </div>
-        <div className="flex gap-1">
+        <div className="flex gap-0">
           <button
             onClick={() => onNavigate('tv')}
-            className="btn-ghost p-2 rounded-full"
+            className="btn-ghost icon-btn rounded-full"
             title="TV Mode"
           >
             <TvIcon />
           </button>
-          <button className="btn-ghost p-2 rounded-full">
+          <button className="btn-ghost icon-btn rounded-full">
             <ShareIcon />
           </button>
         </div>
@@ -996,7 +996,7 @@ function PartyRoomScreen({ onNavigate }: { onNavigate: (screen: Screen) => void 
       {/* Add Content FAB */}
       <button
         onClick={() => setShowAddContent(true)}
-        className="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-accent-500 flex items-center justify-center shadow-lg hover:bg-accent-400 transition-all hover:scale-105 animate-pulse-glow"
+        className="fab bg-accent-500 hover:bg-accent-400 transition-all hover:scale-105 animate-pulse-glow"
       >
         <PlusIcon />
       </button>
@@ -1004,7 +1004,7 @@ function PartyRoomScreen({ onNavigate }: { onNavigate: (screen: Screen) => void 
       {/* Add Content Modal - Enhanced */}
       {showAddContent && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end justify-center z-50">
-          <div className="bg-surface-900 w-full max-w-md rounded-t-3xl p-6 animate-fade-in-up">
+          <div className="bg-surface-900 w-full max-w-md rounded-t-3xl p-6 bottom-sheet animate-fade-in-up">
             <div className="w-12 h-1 bg-surface-600 rounded-full mx-auto mb-6"></div>
 
             {/* Step: Input - URL or Note */}
@@ -1221,7 +1221,7 @@ function PartyRoomScreen({ onNavigate }: { onNavigate: (screen: Screen) => void 
       {/* Queue Item Actions Sheet */}
       {selectedItem && !showDeleteConfirm && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end justify-center z-50">
-          <div className="bg-surface-900 w-full max-w-md rounded-t-3xl p-6 animate-fade-in-up">
+          <div className="bg-surface-900 w-full max-w-md rounded-t-3xl p-6 bottom-sheet animate-fade-in-up">
             <div className="w-12 h-1 bg-surface-600 rounded-full mx-auto mb-6"></div>
 
             {/* Item Info */}
@@ -1388,7 +1388,7 @@ function PartyRoomScreen({ onNavigate }: { onNavigate: (screen: Screen) => void 
       {/* View Note Modal */}
       {showViewNote && viewingNote && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end justify-center z-50">
-          <div className="bg-surface-900 w-full max-w-md rounded-t-3xl p-6 animate-fade-in-up max-h-[80vh] flex flex-col">
+          <div className="bg-surface-900 w-full max-w-md rounded-t-3xl p-6 bottom-sheet animate-fade-in-up max-h-[80vh] flex flex-col">
             <div className="w-12 h-1 bg-surface-600 rounded-full mx-auto mb-6"></div>
 
             <div className="flex items-center justify-between mb-4">
@@ -1441,7 +1441,7 @@ function PartyRoomScreen({ onNavigate }: { onNavigate: (screen: Screen) => void 
       {/* Edit Note Modal */}
       {showEditNote && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end justify-center z-50">
-          <div className="bg-surface-900 w-full max-w-md rounded-t-3xl p-6 animate-fade-in-up">
+          <div className="bg-surface-900 w-full max-w-md rounded-t-3xl p-6 bottom-sheet animate-fade-in-up">
             <div className="w-12 h-1 bg-surface-600 rounded-full mx-auto mb-6"></div>
 
             <div className="flex items-center justify-between mb-4">

@@ -45,6 +45,19 @@ body {
   margin: 0;
   min-height: 100vh;
   min-height: 100dvh;
+  /* iOS safe area support */
+  padding-top: env(safe-area-inset-top);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+/* Safe area utilities */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 20px);
+}
+
+.safe-area-top {
+  padding-top: env(safe-area-inset-top, 0px);
 }
 
 #root {
@@ -118,12 +131,15 @@ body {
 .btn {
   font-family: var(--font-display);
   font-weight: 600;
-  padding: 0.875rem 1.5rem;
-  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  border-radius: 14px;
   transition: all 0.2s ease;
   cursor: pointer;
   border: none;
   outline: none;
+  min-height: 52px; /* Ensure minimum touch target */
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 .btn-primary {
@@ -214,13 +230,21 @@ body {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px;
+  padding: 14px 12px;
   border-radius: 12px;
   transition: all 0.2s ease;
+  min-height: 72px; /* Better touch target */
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 .queue-item:hover {
   background: var(--color-surface-800);
+}
+
+.queue-item:active {
+  background: var(--color-surface-700);
+  transform: scale(0.98);
 }
 
 /* Mobile-first responsive container */
@@ -247,4 +271,59 @@ body {
 
 .animate-spin {
   animation: spin 1s linear infinite;
+}
+
+/* Floating Action Button with safe area */
+.fab {
+  position: fixed;
+  bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  right: 24px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  z-index: 40;
+}
+
+/* Bottom sheet modal improvements */
+.bottom-sheet {
+  padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+}
+
+/* Improved active states for touch */
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn-primary:active {
+  transform: scale(0.97);
+  box-shadow: 0 4px 15px rgba(255, 107, 74, 0.3);
+}
+
+/* Icon button touch target */
+.icon-btn {
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* Prevent text selection during swipe */
+.no-select {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Smooth scrolling for iOS */
+.scroll-smooth {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
 }
