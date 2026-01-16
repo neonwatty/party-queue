@@ -8,12 +8,6 @@ const PlayIcon = () => (
   </svg>
 )
 
-const PauseIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
-  </svg>
-)
-
 const SkipIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
     <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
@@ -132,17 +126,73 @@ const EditIcon = () => (
   </svg>
 )
 
+// Content type icons
+const YoutubeIcon = ({ size = 16 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+  </svg>
+)
+
+const TwitterIcon = ({ size = 16 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+  </svg>
+)
+
+const RedditIcon = ({ size = 16 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/>
+  </svg>
+)
+
+const NoteIcon = ({ size = 16 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+    <polyline points="14 2 14 8 20 8"/>
+    <line x1="16" y1="13" x2="8" y2="13"/>
+    <line x1="16" y1="17" x2="8" y2="17"/>
+    <polyline points="10 9 9 9 8 9"/>
+  </svg>
+)
+
+const LinkIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+  </svg>
+)
+
 // Types
 type Screen = 'home' | 'login' | 'signup' | 'create' | 'join' | 'party' | 'tv' | 'history'
+type ContentType = 'youtube' | 'tweet' | 'reddit' | 'note'
 
 interface QueueItem {
   id: string
-  title: string
-  channel: string
-  duration: string
-  thumbnail: string
+  type: ContentType
   addedBy: string
-  status: 'pending' | 'playing' | 'played'
+  status: 'pending' | 'showing' | 'shown'
+
+  // YouTube-specific
+  title?: string
+  channel?: string
+  duration?: string
+  thumbnail?: string
+
+  // Tweet-specific
+  tweetAuthor?: string
+  tweetHandle?: string
+  tweetContent?: string
+  tweetTimestamp?: string
+
+  // Reddit-specific
+  subreddit?: string
+  redditTitle?: string
+  redditBody?: string
+  upvotes?: number
+  commentCount?: number
+
+  // Note-specific
+  noteContent?: string
 }
 
 interface PartyMember {
@@ -156,37 +206,39 @@ interface PartyMember {
 const mockQueue: QueueItem[] = [
   {
     id: '1',
+    type: 'youtube',
     title: 'The Most Satisfying Video in the World',
     channel: 'SatisfyingClips',
     duration: '10:24',
     thumbnail: 'https://picsum.photos/seed/vid1/160/90',
     addedBy: 'Alex',
-    status: 'playing'
+    status: 'showing'
   },
   {
     id: '2',
-    title: 'Cooking the Perfect Steak - Gordon Ramsay',
-    channel: 'Gordon Ramsay',
-    duration: '8:15',
-    thumbnail: 'https://picsum.photos/seed/vid2/160/90',
+    type: 'tweet',
+    tweetAuthor: 'Elon Musk',
+    tweetHandle: '@elonmusk',
+    tweetContent: 'The algorithm should probably recommend things you find interesting. Working on it.',
+    tweetTimestamp: '2h ago',
     addedBy: 'Sam',
     status: 'pending'
   },
   {
     id: '3',
-    title: 'Why This Japanese Knife Costs $10,000',
-    channel: 'Veritasium',
-    duration: '15:42',
-    thumbnail: 'https://picsum.photos/seed/vid3/160/90',
+    type: 'reddit',
+    subreddit: 'r/technology',
+    redditTitle: 'Scientists discover new material that could revolutionize battery technology',
+    redditBody: 'Researchers at MIT have developed a new solid-state electrolyte that could triple the energy density of lithium-ion batteries...',
+    upvotes: 24500,
+    commentCount: 1823,
     addedBy: 'Jordan',
     status: 'pending'
   },
   {
     id: '4',
-    title: 'The Strangest Things Found in the Ocean',
-    channel: 'Kurzgesagt',
-    duration: '12:08',
-    thumbnail: 'https://picsum.photos/seed/vid4/160/90',
+    type: 'note',
+    noteContent: 'Remember to check out that new restaurant downtown! The reviews say their pasta is amazing.',
     addedBy: 'You',
     status: 'pending'
   },
@@ -224,7 +276,7 @@ function HomeScreen({ onNavigate }: { onNavigate: (screen: Screen) => void }) {
             Party<br />Queue
           </h1>
           <p className="text-text-secondary text-lg mb-12 max-w-xs">
-            Share videos at parties without the chaos. Everyone queues, host controls.
+            Share content at parties without the chaos. Everyone queues, host controls.
           </p>
         </div>
 
@@ -347,7 +399,7 @@ function SignupScreen({ onNavigate }: { onNavigate: (screen: Screen) => void }) 
           Create account
         </h1>
         <p className="text-text-secondary mb-8 animate-fade-in-up opacity-0 delay-100">
-          Join parties and share videos with friends
+          Join parties and share content with friends
         </p>
 
         <div className="space-y-3 mb-8 animate-fade-in-up opacity-0 delay-200">
@@ -435,7 +487,7 @@ function CreatePartyScreen({ onNavigate }: { onNavigate: (screen: Screen) => voi
             <div className="flex items-center justify-between">
               <div>
                 <div className="text-sm font-medium">Queue limit</div>
-                <div className="text-xs text-text-muted">Max videos in queue</div>
+                <div className="text-xs text-text-muted">Max items in queue</div>
               </div>
               <div className="bg-surface-700 px-3 py-1.5 rounded-lg font-mono text-sm">
                 100
@@ -445,7 +497,7 @@ function CreatePartyScreen({ onNavigate }: { onNavigate: (screen: Screen) => voi
             <div className="flex items-center justify-between">
               <div>
                 <div className="text-sm font-medium">Rate limit</div>
-                <div className="text-xs text-text-muted">Videos per person/minute</div>
+                <div className="text-xs text-text-muted">Items per person/minute</div>
               </div>
               <div className="bg-surface-700 px-3 py-1.5 rounded-lg font-mono text-sm">
                 5
@@ -519,83 +571,226 @@ function JoinPartyScreen({ onNavigate }: { onNavigate: (screen: Screen) => void 
   )
 }
 
-// Add Video Modal States
-type AddVideoStep = 'input' | 'loading' | 'preview' | 'success'
+// Add Content Modal States
+type AddContentStep = 'input' | 'loading' | 'preview' | 'success' | 'note'
+
+// Helper to detect content type from URL
+function detectContentType(url: string): ContentType | null {
+  const lowerUrl = url.toLowerCase()
+  if (lowerUrl.includes('youtube.com') || lowerUrl.includes('youtu.be')) return 'youtube'
+  if (lowerUrl.includes('twitter.com') || lowerUrl.includes('x.com')) return 'tweet'
+  if (lowerUrl.includes('reddit.com')) return 'reddit'
+  return null
+}
+
+// Helper to get content type badge info
+function getContentTypeBadge(type: ContentType) {
+  switch (type) {
+    case 'youtube':
+      return { icon: YoutubeIcon, color: 'text-red-500', bg: 'bg-red-500/20' }
+    case 'tweet':
+      return { icon: TwitterIcon, color: 'text-blue-400', bg: 'bg-blue-400/20' }
+    case 'reddit':
+      return { icon: RedditIcon, color: 'text-orange-500', bg: 'bg-orange-500/20' }
+    case 'note':
+      return { icon: NoteIcon, color: 'text-gray-400', bg: 'bg-gray-400/20' }
+  }
+}
+
+// Helper to get display title for queue item
+function getQueueItemTitle(item: QueueItem): string {
+  switch (item.type) {
+    case 'youtube':
+      return item.title || 'Untitled Video'
+    case 'tweet':
+      return item.tweetContent?.slice(0, 60) + (item.tweetContent && item.tweetContent.length > 60 ? '...' : '') || 'Tweet'
+    case 'reddit':
+      return item.redditTitle || 'Reddit Post'
+    case 'note':
+      return item.noteContent?.slice(0, 60) + (item.noteContent && item.noteContent.length > 60 ? '...' : '') || 'Note'
+  }
+}
+
+// Helper to get subtitle for queue item
+function getQueueItemSubtitle(item: QueueItem): string {
+  switch (item.type) {
+    case 'youtube':
+      return `${item.duration || ''} · Added by ${item.addedBy}`
+    case 'tweet':
+      return `${item.tweetAuthor} · Added by ${item.addedBy}`
+    case 'reddit':
+      return `${item.subreddit} · Added by ${item.addedBy}`
+    case 'note':
+      return `Added by ${item.addedBy}`
+  }
+}
 
 function PartyRoomScreen({ onNavigate }: { onNavigate: (screen: Screen) => void }) {
-  const [isPlaying, setIsPlaying] = useState(true)
-  const [showAddVideo, setShowAddVideo] = useState(false)
-  const [addVideoStep, setAddVideoStep] = useState<AddVideoStep>('input')
-  const [videoUrl, setVideoUrl] = useState('')
-  const [selectedVideo, setSelectedVideo] = useState<QueueItem | null>(null)
+  const [showAddContent, setShowAddContent] = useState(false)
+  const [addContentStep, setAddContentStep] = useState<AddContentStep>('input')
+  const [contentUrl, setContentUrl] = useState('')
+  const [noteText, setNoteText] = useState('')
+  const [detectedType, setDetectedType] = useState<ContentType | null>(null)
+  const [selectedItem, setSelectedItem] = useState<QueueItem | null>(null)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [queue, setQueue] = useState(mockQueue)
+  // Note editing state
+  const [showEditNote, setShowEditNote] = useState(false)
+  const [editNoteText, setEditNoteText] = useState('')
+  const [editingNoteId, setEditingNoteId] = useState<string | null>(null)
+  // Note viewing state
+  const [showViewNote, setShowViewNote] = useState(false)
+  const [viewingNote, setViewingNote] = useState<QueueItem | null>(null)
 
-  const currentVideo = queue.find(v => v.status === 'playing')
-  const pendingVideos = queue.filter(v => v.status === 'pending')
+  const currentItem = queue.find(v => v.status === 'showing')
+  const pendingItems = queue.filter(v => v.status === 'pending')
 
-  // Simulated video preview data
-  const previewVideo = {
-    title: 'How to Make Perfect Homemade Pizza',
-    channel: 'Joshua Weissman',
-    duration: '18:42',
-    thumbnail: 'https://picsum.photos/seed/pizza/320/180',
+  // Simulated preview data for different content types
+  const previewData: Record<ContentType, Partial<QueueItem>> = {
+    youtube: {
+      type: 'youtube',
+      title: 'How to Make Perfect Homemade Pizza',
+      channel: 'Joshua Weissman',
+      duration: '18:42',
+      thumbnail: 'https://picsum.photos/seed/pizza/320/180',
+    },
+    tweet: {
+      type: 'tweet',
+      tweetAuthor: 'Tech News',
+      tweetHandle: '@technews',
+      tweetContent: 'Breaking: New AI model achieves human-level performance on complex reasoning tasks.',
+      tweetTimestamp: 'Just now',
+    },
+    reddit: {
+      type: 'reddit',
+      subreddit: 'r/programming',
+      redditTitle: 'TIL about a programming technique that changed how I write code',
+      redditBody: 'I recently discovered functional composition and it has completely transformed my approach to software development...',
+      upvotes: 5420,
+      commentCount: 342,
+    },
+    note: {
+      type: 'note',
+      noteContent: noteText,
+    },
   }
 
   const handleUrlSubmit = () => {
-    if (videoUrl.includes('youtube') || videoUrl.includes('youtu.be')) {
-      setAddVideoStep('loading')
+    const type = detectContentType(contentUrl)
+    if (type) {
+      setDetectedType(type)
+      setAddContentStep('loading')
       // Simulate API call
-      setTimeout(() => setAddVideoStep('preview'), 1500)
+      setTimeout(() => setAddContentStep('preview'), 1500)
     }
   }
 
   const handleAddToQueue = () => {
-    setAddVideoStep('success')
+    setAddContentStep('success')
     setTimeout(() => {
-      setShowAddVideo(false)
-      setAddVideoStep('input')
-      setVideoUrl('')
+      setShowAddContent(false)
+      setAddContentStep('input')
+      setContentUrl('')
+      setNoteText('')
+      setDetectedType(null)
     }, 1500)
   }
 
-  const handleMoveUp = (videoId: string) => {
-    const index = queue.findIndex(v => v.id === videoId)
-    if (index > 1) { // Can't move above currently playing
+  const handleNoteSubmit = () => {
+    if (noteText.trim()) {
+      setDetectedType('note')
+      setAddContentStep('preview')
+    }
+  }
+
+  // Note editing handlers
+  const handleOpenEditNote = (item: QueueItem) => {
+    if (item.type === 'note') {
+      setEditNoteText(item.noteContent || '')
+      setEditingNoteId(item.id)
+      setShowEditNote(true)
+      setSelectedItem(null)
+    }
+  }
+
+  const handleSaveNote = () => {
+    if (editingNoteId && editNoteText.trim()) {
+      setQueue(queue.map(item =>
+        item.id === editingNoteId
+          ? { ...item, noteContent: editNoteText.trim() }
+          : item
+      ))
+      setShowEditNote(false)
+      setEditNoteText('')
+      setEditingNoteId(null)
+    }
+  }
+
+  const handleCancelEditNote = () => {
+    setShowEditNote(false)
+    setEditNoteText('')
+    setEditingNoteId(null)
+  }
+
+  // Note viewing handlers
+  const handleViewNote = (item: QueueItem) => {
+    if (item.type === 'note') {
+      setViewingNote(item)
+      setShowViewNote(true)
+      setSelectedItem(null)
+    }
+  }
+
+  const handleMoveUp = (itemId: string) => {
+    const index = queue.findIndex(v => v.id === itemId)
+    if (index > 1) { // Can't move above currently showing
       const newQueue = [...queue]
       ;[newQueue[index], newQueue[index - 1]] = [newQueue[index - 1], newQueue[index]]
       setQueue(newQueue)
     }
-    setSelectedVideo(null)
+    setSelectedItem(null)
   }
 
-  const handleMoveDown = (videoId: string) => {
-    const index = queue.findIndex(v => v.id === videoId)
+  const handleMoveDown = (itemId: string) => {
+    const index = queue.findIndex(v => v.id === itemId)
     if (index < queue.length - 1) {
       const newQueue = [...queue]
       ;[newQueue[index], newQueue[index + 1]] = [newQueue[index + 1], newQueue[index]]
       setQueue(newQueue)
     }
-    setSelectedVideo(null)
+    setSelectedItem(null)
   }
 
   const handleDelete = () => {
-    if (selectedVideo) {
-      setQueue(queue.filter(v => v.id !== selectedVideo.id))
+    if (selectedItem) {
+      setQueue(queue.filter(v => v.id !== selectedItem.id))
       setShowDeleteConfirm(false)
-      setSelectedVideo(null)
+      setSelectedItem(null)
     }
   }
 
-  const handlePlayNext = (videoId: string) => {
-    const video = queue.find(v => v.id === videoId)
-    if (video) {
-      const newQueue = queue.filter(v => v.id !== videoId)
-      const playingIndex = newQueue.findIndex(v => v.status === 'playing')
-      newQueue.splice(playingIndex + 1, 0, video)
+  const handleShowNext = (itemId: string) => {
+    const item = queue.find(v => v.id === itemId)
+    if (item) {
+      const newQueue = queue.filter(v => v.id !== itemId)
+      const showingIndex = newQueue.findIndex(v => v.status === 'showing')
+      newQueue.splice(showingIndex + 1, 0, item)
       setQueue(newQueue)
     }
-    setSelectedVideo(null)
+    setSelectedItem(null)
+  }
+
+  const handleNext = () => {
+    // Move current showing item to 'shown' and next pending to 'showing'
+    const newQueue = queue.map(item => {
+      if (item.status === 'showing') return { ...item, status: 'shown' as const }
+      return item
+    })
+    const firstPending = newQueue.find(item => item.status === 'pending')
+    if (firstPending) {
+      firstPending.status = 'showing'
+    }
+    setQueue(newQueue)
   }
 
   return (
@@ -626,50 +821,91 @@ function PartyRoomScreen({ onNavigate }: { onNavigate: (screen: Screen) => void 
         </div>
       </div>
 
-      {/* Now Playing */}
-      {currentVideo && (
+      {/* Now Showing */}
+      {currentItem && (
         <div className="p-4 bg-gradient-to-b from-surface-900 to-surface-950">
           <div className="text-xs text-accent-500 font-mono mb-2 flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-accent-500 animate-pulse"></span>
-            NOW PLAYING
+            NOW SHOWING
           </div>
 
-          {/* Video Player Placeholder */}
-          <div className="relative aspect-video bg-surface-800 rounded-xl overflow-hidden mb-4 glow-accent">
-            <img
-              src={currentVideo.thumbnail}
-              alt={currentVideo.title}
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-              <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur flex items-center justify-center">
-                {isPlaying ? <PauseIcon /> : <PlayIcon />}
+          {/* Content Display - Different for each type */}
+          {currentItem.type === 'youtube' && (
+            <>
+              <div className="relative aspect-video bg-surface-800 rounded-xl overflow-hidden mb-4 glow-accent">
+                <img
+                  src={currentItem.thumbnail}
+                  alt={currentItem.title}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                  <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur flex items-center justify-center">
+                    <PlayIcon />
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex-1 min-w-0">
+                  <h2 className="font-semibold text-lg truncate">{currentItem.title}</h2>
+                  <p className="text-text-muted text-sm">{currentItem.channel}</p>
+                </div>
+              </div>
+            </>
+          )}
+
+          {currentItem.type === 'tweet' && (
+            <div className="bg-surface-800 rounded-xl p-4 mb-4">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400">
+                  <TwitterIcon size={24} />
+                </div>
+                <div>
+                  <div className="font-semibold">{currentItem.tweetAuthor}</div>
+                  <div className="text-text-muted text-sm">{currentItem.tweetHandle}</div>
+                </div>
+              </div>
+              <p className="text-lg leading-relaxed mb-3">{currentItem.tweetContent}</p>
+              <div className="text-text-muted text-sm">{currentItem.tweetTimestamp}</div>
+            </div>
+          )}
+
+          {currentItem.type === 'reddit' && (
+            <div className="bg-surface-800 rounded-xl p-4 mb-4">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-6 h-6 rounded-full bg-orange-500/20 flex items-center justify-center text-orange-500">
+                  <RedditIcon size={14} />
+                </div>
+                <span className="text-orange-500 text-sm font-medium">{currentItem.subreddit}</span>
+              </div>
+              <h2 className="font-semibold text-lg mb-2">{currentItem.redditTitle}</h2>
+              <p className="text-text-secondary text-sm mb-3 line-clamp-3">{currentItem.redditBody}</p>
+              <div className="flex items-center gap-4 text-text-muted text-sm">
+                <span>{currentItem.upvotes?.toLocaleString()} upvotes</span>
+                <span>{currentItem.commentCount?.toLocaleString()} comments</span>
               </div>
             </div>
-            {/* Progress bar */}
-            <div className="absolute bottom-0 left-0 right-0 h-1 bg-surface-700">
-              <div className="h-full w-[35%] bg-accent-500"></div>
-            </div>
-          </div>
+          )}
 
-          {/* Video Info & Controls */}
-          <div className="flex items-start justify-between gap-4">
-            <div className="flex-1 min-w-0">
-              <h2 className="font-semibold text-lg truncate">{currentVideo.title}</h2>
-              <p className="text-text-muted text-sm">{currentVideo.channel}</p>
+          {currentItem.type === 'note' && (
+            <div className="bg-surface-800 rounded-xl p-4 mb-4">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-8 h-8 rounded-full bg-gray-500/20 flex items-center justify-center text-gray-400">
+                  <NoteIcon size={16} />
+                </div>
+                <span className="text-text-muted text-sm">Note from {currentItem.addedBy}</span>
+              </div>
+              <p className="text-lg leading-relaxed">{currentItem.noteContent}</p>
             </div>
-          </div>
+          )}
 
-          {/* Playback Controls */}
-          <div className="flex items-center justify-center gap-6 mt-4">
+          {/* Host Controls - Just Next button */}
+          <div className="flex items-center justify-center mt-4">
             <button
-              onClick={() => setIsPlaying(!isPlaying)}
-              className="w-14 h-14 rounded-full bg-accent-500 flex items-center justify-center hover:bg-accent-400 transition-colors"
+              onClick={handleNext}
+              className="flex items-center gap-2 px-6 py-3 rounded-full bg-accent-500 hover:bg-accent-400 transition-colors font-medium"
             >
-              {isPlaying ? <PauseIcon /> : <PlayIcon />}
-            </button>
-            <button className="w-12 h-12 rounded-full bg-surface-700 flex items-center justify-center hover:bg-surface-600 transition-colors">
               <SkipIcon />
+              Next
             </button>
           </div>
         </div>
@@ -703,136 +939,257 @@ function PartyRoomScreen({ onNavigate }: { onNavigate: (screen: Screen) => void 
       <div className="flex-1 overflow-auto">
         <div className="px-4 py-3 flex items-center justify-between sticky top-0 bg-surface-950/95 backdrop-blur z-10">
           <div className="text-sm text-text-secondary">
-            Up next · {pendingVideos.length} videos
+            Up next · {pendingItems.length} items
           </div>
           <div className="text-xs text-text-muted">Tap to edit</div>
         </div>
 
         <div className="px-4 pb-24">
-          {pendingVideos.map((video, index) => (
-            <div
-              key={video.id}
-              onClick={() => setSelectedVideo(video)}
-              className="queue-item cursor-pointer active:bg-surface-700"
-              style={{ animationDelay: `${index * 50}ms` }}
-            >
-              <DragIcon />
-              <div className="relative w-20 h-12 rounded-lg overflow-hidden bg-surface-800 flex-shrink-0">
-                <img
-                  src={video.thumbnail}
-                  alt={video.title}
-                  className="w-full h-full object-cover"
-                />
-                {video.addedBy === 'You' && (
-                  <div className="absolute top-0.5 right-0.5 w-2 h-2 rounded-full bg-teal-500"></div>
-                )}
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="font-medium text-sm truncate">{video.title}</div>
-                <div className="text-text-muted text-xs flex items-center gap-2">
-                  <span>{video.duration}</span>
-                  <span>·</span>
-                  <span>Added by {video.addedBy}</span>
+          {pendingItems.map((item, index) => {
+            const badge = getContentTypeBadge(item.type)
+            const BadgeIcon = badge.icon
+            return (
+              <div
+                key={item.id}
+                onClick={() => setSelectedItem(item)}
+                className="queue-item cursor-pointer active:bg-surface-700"
+                style={{ animationDelay: `${index * 50}ms` }}
+              >
+                <DragIcon />
+                {/* Content type badge/preview */}
+                <div className={`relative w-20 h-12 rounded-lg overflow-hidden flex-shrink-0 ${badge.bg} flex items-center justify-center`}>
+                  {item.type === 'youtube' && item.thumbnail ? (
+                    <img
+                      src={item.thumbnail}
+                      alt={item.title}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <span className={badge.color}>
+                      <BadgeIcon size={24} />
+                    </span>
+                  )}
+                  {item.addedBy === 'You' && (
+                    <div className="absolute top-0.5 right-0.5 w-2 h-2 rounded-full bg-teal-500"></div>
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className={`${badge.color}`}>
+                      <BadgeIcon size={12} />
+                    </span>
+                    <span className="font-medium text-sm truncate">{getQueueItemTitle(item)}</span>
+                  </div>
+                  <div className="text-text-muted text-xs">
+                    {getQueueItemSubtitle(item)}
+                  </div>
+                </div>
+                <div className="text-text-muted">
+                  <EditIcon />
                 </div>
               </div>
-              <div className="text-text-muted">
-                <EditIcon />
-              </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       </div>
 
-      {/* Add Video FAB */}
+      {/* Add Content FAB */}
       <button
-        onClick={() => setShowAddVideo(true)}
+        onClick={() => setShowAddContent(true)}
         className="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-accent-500 flex items-center justify-center shadow-lg hover:bg-accent-400 transition-all hover:scale-105 animate-pulse-glow"
       >
         <PlusIcon />
       </button>
 
-      {/* Add Video Modal - Enhanced */}
-      {showAddVideo && (
+      {/* Add Content Modal - Enhanced */}
+      {showAddContent && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end justify-center z-50">
           <div className="bg-surface-900 w-full max-w-md rounded-t-3xl p-6 animate-fade-in-up">
             <div className="w-12 h-1 bg-surface-600 rounded-full mx-auto mb-6"></div>
 
-            {/* Step: Input URL */}
-            {addVideoStep === 'input' && (
+            {/* Step: Input - URL or Note */}
+            {addContentStep === 'input' && (
               <>
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-xl font-bold">Add a video</h3>
-                  <button onClick={() => setShowAddVideo(false)} className="text-text-muted">
+                  <h3 className="text-xl font-bold">Add to queue</h3>
+                  <button onClick={() => setShowAddContent(false)} className="text-text-muted">
                     <CloseIcon />
                   </button>
                 </div>
-                <input
-                  type="text"
-                  placeholder="Paste YouTube URL..."
-                  value={videoUrl}
-                  onChange={(e) => setVideoUrl(e.target.value)}
-                  className="input mb-4"
-                  autoFocus
-                />
-                <p className="text-text-muted text-xs mb-4">
-                  Paste a YouTube link to add it to the queue
-                </p>
+
+                {/* URL Input */}
+                <div className="mb-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <LinkIcon />
+                    <span className="text-sm text-text-secondary">Paste a URL</span>
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="YouTube, Twitter/X, or Reddit URL..."
+                    value={contentUrl}
+                    onChange={(e) => setContentUrl(e.target.value)}
+                    className="input"
+                    autoFocus
+                  />
+                  <div className="flex items-center gap-4 mt-2 text-xs text-text-muted">
+                    <span className="flex items-center gap-1"><YoutubeIcon size={12} /> YouTube</span>
+                    <span className="flex items-center gap-1"><TwitterIcon size={12} /> Twitter/X</span>
+                    <span className="flex items-center gap-1"><RedditIcon size={12} /> Reddit</span>
+                  </div>
+                </div>
+
                 <button
                   onClick={handleUrlSubmit}
-                  disabled={!videoUrl}
-                  className="btn btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={!contentUrl || !detectContentType(contentUrl)}
+                  className="btn btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed mb-4"
                 >
                   Continue
+                </button>
+
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="flex-1 h-px bg-surface-700"></div>
+                  <span className="text-text-muted text-sm">or</span>
+                  <div className="flex-1 h-px bg-surface-700"></div>
+                </div>
+
+                {/* Write a Note Button */}
+                <button
+                  onClick={() => setAddContentStep('note')}
+                  className="btn btn-secondary w-full flex items-center justify-center gap-2"
+                >
+                  <NoteIcon size={20} />
+                  Write a note
                 </button>
               </>
             )}
 
-            {/* Step: Loading */}
-            {addVideoStep === 'loading' && (
-              <div className="py-8 flex flex-col items-center">
-                <LoaderIcon />
-                <p className="text-text-secondary mt-4">Fetching video details...</p>
-              </div>
-            )}
-
-            {/* Step: Preview */}
-            {addVideoStep === 'preview' && (
+            {/* Step: Write Note */}
+            {addContentStep === 'note' && (
               <>
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-xl font-bold">Add to queue?</h3>
+                  <h3 className="text-xl font-bold">Write a note</h3>
                   <button
-                    onClick={() => { setAddVideoStep('input'); setVideoUrl(''); }}
+                    onClick={() => { setAddContentStep('input'); setNoteText(''); }}
                     className="text-text-muted"
                   >
                     <CloseIcon />
                   </button>
                 </div>
 
-                {/* Video Preview Card */}
+                <textarea
+                  placeholder="Share a thought, reminder, or message..."
+                  value={noteText}
+                  onChange={(e) => setNoteText(e.target.value)}
+                  className="input min-h-[120px] resize-none mb-4"
+                  autoFocus
+                />
+
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => { setAddContentStep('input'); setNoteText(''); }}
+                    className="btn btn-secondary flex-1"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleNoteSubmit}
+                    disabled={!noteText.trim()}
+                    className="btn btn-primary flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Preview
+                  </button>
+                </div>
+              </>
+            )}
+
+            {/* Step: Loading */}
+            {addContentStep === 'loading' && (
+              <div className="py-8 flex flex-col items-center">
+                <LoaderIcon />
+                <p className="text-text-secondary mt-4">Fetching content details...</p>
+              </div>
+            )}
+
+            {/* Step: Preview */}
+            {addContentStep === 'preview' && detectedType && (
+              <>
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-xl font-bold">Add to queue?</h3>
+                  <button
+                    onClick={() => { setAddContentStep('input'); setContentUrl(''); setNoteText(''); setDetectedType(null); }}
+                    className="text-text-muted"
+                  >
+                    <CloseIcon />
+                  </button>
+                </div>
+
+                {/* Preview Card - Different for each type */}
                 <div className="card p-3 mb-4">
-                  <div className="flex gap-3">
-                    <div className="w-32 h-18 rounded-lg overflow-hidden bg-surface-800 flex-shrink-0">
-                      <img
-                        src={previewVideo.thumbnail}
-                        alt={previewVideo.title}
-                        className="w-full h-full object-cover"
-                      />
+                  {detectedType === 'youtube' && (
+                    <div className="flex gap-3">
+                      <div className="w-32 h-18 rounded-lg overflow-hidden bg-surface-800 flex-shrink-0">
+                        <img
+                          src={previewData.youtube.thumbnail}
+                          alt={previewData.youtube.title}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-1 mb-1">
+                          <YoutubeIcon size={12} />
+                          <span className="text-red-500 text-xs">YouTube</span>
+                        </div>
+                        <div className="font-medium text-sm line-clamp-2">{previewData.youtube.title}</div>
+                        <div className="text-text-muted text-xs mt-1">{previewData.youtube.channel}</div>
+                        <div className="text-text-muted text-xs mt-1 font-mono">{previewData.youtube.duration}</div>
+                      </div>
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="font-medium text-sm line-clamp-2">{previewVideo.title}</div>
-                      <div className="text-text-muted text-xs mt-1">{previewVideo.channel}</div>
-                      <div className="text-text-muted text-xs mt-1 font-mono">{previewVideo.duration}</div>
+                  )}
+
+                  {detectedType === 'tweet' && (
+                    <div>
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="w-8 h-8 rounded-full bg-blue-400/20 flex items-center justify-center text-blue-400">
+                          <TwitterIcon size={16} />
+                        </div>
+                        <div>
+                          <div className="font-medium text-sm">{previewData.tweet.tweetAuthor}</div>
+                          <div className="text-text-muted text-xs">{previewData.tweet.tweetHandle}</div>
+                        </div>
+                      </div>
+                      <p className="text-sm">{previewData.tweet.tweetContent}</p>
                     </div>
-                  </div>
+                  )}
+
+                  {detectedType === 'reddit' && (
+                    <div>
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-orange-500"><RedditIcon size={16} /></span>
+                        <span className="text-orange-500 text-sm">{previewData.reddit.subreddit}</span>
+                      </div>
+                      <div className="font-medium text-sm mb-1">{previewData.reddit.redditTitle}</div>
+                      <p className="text-text-muted text-xs line-clamp-2">{previewData.reddit.redditBody}</p>
+                    </div>
+                  )}
+
+                  {detectedType === 'note' && (
+                    <div>
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-gray-400"><NoteIcon size={16} /></span>
+                        <span className="text-gray-400 text-sm">Your note</span>
+                      </div>
+                      <p className="text-sm">{noteText}</p>
+                    </div>
+                  )}
                 </div>
 
                 <div className="text-text-muted text-xs mb-4">
-                  This video will be added to the end of the queue
+                  This will be added to the end of the queue
                 </div>
 
                 <div className="flex gap-3">
                   <button
-                    onClick={() => { setAddVideoStep('input'); setVideoUrl(''); }}
+                    onClick={() => { setAddContentStep('input'); setContentUrl(''); setNoteText(''); setDetectedType(null); }}
                     className="btn btn-secondary flex-1"
                   >
                     Cancel
@@ -848,13 +1205,13 @@ function PartyRoomScreen({ onNavigate }: { onNavigate: (screen: Screen) => void 
             )}
 
             {/* Step: Success */}
-            {addVideoStep === 'success' && (
+            {addContentStep === 'success' && (
               <div className="py-8 flex flex-col items-center">
                 <div className="w-16 h-16 rounded-full bg-teal-500/20 flex items-center justify-center mb-4">
                   <CheckIcon />
                 </div>
                 <p className="text-text-primary font-semibold">Added to queue!</p>
-                <p className="text-text-muted text-sm mt-1">Position #{pendingVideos.length + 1}</p>
+                <p className="text-text-muted text-sm mt-1">Position #{pendingItems.length + 1}</p>
               </div>
             )}
           </div>
@@ -862,43 +1219,90 @@ function PartyRoomScreen({ onNavigate }: { onNavigate: (screen: Screen) => void 
       )}
 
       {/* Queue Item Actions Sheet */}
-      {selectedVideo && !showDeleteConfirm && (
+      {selectedItem && !showDeleteConfirm && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end justify-center z-50">
           <div className="bg-surface-900 w-full max-w-md rounded-t-3xl p-6 animate-fade-in-up">
             <div className="w-12 h-1 bg-surface-600 rounded-full mx-auto mb-6"></div>
 
-            {/* Video Info */}
+            {/* Item Info */}
             <div className="flex gap-3 mb-6">
-              <div className="w-20 h-12 rounded-lg overflow-hidden bg-surface-800 flex-shrink-0">
-                <img
-                  src={selectedVideo.thumbnail}
-                  alt={selectedVideo.title}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="font-medium text-sm truncate">{selectedVideo.title}</div>
-                <div className="text-text-muted text-xs">Added by {selectedVideo.addedBy}</div>
-              </div>
+              {(() => {
+                const badge = getContentTypeBadge(selectedItem.type)
+                const BadgeIcon = badge.icon
+                return (
+                  <>
+                    <div className={`w-20 h-12 rounded-lg overflow-hidden flex-shrink-0 ${badge.bg} flex items-center justify-center`}>
+                      {selectedItem.type === 'youtube' && selectedItem.thumbnail ? (
+                        <img
+                          src={selectedItem.thumbnail}
+                          alt={selectedItem.title}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <span className={badge.color}>
+                          <BadgeIcon size={24} />
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="font-medium text-sm truncate">{getQueueItemTitle(selectedItem)}</div>
+                      <div className="text-text-muted text-xs">Added by {selectedItem.addedBy}</div>
+                    </div>
+                  </>
+                )
+              })()}
             </div>
 
             {/* Actions */}
             <div className="space-y-2">
+              {/* Note-specific actions */}
+              {selectedItem.type === 'note' && (
+                <>
+                  <button
+                    onClick={() => handleViewNote(selectedItem)}
+                    className="w-full flex items-center gap-4 p-3 rounded-xl hover:bg-surface-800 transition-colors text-left"
+                  >
+                    <div className="w-10 h-10 rounded-full bg-gray-500/20 flex items-center justify-center text-gray-400">
+                      <NoteIcon size={20} />
+                    </div>
+                    <div>
+                      <div className="font-medium">View Note</div>
+                      <div className="text-text-muted text-xs">Read the full note</div>
+                    </div>
+                  </button>
+
+                  <button
+                    onClick={() => handleOpenEditNote(selectedItem)}
+                    className="w-full flex items-center gap-4 p-3 rounded-xl hover:bg-surface-800 transition-colors text-left"
+                  >
+                    <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400">
+                      <EditIcon />
+                    </div>
+                    <div>
+                      <div className="font-medium">Edit Note</div>
+                      <div className="text-text-muted text-xs">Modify note content</div>
+                    </div>
+                  </button>
+
+                  <div className="h-px bg-surface-700 my-2"></div>
+                </>
+              )}
+
               <button
-                onClick={() => handlePlayNext(selectedVideo.id)}
+                onClick={() => handleShowNext(selectedItem.id)}
                 className="w-full flex items-center gap-4 p-3 rounded-xl hover:bg-surface-800 transition-colors text-left"
               >
                 <div className="w-10 h-10 rounded-full bg-accent-500/20 flex items-center justify-center text-accent-500">
                   <PlayNextIcon />
                 </div>
                 <div>
-                  <div className="font-medium">Play Next</div>
+                  <div className="font-medium">Show Next</div>
                   <div className="text-text-muted text-xs">Move to top of queue</div>
                 </div>
               </button>
 
               <button
-                onClick={() => handleMoveUp(selectedVideo.id)}
+                onClick={() => handleMoveUp(selectedItem.id)}
                 className="w-full flex items-center gap-4 p-3 rounded-xl hover:bg-surface-800 transition-colors text-left"
               >
                 <div className="w-10 h-10 rounded-full bg-surface-700 flex items-center justify-center text-text-secondary">
@@ -911,7 +1315,7 @@ function PartyRoomScreen({ onNavigate }: { onNavigate: (screen: Screen) => void 
               </button>
 
               <button
-                onClick={() => handleMoveDown(selectedVideo.id)}
+                onClick={() => handleMoveDown(selectedItem.id)}
                 className="w-full flex items-center gap-4 p-3 rounded-xl hover:bg-surface-800 transition-colors text-left"
               >
                 <div className="w-10 h-10 rounded-full bg-surface-700 flex items-center justify-center text-text-secondary">
@@ -934,13 +1338,13 @@ function PartyRoomScreen({ onNavigate }: { onNavigate: (screen: Screen) => void 
                 </div>
                 <div>
                   <div className="font-medium text-red-400">Remove from Queue</div>
-                  <div className="text-text-muted text-xs">Delete this video</div>
+                  <div className="text-text-muted text-xs">Delete this item</div>
                 </div>
               </button>
             </div>
 
             <button
-              onClick={() => setSelectedVideo(null)}
+              onClick={() => setSelectedItem(null)}
               className="btn btn-secondary w-full mt-4"
             >
               Cancel
@@ -950,22 +1354,22 @@ function PartyRoomScreen({ onNavigate }: { onNavigate: (screen: Screen) => void 
       )}
 
       {/* Delete Confirmation */}
-      {showDeleteConfirm && selectedVideo && (
+      {showDeleteConfirm && selectedItem && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-6">
           <div className="bg-surface-900 w-full max-w-sm rounded-2xl p-6 animate-fade-in-up">
             <div className="text-center mb-6">
               <div className="w-16 h-16 rounded-full bg-red-500/20 flex items-center justify-center mx-auto mb-4">
                 <TrashIcon />
               </div>
-              <h3 className="text-xl font-bold mb-2">Remove video?</h3>
+              <h3 className="text-xl font-bold mb-2">Remove item?</h3>
               <p className="text-text-muted text-sm">
-                "{selectedVideo.title}" will be removed from the queue.
+                This item will be removed from the queue.
               </p>
             </div>
 
             <div className="flex gap-3">
               <button
-                onClick={() => { setShowDeleteConfirm(false); setSelectedVideo(null); }}
+                onClick={() => { setShowDeleteConfirm(false); setSelectedItem(null); }}
                 className="btn btn-secondary flex-1"
               >
                 Cancel
@@ -980,12 +1384,114 @@ function PartyRoomScreen({ onNavigate }: { onNavigate: (screen: Screen) => void 
           </div>
         </div>
       )}
+
+      {/* View Note Modal */}
+      {showViewNote && viewingNote && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end justify-center z-50">
+          <div className="bg-surface-900 w-full max-w-md rounded-t-3xl p-6 animate-fade-in-up max-h-[80vh] flex flex-col">
+            <div className="w-12 h-1 bg-surface-600 rounded-full mx-auto mb-6"></div>
+
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-gray-500/20 flex items-center justify-center text-gray-400">
+                  <NoteIcon size={20} />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold">Note</h3>
+                  <p className="text-text-muted text-xs">Added by {viewingNote.addedBy}</p>
+                </div>
+              </div>
+              <button
+                onClick={() => { setShowViewNote(false); setViewingNote(null); }}
+                className="text-text-muted"
+              >
+                <CloseIcon />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-auto">
+              <div className="bg-surface-800 rounded-xl p-4">
+                <p className="text-lg leading-relaxed whitespace-pre-wrap">{viewingNote.noteContent}</p>
+              </div>
+            </div>
+
+            <div className="flex gap-3 mt-4">
+              <button
+                onClick={() => {
+                  setShowViewNote(false)
+                  setViewingNote(null)
+                  handleOpenEditNote(viewingNote)
+                }}
+                className="btn btn-secondary flex-1 flex items-center justify-center gap-2"
+              >
+                <EditIcon />
+                Edit
+              </button>
+              <button
+                onClick={() => { setShowViewNote(false); setViewingNote(null); }}
+                className="btn btn-primary flex-1"
+              >
+                Done
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Note Modal */}
+      {showEditNote && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end justify-center z-50">
+          <div className="bg-surface-900 w-full max-w-md rounded-t-3xl p-6 animate-fade-in-up">
+            <div className="w-12 h-1 bg-surface-600 rounded-full mx-auto mb-6"></div>
+
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400">
+                  <EditIcon />
+                </div>
+                <h3 className="text-xl font-bold">Edit Note</h3>
+              </div>
+              <button onClick={handleCancelEditNote} className="text-text-muted">
+                <CloseIcon />
+              </button>
+            </div>
+
+            <textarea
+              placeholder="Write your note..."
+              value={editNoteText}
+              onChange={(e) => setEditNoteText(e.target.value)}
+              className="input min-h-[150px] resize-none mb-4"
+              autoFocus
+            />
+
+            <p className="text-text-muted text-xs mb-4">
+              {editNoteText.length} characters
+            </p>
+
+            <div className="flex gap-3">
+              <button
+                onClick={handleCancelEditNote}
+                className="btn btn-secondary flex-1"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSaveNote}
+                disabled={!editNoteText.trim()}
+                className="btn btn-primary flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Save Note
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
 
 function TVModeScreen({ onNavigate }: { onNavigate: (screen: Screen) => void }) {
-  const currentVideo = mockQueue.find(v => v.status === 'playing')
+  const currentItem = mockQueue.find(v => v.status === 'showing')
   const upNext = mockQueue.filter(v => v.status === 'pending').slice(0, 3)
 
   return (
@@ -998,13 +1504,13 @@ function TVModeScreen({ onNavigate }: { onNavigate: (screen: Screen) => void }) 
         ← Exit TV Mode
       </div>
 
-      {/* Video area */}
+      {/* Content area - Different display for each type */}
       <div className="flex-1 flex items-center justify-center relative">
-        {currentVideo && (
+        {currentItem?.type === 'youtube' && (
           <>
             <img
-              src={currentVideo.thumbnail}
-              alt={currentVideo.title}
+              src={currentItem.thumbnail}
+              alt={currentItem.title}
               className="w-full h-full object-cover absolute inset-0"
             />
             <div className="absolute inset-0 flex items-center justify-center">
@@ -1013,38 +1519,99 @@ function TVModeScreen({ onNavigate }: { onNavigate: (screen: Screen) => void }) 
           </>
         )}
 
-        {/* Progress bar */}
-        <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20">
-          <div className="h-full w-[35%] bg-accent-500"></div>
-        </div>
+        {currentItem?.type === 'tweet' && (
+          <div className="max-w-3xl mx-auto p-8">
+            <div className="bg-surface-900/90 backdrop-blur rounded-2xl p-8">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-16 h-16 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400">
+                  <TwitterIcon size={32} />
+                </div>
+                <div>
+                  <div className="text-2xl font-bold">{currentItem.tweetAuthor}</div>
+                  <div className="text-text-muted text-lg">{currentItem.tweetHandle}</div>
+                </div>
+              </div>
+              <p className="text-3xl leading-relaxed mb-6">{currentItem.tweetContent}</p>
+              <div className="text-text-muted text-lg">{currentItem.tweetTimestamp}</div>
+            </div>
+          </div>
+        )}
+
+        {currentItem?.type === 'reddit' && (
+          <div className="max-w-4xl mx-auto p-8">
+            <div className="bg-surface-900/90 backdrop-blur rounded-2xl p-8">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-full bg-orange-500/20 flex items-center justify-center text-orange-500">
+                  <RedditIcon size={20} />
+                </div>
+                <span className="text-orange-500 text-xl font-medium">{currentItem.subreddit}</span>
+              </div>
+              <h2 className="text-3xl font-bold mb-4">{currentItem.redditTitle}</h2>
+              <p className="text-xl text-text-secondary leading-relaxed mb-6">{currentItem.redditBody}</p>
+              <div className="flex items-center gap-6 text-text-muted text-lg">
+                <span>{currentItem.upvotes?.toLocaleString()} upvotes</span>
+                <span>{currentItem.commentCount?.toLocaleString()} comments</span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {currentItem?.type === 'note' && (
+          <div className="max-w-3xl mx-auto p-8">
+            <div className="bg-surface-900/90 backdrop-blur rounded-2xl p-8">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-12 h-12 rounded-full bg-gray-500/20 flex items-center justify-center text-gray-400">
+                  <NoteIcon size={24} />
+                </div>
+                <span className="text-text-muted text-lg">Note from {currentItem.addedBy}</span>
+              </div>
+              <p className="text-3xl leading-relaxed">{currentItem.noteContent}</p>
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* Bottom bar - Now playing + Up next */}
+      {/* Bottom bar - Now showing + Up next */}
       <div className="bg-gradient-to-t from-black via-black/95 to-transparent p-6 pt-12">
         <div className="flex items-end justify-between gap-8">
-          {/* Now playing */}
+          {/* Now showing */}
           <div className="flex-1">
             <div className="text-accent-500 text-xs font-mono mb-1 flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-accent-500 animate-pulse"></span>
-              NOW PLAYING
+              NOW SHOWING
             </div>
-            <h2 className="text-2xl font-bold">{currentVideo?.title}</h2>
-            <p className="text-text-muted mt-1">{currentVideo?.channel}</p>
+            <h2 className="text-2xl font-bold">{currentItem ? getQueueItemTitle(currentItem) : ''}</h2>
+            <p className="text-text-muted mt-1">
+              {currentItem?.type === 'youtube' && currentItem.channel}
+              {currentItem?.type === 'tweet' && currentItem.tweetAuthor}
+              {currentItem?.type === 'reddit' && currentItem.subreddit}
+              {currentItem?.type === 'note' && `Added by ${currentItem.addedBy}`}
+            </p>
           </div>
 
           {/* Up next */}
           <div className="flex-shrink-0">
             <div className="text-text-muted text-xs mb-2">UP NEXT</div>
             <div className="flex gap-2">
-              {upNext.map((video) => (
-                <div key={video.id} className="w-24 h-14 rounded-lg overflow-hidden bg-surface-800">
-                  <img
-                    src={video.thumbnail}
-                    alt={video.title}
-                    className="w-full h-full object-cover opacity-70"
-                  />
-                </div>
-              ))}
+              {upNext.map((item) => {
+                const badge = getContentTypeBadge(item.type)
+                const BadgeIcon = badge.icon
+                return (
+                  <div key={item.id} className={`w-24 h-14 rounded-lg overflow-hidden ${badge.bg} flex items-center justify-center`}>
+                    {item.type === 'youtube' && item.thumbnail ? (
+                      <img
+                        src={item.thumbnail}
+                        alt={item.title}
+                        className="w-full h-full object-cover opacity-70"
+                      />
+                    ) : (
+                      <span className={`${badge.color} opacity-70`}>
+                        <BadgeIcon size={24} />
+                      </span>
+                    )}
+                  </div>
+                )
+              })}
             </div>
           </div>
         </div>
@@ -1064,10 +1631,10 @@ function TVModeScreen({ onNavigate }: { onNavigate: (screen: Screen) => void }) 
 
 function HistoryScreen({ onNavigate }: { onNavigate: (screen: Screen) => void }) {
   const pastParties = [
-    { id: '1', name: 'Game Night', date: 'Jan 10, 2025', members: 6, videos: 24 },
-    { id: '2', name: 'New Years Eve', date: 'Dec 31, 2024', members: 12, videos: 45 },
-    { id: '3', name: 'Movie Club', date: 'Dec 28, 2024', members: 4, videos: 8 },
-    { id: '4', name: 'Thanksgiving', date: 'Nov 28, 2024', members: 8, videos: 31 },
+    { id: '1', name: 'Game Night', date: 'Jan 10, 2025', members: 6, items: 24 },
+    { id: '2', name: 'New Years Eve', date: 'Dec 31, 2024', members: 12, items: 45 },
+    { id: '3', name: 'Movie Club', date: 'Dec 28, 2024', members: 4, items: 8 },
+    { id: '4', name: 'Thanksgiving', date: 'Nov 28, 2024', members: 8, items: 31 },
   ]
 
   return (
@@ -1099,7 +1666,7 @@ function HistoryScreen({ onNavigate }: { onNavigate: (screen: Screen) => void })
                 <div className="text-text-muted text-sm mt-1">{party.date}</div>
               </div>
               <div className="text-right text-sm">
-                <div className="text-text-secondary">{party.videos} videos</div>
+                <div className="text-text-secondary">{party.items} items</div>
                 <div className="text-text-muted">{party.members} people</div>
               </div>
             </div>
