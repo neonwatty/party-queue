@@ -6,8 +6,7 @@
   "scripts": {
     "dev": "doppler run -- vite",
     "dev:local": "vite",
-    "build": "doppler run -- tsc -b && doppler run -- vite build",
-    "build:local": "tsc -b && vite build",
+    "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
