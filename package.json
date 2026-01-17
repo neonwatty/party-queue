@@ -4,12 +4,15 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
+    "dev": "doppler run -- vite",
+    "dev:local": "vite",
+    "build": "doppler run -- tsc -b && doppler run -- vite build",
+    "build:local": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.90.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   },

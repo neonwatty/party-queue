@@ -1,5 +1,18 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
+import {
+  supabase,
+  getSessionId,
+  generatePartyCode,
+  getDisplayName,
+  setDisplayName,
+  getAvatar,
+  getCurrentParty,
+  setCurrentParty,
+  clearCurrentParty,
+} from './lib/supabase'
+import { useParty } from './hooks/useParty'
+import type { QueueItem } from './hooks/useParty'
 
 // Icons as simple SVG components
 const PlayIcon = () => (
@@ -166,89 +179,12 @@ const LinkIcon = () => (
 type Screen = 'home' | 'login' | 'signup' | 'create' | 'join' | 'party' | 'tv' | 'history'
 type ContentType = 'youtube' | 'tweet' | 'reddit' | 'note'
 
-interface QueueItem {
-  id: string
-  type: ContentType
-  addedBy: string
-  status: 'pending' | 'showing' | 'shown'
-
-  // YouTube-specific
-  title?: string
-  channel?: string
-  duration?: string
-  thumbnail?: string
-
-  // Tweet-specific
-  tweetAuthor?: string
-  tweetHandle?: string
-  tweetContent?: string
-  tweetTimestamp?: string
-
-  // Reddit-specific
-  subreddit?: string
-  redditTitle?: string
-  redditBody?: string
-  upvotes?: number
-  commentCount?: number
-
-  // Note-specific
-  noteContent?: string
-}
-
-interface PartyMember {
-  id: string
-  name: string
-  avatar: string
-  isHost: boolean
-}
-
-// Mock data
-const mockQueue: QueueItem[] = [
-  {
-    id: '1',
-    type: 'youtube',
-    title: 'The Most Satisfying Video in the World',
-    channel: 'SatisfyingClips',
-    duration: '10:24',
-    thumbnail: 'https://picsum.photos/seed/vid1/160/90',
-    addedBy: 'Alex',
-    status: 'showing'
-  },
-  {
-    id: '2',
-    type: 'tweet',
-    tweetAuthor: 'Elon Musk',
-    tweetHandle: '@elonmusk',
-    tweetContent: 'The algorithm should probably recommend things you find interesting. Working on it.',
-    tweetTimestamp: '2h ago',
-    addedBy: 'Sam',
-    status: 'pending'
-  },
-  {
-    id: '3',
-    type: 'reddit',
-    subreddit: 'r/technology',
-    redditTitle: 'Scientists discover new material that could revolutionize battery technology',
-    redditBody: 'Researchers at MIT have developed a new solid-state electrolyte that could triple the energy density of lithium-ion batteries...',
-    upvotes: 24500,
-    commentCount: 1823,
-    addedBy: 'Jordan',
-    status: 'pending'
-  },
-  {
-    id: '4',
-    type: 'note',
-    noteContent: 'Remember to check out that new restaurant downtown! The reviews say their pasta is amazing.',
-    addedBy: 'You',
-    status: 'pending'
-  },
-]
-
-const mockMembers: PartyMember[] = [
-  { id: '1', name: 'You', avatar: '🎉', isHost: true },
-  { id: '2', name: 'Alex', avatar: '🎸', isHost: false },
-  { id: '3', name: 'Sam', avatar: '🎮', isHost: false },
-  { id: '4', name: 'Jordan', avatar: '🎨', isHost: false },
+// Mock data for history screen (keeping as mock for MVP)
+const mockPastParties = [
+  { id: '1', name: 'Game Night', date: 'Jan 10, 2025', members: 6, items: 24 },
+  { id: '2', name: 'New Years Eve', date: 'Dec 31, 2024', members: 12, items: 45 },
+  { id: '3', name: 'Movie Club', date: 'Dec 28, 2024', members: 4, items: 8 },
+  { id: '4', name: 'Thanksgiving', date: 'Nov 28, 2024', members: 8, items: 31 },
 ]
 
 // Components
@@ -448,14 +384,76 @@ function SignupScreen({ onNavigate }: { onNavigate: (screen: Screen) => void }) 
   )
 }
 
-function CreatePartyScreen({ onNavigate }: { onNavigate: (screen: Screen) => void }) {
+interface CreatePartyScreenProps {
+  onNavigate: (screen: Screen) => void
+  onPartyCreated: (partyId: string, partyCode: string) => void
+}
+
+function CreatePartyScreen({ onNavigate, onPartyCreated }: CreatePartyScreenProps) {
   const [partyName, setPartyName] = useState('')
+  const [displayName, setDisplayNameInput] = useState(getDisplayName() || '')
+  const [isCreating, setIsCreating] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const handleCreate = async () => {
+    if (!displayName.trim()) {
+      setError('Please enter a display name')
+      return
+    }
+
+    setIsCreating(true)
+    setError(null)
+
+    try {
+      const sessionId = getSessionId()
+      const code = generatePartyCode()
+      const avatar = getAvatar()
+
+      // Create the party
+      const { data: party, error: partyError } = await supabase
+        .from('parties')
+        .insert({
+          code,
+          name: partyName.trim() || null,
+          host_session_id: sessionId,
+        })
+        .select()
+        .single()
+
+      if (partyError) throw partyError
+
+      // Add host as a member
+      const { error: memberError } = await supabase
+        .from('party_members')
+        .insert({
+          party_id: party.id,
+          session_id: sessionId,
+          display_name: displayName.trim(),
+          avatar,
+          is_host: true,
+        })
+
+      if (memberError) throw memberError
+
+      // Save display name for future use
+      setDisplayName(displayName.trim())
+      setCurrentParty(party.id, code)
+
+      onPartyCreated(party.id, code)
+    } catch (err) {
+      console.error('Error creating party:', err)
+      setError('Failed to create party. Please try again.')
+    } finally {
+      setIsCreating(false)
+    }
+  }
 
   return (
     <div className="container-mobile bg-gradient-party flex flex-col px-6 py-8">
       <button
         onClick={() => onNavigate('home')}
         className="btn-ghost p-2 -ml-2 w-fit rounded-full mb-8"
+        disabled={isCreating}
       >
         <ChevronLeftIcon />
       </button>
@@ -471,6 +469,20 @@ function CreatePartyScreen({ onNavigate }: { onNavigate: (screen: Screen) => voi
         <div className="space-y-6 animate-fade-in-up opacity-0 delay-200">
           <div>
             <label className="block text-sm text-text-secondary mb-2">
+              Your name
+            </label>
+            <input
+              type="text"
+              placeholder="Enter your display name"
+              value={displayName}
+              onChange={(e) => setDisplayNameInput(e.target.value)}
+              className="input"
+              disabled={isCreating}
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm text-text-secondary mb-2">
               Party name (optional)
             </label>
             <input
@@ -479,6 +491,7 @@ function CreatePartyScreen({ onNavigate }: { onNavigate: (screen: Screen) => voi
               value={partyName}
               onChange={(e) => setPartyName(e.target.value)}
               className="input"
+              disabled={isCreating}
             />
           </div>
 
@@ -505,11 +518,23 @@ function CreatePartyScreen({ onNavigate }: { onNavigate: (screen: Screen) => voi
             </div>
           </div>
 
+          {error && (
+            <div className="text-red-400 text-sm text-center">{error}</div>
+          )}
+
           <button
-            onClick={() => onNavigate('party')}
-            className="btn btn-primary w-full text-lg mt-4"
+            onClick={handleCreate}
+            disabled={isCreating}
+            className="btn btn-primary w-full text-lg mt-4 disabled:opacity-50"
           >
-            Create Party
+            {isCreating ? (
+              <span className="flex items-center justify-center gap-2">
+                <LoaderIcon />
+                Creating...
+              </span>
+            ) : (
+              'Create Party'
+            )}
           </button>
         </div>
       </div>
@@ -517,14 +542,88 @@ function CreatePartyScreen({ onNavigate }: { onNavigate: (screen: Screen) => voi
   )
 }
 
-function JoinPartyScreen({ onNavigate }: { onNavigate: (screen: Screen) => void }) {
+interface JoinPartyScreenProps {
+  onNavigate: (screen: Screen) => void
+  onPartyJoined: (partyId: string, partyCode: string) => void
+}
+
+function JoinPartyScreen({ onNavigate, onPartyJoined }: JoinPartyScreenProps) {
   const [code, setCode] = useState('')
+  const [displayName, setDisplayNameInput] = useState(getDisplayName() || '')
+  const [isJoining, setIsJoining] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const handleJoin = async () => {
+    if (!displayName.trim()) {
+      setError('Please enter a display name')
+      return
+    }
+
+    if (code.length !== 6) {
+      setError('Please enter a 6-character party code')
+      return
+    }
+
+    setIsJoining(true)
+    setError(null)
+
+    try {
+      const sessionId = getSessionId()
+      const avatar = getAvatar()
+
+      // Look up party by code
+      const { data: party, error: partyError } = await supabase
+        .from('parties')
+        .select('*')
+        .eq('code', code.toUpperCase())
+        .single()
+
+      if (partyError) {
+        if (partyError.code === 'PGRST116') {
+          setError('Party not found. Check the code and try again.')
+        } else {
+          throw partyError
+        }
+        return
+      }
+
+      // Upsert member (in case they've joined before)
+      const { error: memberError } = await supabase
+        .from('party_members')
+        .upsert(
+          {
+            party_id: party.id,
+            session_id: sessionId,
+            display_name: displayName.trim(),
+            avatar,
+            is_host: false,
+          },
+          {
+            onConflict: 'party_id,session_id',
+          }
+        )
+
+      if (memberError) throw memberError
+
+      // Save display name for future use
+      setDisplayName(displayName.trim())
+      setCurrentParty(party.id, party.code)
+
+      onPartyJoined(party.id, party.code)
+    } catch (err) {
+      console.error('Error joining party:', err)
+      setError('Failed to join party. Please try again.')
+    } finally {
+      setIsJoining(false)
+    }
+  }
 
   return (
     <div className="container-mobile bg-gradient-party flex flex-col px-6 py-8">
       <button
         onClick={() => onNavigate('home')}
         className="btn-ghost p-2 -ml-2 w-fit rounded-full mb-8"
+        disabled={isJoining}
       >
         <ChevronLeftIcon />
       </button>
@@ -540,6 +639,20 @@ function JoinPartyScreen({ onNavigate }: { onNavigate: (screen: Screen) => void 
         <div className="space-y-6 animate-fade-in-up opacity-0 delay-200">
           <div>
             <label className="block text-sm text-text-secondary mb-2">
+              Your name
+            </label>
+            <input
+              type="text"
+              placeholder="Enter your display name"
+              value={displayName}
+              onChange={(e) => setDisplayNameInput(e.target.value)}
+              className="input"
+              disabled={isJoining}
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm text-text-secondary mb-2">
               Party code
             </label>
             <input
@@ -549,15 +662,27 @@ function JoinPartyScreen({ onNavigate }: { onNavigate: (screen: Screen) => void 
               onChange={(e) => setCode(e.target.value.toUpperCase())}
               maxLength={6}
               className="input text-center text-2xl font-mono tracking-[0.3em] uppercase"
+              disabled={isJoining}
             />
           </div>
 
+          {error && (
+            <div className="text-red-400 text-sm text-center">{error}</div>
+          )}
+
           <button
-            onClick={() => onNavigate('party')}
-            className="btn btn-primary w-full text-lg"
-            disabled={code.length !== 6}
+            onClick={handleJoin}
+            className="btn btn-primary w-full text-lg disabled:opacity-50"
+            disabled={code.length !== 6 || !displayName.trim() || isJoining}
           >
-            Join Party
+            {isJoining ? (
+              <span className="flex items-center justify-center gap-2">
+                <LoaderIcon />
+                Joining...
+              </span>
+            ) : (
+              'Join Party'
+            )}
           </button>
         </div>
 
@@ -625,7 +750,27 @@ function getQueueItemSubtitle(item: QueueItem): string {
   }
 }
 
-function PartyRoomScreen({ onNavigate }: { onNavigate: (screen: Screen) => void }) {
+interface PartyRoomScreenProps {
+  onNavigate: (screen: Screen) => void
+  partyId: string
+  partyCode: string
+  onLeaveParty: () => void
+}
+
+function PartyRoomScreen({ onNavigate, partyId, partyCode, onLeaveParty }: PartyRoomScreenProps) {
+  const {
+    queue,
+    members,
+    partyInfo,
+    isLoading,
+    addToQueue,
+    moveItem,
+    deleteItem,
+    advanceQueue,
+    showNext,
+    updateNoteContent,
+  } = useParty(partyId)
+
   const [showAddContent, setShowAddContent] = useState(false)
   const [addContentStep, setAddContentStep] = useState<AddContentStep>('input')
   const [contentUrl, setContentUrl] = useState('')
@@ -633,7 +778,6 @@ function PartyRoomScreen({ onNavigate }: { onNavigate: (screen: Screen) => void 
   const [detectedType, setDetectedType] = useState<ContentType | null>(null)
   const [selectedItem, setSelectedItem] = useState<QueueItem | null>(null)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
-  const [queue, setQueue] = useState(mockQueue)
   // Note editing state
   const [showEditNote, setShowEditNote] = useState(false)
   const [editNoteText, setEditNoteText] = useState('')
@@ -641,6 +785,10 @@ function PartyRoomScreen({ onNavigate }: { onNavigate: (screen: Screen) => void 
   // Note viewing state
   const [showViewNote, setShowViewNote] = useState(false)
   const [viewingNote, setViewingNote] = useState<QueueItem | null>(null)
+
+  const sessionId = getSessionId()
+  const currentUserDisplayName = getDisplayName() || 'You'
+  const isHost = partyInfo?.hostSessionId === sessionId
 
   const currentItem = queue.find(v => v.status === 'showing')
   const pendingItems = queue.filter(v => v.status === 'pending')
@@ -685,15 +833,30 @@ function PartyRoomScreen({ onNavigate }: { onNavigate: (screen: Screen) => void 
     }
   }
 
-  const handleAddToQueue = () => {
-    setAddContentStep('success')
-    setTimeout(() => {
-      setShowAddContent(false)
-      setAddContentStep('input')
-      setContentUrl('')
-      setNoteText('')
-      setDetectedType(null)
-    }, 1500)
+  const handleAddToQueue = async () => {
+    if (!detectedType) return
+
+    try {
+      const preview = detectedType === 'note' ? { noteContent: noteText } : previewData[detectedType]
+
+      await addToQueue({
+        type: detectedType,
+        status: queue.length === 0 ? 'showing' : 'pending',
+        addedBy: currentUserDisplayName,
+        ...preview,
+      })
+
+      setAddContentStep('success')
+      setTimeout(() => {
+        setShowAddContent(false)
+        setAddContentStep('input')
+        setContentUrl('')
+        setNoteText('')
+        setDetectedType(null)
+      }, 1500)
+    } catch (err) {
+      console.error('Failed to add to queue:', err)
+    }
   }
 
   const handleNoteSubmit = () => {
@@ -713,16 +876,16 @@ function PartyRoomScreen({ onNavigate }: { onNavigate: (screen: Screen) => void 
     }
   }
 
-  const handleSaveNote = () => {
+  const handleSaveNote = async () => {
     if (editingNoteId && editNoteText.trim()) {
-      setQueue(queue.map(item =>
-        item.id === editingNoteId
-          ? { ...item, noteContent: editNoteText.trim() }
-          : item
-      ))
-      setShowEditNote(false)
-      setEditNoteText('')
-      setEditingNoteId(null)
+      try {
+        await updateNoteContent(editingNoteId, editNoteText.trim())
+        setShowEditNote(false)
+        setEditNoteText('')
+        setEditingNoteId(null)
+      } catch (err) {
+        console.error('Failed to update note:', err)
+      }
     }
   }
 
@@ -741,56 +904,49 @@ function PartyRoomScreen({ onNavigate }: { onNavigate: (screen: Screen) => void 
     }
   }
 
-  const handleMoveUp = (itemId: string) => {
-    const index = queue.findIndex(v => v.id === itemId)
-    if (index > 1) { // Can't move above currently showing
-      const newQueue = [...queue]
-      ;[newQueue[index], newQueue[index - 1]] = [newQueue[index - 1], newQueue[index]]
-      setQueue(newQueue)
-    }
+  const handleMoveUp = async (itemId: string) => {
+    await moveItem(itemId, 'up')
     setSelectedItem(null)
   }
 
-  const handleMoveDown = (itemId: string) => {
-    const index = queue.findIndex(v => v.id === itemId)
-    if (index < queue.length - 1) {
-      const newQueue = [...queue]
-      ;[newQueue[index], newQueue[index + 1]] = [newQueue[index + 1], newQueue[index]]
-      setQueue(newQueue)
-    }
+  const handleMoveDown = async (itemId: string) => {
+    await moveItem(itemId, 'down')
     setSelectedItem(null)
   }
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (selectedItem) {
-      setQueue(queue.filter(v => v.id !== selectedItem.id))
-      setShowDeleteConfirm(false)
-      setSelectedItem(null)
+      try {
+        await deleteItem(selectedItem.id)
+        setShowDeleteConfirm(false)
+        setSelectedItem(null)
+      } catch (err) {
+        console.error('Failed to delete item:', err)
+      }
     }
   }
 
-  const handleShowNext = (itemId: string) => {
-    const item = queue.find(v => v.id === itemId)
-    if (item) {
-      const newQueue = queue.filter(v => v.id !== itemId)
-      const showingIndex = newQueue.findIndex(v => v.status === 'showing')
-      newQueue.splice(showingIndex + 1, 0, item)
-      setQueue(newQueue)
-    }
+  const handleShowNext = async (itemId: string) => {
+    await showNext(itemId)
     setSelectedItem(null)
   }
 
-  const handleNext = () => {
-    // Move current showing item to 'shown' and next pending to 'showing'
-    const newQueue = queue.map(item => {
-      if (item.status === 'showing') return { ...item, status: 'shown' as const }
-      return item
-    })
-    const firstPending = newQueue.find(item => item.status === 'pending')
-    if (firstPending) {
-      firstPending.status = 'showing'
-    }
-    setQueue(newQueue)
+  const handleNext = async () => {
+    await advanceQueue()
+  }
+
+  const handleLeave = () => {
+    clearCurrentParty()
+    onLeaveParty()
+  }
+
+  if (isLoading) {
+    return (
+      <div className="container-mobile bg-surface-950 flex flex-col items-center justify-center">
+        <LoaderIcon />
+        <p className="text-text-muted mt-4">Loading party...</p>
+      </div>
+    )
   }
 
   return (
@@ -798,14 +954,14 @@ function PartyRoomScreen({ onNavigate }: { onNavigate: (screen: Screen) => void 
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-2 border-b border-surface-800 safe-area-top">
         <button
-          onClick={() => onNavigate('home')}
+          onClick={handleLeave}
           className="btn-ghost icon-btn -ml-2 rounded-full"
         >
           <ChevronLeftIcon />
         </button>
         <div className="text-center">
-          <div className="font-semibold">Saturday Hangout</div>
-          <div className="text-xs text-text-muted font-mono">PARTY-X7K</div>
+          <div className="font-semibold">{partyInfo?.name || 'Party'}</div>
+          <div className="text-xs text-text-muted font-mono">{partyCode}</div>
         </div>
         <div className="flex gap-0">
           <button
@@ -899,15 +1055,17 @@ function PartyRoomScreen({ onNavigate }: { onNavigate: (screen: Screen) => void 
           )}
 
           {/* Host Controls - Just Next button */}
-          <div className="flex items-center justify-center mt-4">
-            <button
-              onClick={handleNext}
-              className="flex items-center gap-2 px-6 py-3 rounded-full bg-accent-500 hover:bg-accent-400 transition-colors font-medium"
-            >
-              <SkipIcon />
-              Next
-            </button>
-          </div>
+          {isHost && (
+            <div className="flex items-center justify-center mt-4">
+              <button
+                onClick={handleNext}
+                className="flex items-center gap-2 px-6 py-3 rounded-full bg-accent-500 hover:bg-accent-400 transition-colors font-medium"
+              >
+                <SkipIcon />
+                Next
+              </button>
+            </div>
+          )}
         </div>
       )}
 
@@ -915,16 +1073,16 @@ function PartyRoomScreen({ onNavigate }: { onNavigate: (screen: Screen) => void 
       <div className="px-4 py-3 border-b border-surface-800">
         <div className="flex items-center gap-2 text-text-secondary text-sm">
           <UsersIcon />
-          <span>{mockMembers.length} watching</span>
+          <span>{members.length} watching</span>
         </div>
-        <div className="flex gap-2 mt-2">
-          {mockMembers.map(member => (
+        <div className="flex gap-2 mt-2 flex-wrap">
+          {members.map(member => (
             <div
               key={member.id}
               className="flex items-center gap-1.5 bg-surface-800 px-2 py-1 rounded-full text-sm"
             >
               <span>{member.avatar}</span>
-              <span>{member.name}</span>
+              <span>{member.sessionId === sessionId ? 'You' : member.name}</span>
               {member.isHost && (
                 <span className="text-[10px] bg-accent-500/20 text-accent-400 px-1.5 py-0.5 rounded-full">
                   HOST
@@ -948,6 +1106,7 @@ function PartyRoomScreen({ onNavigate }: { onNavigate: (screen: Screen) => void 
           {pendingItems.map((item, index) => {
             const badge = getContentTypeBadge(item.type)
             const BadgeIcon = badge.icon
+            const isOwnItem = item.addedBySessionId === sessionId
             return (
               <div
                 key={item.id}
@@ -969,7 +1128,7 @@ function PartyRoomScreen({ onNavigate }: { onNavigate: (screen: Screen) => void 
                       <BadgeIcon size={24} />
                     </span>
                   )}
-                  {item.addedBy === 'You' && (
+                  {isOwnItem && (
                     <div className="absolute top-0.5 right-0.5 w-2 h-2 rounded-full bg-teal-500"></div>
                   )}
                 </div>
@@ -1490,9 +1649,17 @@ function PartyRoomScreen({ onNavigate }: { onNavigate: (screen: Screen) => void 
   )
 }
 
-function TVModeScreen({ onNavigate }: { onNavigate: (screen: Screen) => void }) {
-  const currentItem = mockQueue.find(v => v.status === 'showing')
-  const upNext = mockQueue.filter(v => v.status === 'pending').slice(0, 3)
+interface TVModeScreenProps {
+  onNavigate: (screen: Screen) => void
+  partyId: string
+  partyCode: string
+}
+
+function TVModeScreen({ onNavigate, partyId, partyCode }: TVModeScreenProps) {
+  const { queue, members, partyInfo } = useParty(partyId)
+
+  const currentItem = queue.find(v => v.status === 'showing')
+  const upNext = queue.filter(v => v.status === 'pending').slice(0, 3)
 
   return (
     <div className="min-h-screen bg-black flex flex-col">
@@ -1569,6 +1736,13 @@ function TVModeScreen({ onNavigate }: { onNavigate: (screen: Screen) => void }) 
             </div>
           </div>
         )}
+
+        {!currentItem && (
+          <div className="text-center text-text-muted">
+            <p className="text-2xl">No content showing</p>
+            <p className="text-lg mt-2">Add items to the queue to get started</p>
+          </div>
+        )}
       </div>
 
       {/* Bottom bar - Now showing + Up next */}
@@ -1580,7 +1754,7 @@ function TVModeScreen({ onNavigate }: { onNavigate: (screen: Screen) => void }) 
               <span className="w-1.5 h-1.5 rounded-full bg-accent-500 animate-pulse"></span>
               NOW SHOWING
             </div>
-            <h2 className="text-2xl font-bold">{currentItem ? getQueueItemTitle(currentItem) : ''}</h2>
+            <h2 className="text-2xl font-bold">{currentItem ? getQueueItemTitle(currentItem) : 'Nothing playing'}</h2>
             <p className="text-text-muted mt-1">
               {currentItem?.type === 'youtube' && currentItem.channel}
               {currentItem?.type === 'tweet' && currentItem.tweetAuthor}
@@ -1590,39 +1764,44 @@ function TVModeScreen({ onNavigate }: { onNavigate: (screen: Screen) => void }) 
           </div>
 
           {/* Up next */}
-          <div className="flex-shrink-0">
-            <div className="text-text-muted text-xs mb-2">UP NEXT</div>
-            <div className="flex gap-2">
-              {upNext.map((item) => {
-                const badge = getContentTypeBadge(item.type)
-                const BadgeIcon = badge.icon
-                return (
-                  <div key={item.id} className={`w-24 h-14 rounded-lg overflow-hidden ${badge.bg} flex items-center justify-center`}>
-                    {item.type === 'youtube' && item.thumbnail ? (
-                      <img
-                        src={item.thumbnail}
-                        alt={item.title}
-                        className="w-full h-full object-cover opacity-70"
-                      />
-                    ) : (
-                      <span className={`${badge.color} opacity-70`}>
-                        <BadgeIcon size={24} />
-                      </span>
-                    )}
-                  </div>
-                )
-              })}
+          {upNext.length > 0 && (
+            <div className="flex-shrink-0">
+              <div className="text-text-muted text-xs mb-2">UP NEXT</div>
+              <div className="flex gap-2">
+                {upNext.map((item) => {
+                  const badge = getContentTypeBadge(item.type)
+                  const BadgeIcon = badge.icon
+                  return (
+                    <div key={item.id} className={`w-24 h-14 rounded-lg overflow-hidden ${badge.bg} flex items-center justify-center`}>
+                      {item.type === 'youtube' && item.thumbnail ? (
+                        <img
+                          src={item.thumbnail}
+                          alt={item.title}
+                          className="w-full h-full object-cover opacity-70"
+                        />
+                      ) : (
+                        <span className={`${badge.color} opacity-70`}>
+                          <BadgeIcon size={24} />
+                        </span>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         {/* Party info */}
         <div className="flex items-center gap-4 mt-4 pt-4 border-t border-white/10">
-          <div className="font-mono text-sm text-text-muted">PARTY-X7K</div>
+          <div className="font-mono text-sm text-text-muted">{partyCode}</div>
           <div className="flex items-center gap-1 text-text-muted text-sm">
             <UsersIcon />
-            <span>{mockMembers.length}</span>
+            <span>{members.length}</span>
           </div>
+          {partyInfo?.name && (
+            <div className="text-text-muted text-sm">{partyInfo.name}</div>
+          )}
         </div>
       </div>
     </div>
@@ -1630,13 +1809,6 @@ function TVModeScreen({ onNavigate }: { onNavigate: (screen: Screen) => void }) 
 }
 
 function HistoryScreen({ onNavigate }: { onNavigate: (screen: Screen) => void }) {
-  const pastParties = [
-    { id: '1', name: 'Game Night', date: 'Jan 10, 2025', members: 6, items: 24 },
-    { id: '2', name: 'New Years Eve', date: 'Dec 31, 2024', members: 12, items: 45 },
-    { id: '3', name: 'Movie Club', date: 'Dec 28, 2024', members: 4, items: 8 },
-    { id: '4', name: 'Thanksgiving', date: 'Nov 28, 2024', members: 8, items: 31 },
-  ]
-
   return (
     <div className="container-mobile bg-gradient-party flex flex-col px-6 py-8">
       <button
@@ -1654,7 +1826,7 @@ function HistoryScreen({ onNavigate }: { onNavigate: (screen: Screen) => void })
       </p>
 
       <div className="space-y-3">
-        {pastParties.map((party, index) => (
+        {mockPastParties.map((party, index) => (
           <div
             key={party.id}
             className="card p-4 cursor-pointer hover:border-surface-600 transition-colors animate-fade-in-up opacity-0"
@@ -1680,15 +1852,62 @@ function HistoryScreen({ onNavigate }: { onNavigate: (screen: Screen) => void })
 // Main App
 function App() {
   const [currentScreen, setCurrentScreen] = useState<Screen>('home')
+  const [currentPartyId, setCurrentPartyId] = useState<string | null>(null)
+  const [currentPartyCode, setCurrentPartyCode] = useState<string | null>(null)
+
+  // Check for existing party on mount
+  useEffect(() => {
+    const savedParty = getCurrentParty()
+    if (savedParty) {
+      setCurrentPartyId(savedParty.partyId)
+      setCurrentPartyCode(savedParty.partyCode)
+      setCurrentScreen('party')
+    }
+  }, [])
+
+  const handlePartyCreated = (partyId: string, partyCode: string) => {
+    setCurrentPartyId(partyId)
+    setCurrentPartyCode(partyCode)
+    setCurrentScreen('party')
+  }
+
+  const handlePartyJoined = (partyId: string, partyCode: string) => {
+    setCurrentPartyId(partyId)
+    setCurrentPartyCode(partyCode)
+    setCurrentScreen('party')
+  }
+
+  const handleLeaveParty = () => {
+    setCurrentPartyId(null)
+    setCurrentPartyCode(null)
+    setCurrentScreen('home')
+  }
 
   const screens: Record<Screen, React.ReactNode> = {
     home: <HomeScreen onNavigate={setCurrentScreen} />,
     login: <LoginScreen onNavigate={setCurrentScreen} />,
     signup: <SignupScreen onNavigate={setCurrentScreen} />,
-    create: <CreatePartyScreen onNavigate={setCurrentScreen} />,
-    join: <JoinPartyScreen onNavigate={setCurrentScreen} />,
-    party: <PartyRoomScreen onNavigate={setCurrentScreen} />,
-    tv: <TVModeScreen onNavigate={setCurrentScreen} />,
+    create: <CreatePartyScreen onNavigate={setCurrentScreen} onPartyCreated={handlePartyCreated} />,
+    join: <JoinPartyScreen onNavigate={setCurrentScreen} onPartyJoined={handlePartyJoined} />,
+    party: currentPartyId && currentPartyCode ? (
+      <PartyRoomScreen
+        onNavigate={setCurrentScreen}
+        partyId={currentPartyId}
+        partyCode={currentPartyCode}
+        onLeaveParty={handleLeaveParty}
+      />
+    ) : (
+      <HomeScreen onNavigate={setCurrentScreen} />
+    ),
+    tv: currentPartyId && currentPartyCode ? (
+      <TVModeScreen
+        onNavigate={setCurrentScreen}
+        partyId={currentPartyId}
+        partyCode={currentPartyCode}
+      />
+    ) : (
+      <HomeScreen onNavigate={setCurrentScreen} />
+    ),
     history: <HistoryScreen onNavigate={setCurrentScreen} />,
   }
 
