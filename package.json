@@ -8,9 +8,14 @@
     "dev:local": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "build:ios": "npm run build && npx cap sync ios",
+    "ios": "npm run build:ios && npx cap open ios"
   },
   "dependencies": {
+    "@capacitor/cli": "^8.0.1",
+    "@capacitor/core": "^8.0.1",
+    "@capacitor/ios": "^8.0.1",
     "@supabase/supabase-js": "^2.90.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
