@@ -15,7 +15,7 @@
 | 5 | Add YouTube Content | Add video to queue | 7 | ⬜ |
 | 6 | Add Tweet Content | Add tweet to queue | 7 | ⬜ |
 | 7 | Add Reddit Content | Add post to queue | 7 | ⬜ |
-| 8 | Add Simple Note | Add text note | 6 | ⬜ |
+| 8 | Add Simple Note | Add text note | 6 | ⚠️ Partial (2026-01-20) - UI flow works, backend persistence fails |
 | 9 | Add Note with Due Date | Add reminder | 7 | ⬜ |
 | 10 | Mark Note Complete | Toggle completion | 4 | ⬜ |
 | 11 | View and Edit Note | Open and modify note | 8 | ⬜ |
