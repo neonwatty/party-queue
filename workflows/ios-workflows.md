@@ -15,12 +15,12 @@
 | 5 | Add YouTube Content | Add video to queue | 7 | ⬜ |
 | 6 | Add Tweet Content | Add tweet to queue | 7 | ⬜ |
 | 7 | Add Reddit Content | Add post to queue | 7 | ⬜ |
-| 8 | Add Simple Note | Add text note | 6 | ✅ Passed (2026-01-20) - Note: requires rejoin to see updates (realtime bug) |
+| 8 | Add Simple Note | Add text note | 6 | ✅ Passed (2026-01-20) |
 | 9 | Add Note with Due Date | Add reminder | 7 | ✅ Passed (2026-01-21) - Note: due date saved but indicator not visible in queue list |
 | 10 | Mark Note Complete | Toggle completion | 4 | ✅ Passed (2026-01-20) |
-| 11 | View and Edit Note | Open and modify note | 8 | ✅ Passed (2026-01-21) - Note: requires rejoin to see updates (realtime bug) |
-| 12 | Reorder Queue Items | Move items up/down | 6 | ✅ Passed (2026-01-21) - Note: requires rejoin to see updates (realtime bug) |
-| 13 | Show Item Next | Bump to show next | 5 | ✅ Passed (2026-01-21) - Note: requires rejoin to see updates (realtime bug) |
+| 11 | View and Edit Note | Open and modify note | 8 | ✅ Passed (2026-01-21) |
+| 12 | Reorder Queue Items | Move items up/down | 6 | ✅ Passed (2026-01-21) |
+| 13 | Show Item Next | Bump to show next | 5 | ✅ Passed (2026-01-21) |
 | 14 | Remove Queue Item | Delete from queue | 6 | ⚠️ Blocked - "Remove from Queue" option cut off in action sheet (UI bug) |
 | 15 | TV Mode | Enter TV display | 5 | ✅ Passed (2026-01-21) |
 | 16 | View History | View past parties | 4 | ✅ Passed (2026-01-21) |
