@@ -201,6 +201,13 @@ const AlertIcon = ({ size = 16 }: { size?: number }) => (
   </svg>
 )
 
+const ClockIcon = ({ size = 16 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <circle cx="12" cy="12" r="10"/>
+    <polyline points="12 6 12 12 16 14"/>
+  </svg>
+)
+
 // Types
 type Screen = 'home' | 'login' | 'signup' | 'create' | 'join' | 'party' | 'tv' | 'history'
 type ContentType = 'youtube' | 'tweet' | 'reddit' | 'note'
@@ -217,7 +224,7 @@ const mockPastParties = [
 
 function HomeScreen({ onNavigate }: { onNavigate: (screen: Screen) => void }) {
   return (
-    <div className="container-mobile bg-gradient-party flex flex-col px-6 py-8">
+    <div className="container-mobile bg-gradient-party flex flex-col px-6 py-8 safe-area-bottom">
       {/* Header */}
       <div className="flex justify-end mb-8">
         <button
@@ -229,7 +236,7 @@ function HomeScreen({ onNavigate }: { onNavigate: (screen: Screen) => void }) {
       </div>
 
       {/* Hero */}
-      <div className="flex-1 flex flex-col justify-center">
+      <div className="flex-1 flex flex-col justify-center min-h-0">
         <div className="animate-fade-in-up opacity-0">
           <div className="text-accent-500 font-mono text-sm tracking-wider mb-4">
             SHARE TOGETHER
@@ -237,7 +244,7 @@ function HomeScreen({ onNavigate }: { onNavigate: (screen: Screen) => void }) {
           <h1 className="text-5xl font-bold leading-tight mb-4">
             Remember<br />Party
           </h1>
-          <p className="text-text-secondary text-lg mb-12 max-w-xs">
+          <p className="text-text-secondary text-lg mb-8 max-w-xs">
             Share content together. Queue videos, tweets, posts, and notes in real-time.
           </p>
         </div>
@@ -256,17 +263,17 @@ function HomeScreen({ onNavigate }: { onNavigate: (screen: Screen) => void }) {
           >
             Join with Code
           </button>
-        </div>
-      </div>
 
-      {/* Footer */}
-      <div className="mt-auto pt-8 animate-fade-in-up opacity-0 delay-300">
-        <button
-          onClick={() => onNavigate('login')}
-          className="text-text-muted text-sm hover:text-text-secondary transition-colors"
-        >
-          Already have an account? <span className="text-accent-400">Sign in</span>
-        </button>
+          {/* Sign in link */}
+          <div className="pt-4 text-center">
+            <button
+              onClick={() => onNavigate('login')}
+              className="text-text-muted text-sm hover:text-text-secondary transition-colors"
+            >
+              Already have an account? <span className="text-accent-400">Sign in</span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   )
@@ -1303,6 +1310,12 @@ function PartyRoomScreen({ onNavigate, partyId, partyCode, onLeaveParty }: Party
                     <span className={`font-medium text-sm truncate ${item.isCompleted ? 'line-through' : ''}`}>
                       {getQueueItemTitle(item)}
                     </span>
+                    {/* Due date indicator */}
+                    {item.dueDate && !item.isCompleted && (
+                      <span className={`flex-shrink-0 ${overdue ? 'text-red-400' : 'text-amber-400'}`}>
+                        <ClockIcon size={12} />
+                      </span>
+                    )}
                   </div>
                   <div className={`text-xs ${overdue ? 'text-red-400' : 'text-text-muted'}`}>
                     {getQueueItemSubtitle(item)}

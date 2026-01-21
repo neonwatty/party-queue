@@ -434,8 +434,7 @@ export function useParty(partyId: string | null) {
         upvotes: item.upvotes ?? null,
         comment_count: item.commentCount ?? null,
         note_content: item.noteContent ?? null,
-        // due_date column not yet in database - skipping for now
-        // due_date: item.dueDate ?? null,
+        due_date: item.dueDate ?? null,
       }
 
       const { error } = await supabase.from('queue_items').insert(dbItem)
