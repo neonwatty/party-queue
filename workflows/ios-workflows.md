@@ -19,7 +19,7 @@
 | 9 | Add Note with Due Date | Add reminder | 7 | ✅ Passed (2026-01-21) - Note: due date saved but indicator not visible in queue list |
 | 10 | Mark Note Complete | Toggle completion | 4 | ✅ Passed (2026-01-20) |
 | 11 | View and Edit Note | Open and modify note | 8 | ✅ Passed (2026-01-21) - Note: requires rejoin to see updates (realtime bug) |
-| 12 | Reorder Queue Items | Move items up/down | 6 | ⬜ |
+| 12 | Reorder Queue Items | Move items up/down | 6 | ✅ Passed (2026-01-21) - Note: requires rejoin to see updates (realtime bug) |
 | 13 | Show Item Next | Bump to show next | 5 | ⬜ |
 | 14 | Remove Queue Item | Delete from queue | 6 | ⚠️ Blocked - "Remove from Queue" option cut off in action sheet (UI bug) |
 | 15 | TV Mode | Enter TV display | 5 | ✅ Passed (2026-01-21) |
