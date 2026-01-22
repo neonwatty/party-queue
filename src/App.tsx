@@ -973,7 +973,7 @@ function PartyRoomScreen({ onNavigate, partyId, partyCode, onLeaveParty }: Party
     const doAddToQueue = async () => {
       try {
         const preview = detectedType === 'note'
-          ? { noteContent: noteText }
+          ? { noteContent: noteText, dueDate: noteDueDate || undefined }
           : previewData[detectedType]
 
         await addToQueue({
@@ -1888,13 +1888,14 @@ function TVModeScreen({ onNavigate, partyId, partyCode }: TVModeScreenProps) {
 
   return (
     <div className="min-h-screen bg-black flex flex-col">
-      {/* Minimal header - tap to exit */}
-      <div
+      {/* Exit button - clearly visible */}
+      <button
         onClick={() => onNavigate('party')}
-        className="absolute top-4 left-4 z-10 bg-black/50 backdrop-blur px-3 py-1.5 rounded-full text-xs text-text-muted cursor-pointer hover:bg-black/70 transition-colors"
+        className="absolute top-12 left-4 z-10 bg-surface-800/90 backdrop-blur-sm border border-white/20 px-4 py-2 rounded-full text-sm text-white font-medium cursor-pointer hover:bg-surface-700 active:scale-95 transition-all flex items-center gap-2"
       >
-        ← Exit TV Mode
-      </div>
+        <ChevronLeftIcon />
+        Exit
+      </button>
 
       {/* Content area - Different display for each type */}
       <div className="flex-1 flex items-center justify-center relative">
