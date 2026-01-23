@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
 import {
   supabase,
@@ -14,7 +14,8 @@ import {
 import { useParty } from './hooks/useParty'
 import type { QueueItem } from './hooks/useParty'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
-import { signInWithGoogle } from './lib/auth'
+import { signInWithGoogle, signInWithEmail, signUpWithEmail, resetPassword, updatePassword } from './lib/auth'
+import { validateEmail, validatePassword, validateDisplayName } from './lib/validation'
 
 // Icons as simple SVG components
 const PlayIcon = () => (
@@ -209,7 +210,7 @@ const ClockIcon = ({ size = 16 }: { size?: number }) => (
 )
 
 // Types
-type Screen = 'home' | 'login' | 'signup' | 'create' | 'join' | 'party' | 'tv' | 'history'
+type Screen = 'home' | 'login' | 'signup' | 'create' | 'join' | 'party' | 'tv' | 'history' | 'reset-password'
 type ContentType = 'youtube' | 'tweet' | 'reddit' | 'note'
 
 // Mock data for history screen (keeping as mock for MVP)
@@ -282,6 +283,12 @@ function HomeScreen({ onNavigate }: { onNavigate: (screen: Screen) => void }) {
 function LoginScreen({ onNavigate }: { onNavigate: (screen: Screen) => void }) {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [emailError, setEmailError] = useState<string | null>(null)
+  const [passwordError, setPasswordError] = useState<string | null>(null)
+  const [showForgotPassword, setShowForgotPassword] = useState(false)
+  const [resetEmailSent, setResetEmailSent] = useState(false)
 
   const handleGoogleSignIn = async () => {
     setIsLoading(true)
@@ -292,6 +299,130 @@ function LoginScreen({ onNavigate }: { onNavigate: (screen: Screen) => void }) {
       setError('Failed to sign in with Google')
       setIsLoading(false)
     }
+  }
+
+  const handleEmailSignIn = async () => {
+    setEmailError(null)
+    setPasswordError(null)
+    setError(null)
+
+    const emailValidation = validateEmail(email)
+    const passwordValidation = validatePassword(password)
+
+    if (!emailValidation.isValid) {
+      setEmailError(emailValidation.error || null)
+    }
+    if (!passwordValidation.isValid) {
+      setPasswordError(passwordValidation.error || null)
+    }
+
+    if (!emailValidation.isValid || !passwordValidation.isValid) {
+      return
+    }
+
+    setIsLoading(true)
+    const result = await signInWithEmail(email, password)
+    setIsLoading(false)
+
+    if (!result.success) {
+      setError(result.error || 'Failed to sign in')
+    }
+  }
+
+  const handleForgotPassword = async () => {
+    setEmailError(null)
+    setError(null)
+
+    const emailValidation = validateEmail(email)
+    if (!emailValidation.isValid) {
+      setEmailError(emailValidation.error || null)
+      return
+    }
+
+    setIsLoading(true)
+    const result = await resetPassword(email)
+    setIsLoading(false)
+
+    if (result.success) {
+      setResetEmailSent(true)
+    } else {
+      setError(result.error || 'Failed to send reset email')
+    }
+  }
+
+  if (showForgotPassword) {
+    return (
+      <div className="container-mobile bg-gradient-party flex flex-col px-6 py-8">
+        <button
+          onClick={() => {
+            setShowForgotPassword(false)
+            setResetEmailSent(false)
+          }}
+          className="btn-ghost p-2 -ml-2 w-fit rounded-full mb-8"
+          disabled={isLoading}
+        >
+          <ChevronLeftIcon />
+        </button>
+
+        <div className="flex-1 flex flex-col">
+          <h1 className="text-3xl font-bold mb-2 animate-fade-in-up opacity-0">
+            Reset password
+          </h1>
+          <p className="text-text-secondary mb-8 animate-fade-in-up opacity-0 delay-100">
+            Enter your email to receive a reset link
+          </p>
+
+          {resetEmailSent ? (
+            <div className="animate-fade-in-up opacity-0 delay-200">
+              <div className="bg-teal-500/10 border border-teal-500/30 rounded-xl p-4 text-center">
+                <p className="text-teal-400 font-medium mb-2">Check your email</p>
+                <p className="text-text-secondary text-sm">
+                  We've sent a password reset link to {email}
+                </p>
+              </div>
+              <button
+                onClick={() => {
+                  setShowForgotPassword(false)
+                  setResetEmailSent(false)
+                }}
+                className="btn btn-secondary w-full mt-6"
+              >
+                Back to Sign In
+              </button>
+            </div>
+          ) : (
+            <>
+              {error && (
+                <div className="text-red-400 text-sm text-center mb-4">{error}</div>
+              )}
+
+              <div className="space-y-4 animate-fade-in-up opacity-0 delay-200">
+                <div>
+                  <input
+                    type="email"
+                    placeholder="Email address"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className={`input ${emailError ? 'input-error' : ''}`}
+                    disabled={isLoading}
+                  />
+                  {emailError && (
+                    <p className="text-red-400 text-sm mt-1">{emailError}</p>
+                  )}
+                </div>
+                <button
+                  onClick={handleForgotPassword}
+                  className="btn btn-primary w-full"
+                  disabled={isLoading}
+                >
+                  {isLoading ? <LoaderIcon /> : 'Send Reset Link'}
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -341,30 +472,53 @@ function LoginScreen({ onNavigate }: { onNavigate: (screen: Screen) => void }) {
           <div className="flex-1 h-px bg-surface-700"></div>
         </div>
 
-        {/* Email form - placeholder for future */}
+        {/* Email form */}
         <div className="space-y-4 animate-fade-in-up opacity-0 delay-400">
-          <input
-            type="email"
-            placeholder="Email address"
-            className="input"
-            disabled={isLoading}
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            className="input"
-            disabled={isLoading}
-          />
+          <div>
+            <input
+              type="email"
+              placeholder="Email address"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className={`input ${emailError ? 'input-error' : ''}`}
+              disabled={isLoading}
+            />
+            {emailError && (
+              <p className="text-red-400 text-sm mt-1">{emailError}</p>
+            )}
+          </div>
+          <div>
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className={`input ${passwordError ? 'input-error' : ''}`}
+              disabled={isLoading}
+            />
+            {passwordError && (
+              <p className="text-red-400 text-sm mt-1">{passwordError}</p>
+            )}
+          </div>
           <button
-            onClick={() => onNavigate('home')}
+            onClick={handleEmailSignIn}
             className="btn btn-primary w-full"
             disabled={isLoading}
           >
-            Sign In
+            {isLoading ? <LoaderIcon /> : 'Sign In'}
           </button>
         </div>
 
-        <div className="mt-6 text-center animate-fade-in-up opacity-0 delay-500">
+        <div className="mt-4 text-center animate-fade-in-up opacity-0 delay-500">
+          <button
+            onClick={() => setShowForgotPassword(true)}
+            className="text-text-muted text-sm hover:text-text-secondary transition-colors"
+          >
+            Forgot password?
+          </button>
+        </div>
+
+        <div className="mt-4 text-center animate-fade-in-up opacity-0 delay-500">
           <button
             onClick={() => onNavigate('signup')}
             className="text-text-muted text-sm hover:text-text-secondary transition-colors"
@@ -380,6 +534,13 @@ function LoginScreen({ onNavigate }: { onNavigate: (screen: Screen) => void }) {
 function SignupScreen({ onNavigate }: { onNavigate: (screen: Screen) => void }) {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [displayName, setDisplayNameInput] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [nameError, setNameError] = useState<string | null>(null)
+  const [emailError, setEmailError] = useState<string | null>(null)
+  const [passwordError, setPasswordError] = useState<string | null>(null)
+  const [signupSuccess, setSignupSuccess] = useState(false)
 
   const handleGoogleSignIn = async () => {
     setIsLoading(true)
@@ -390,6 +551,68 @@ function SignupScreen({ onNavigate }: { onNavigate: (screen: Screen) => void }) 
       setError('Failed to sign in with Google')
       setIsLoading(false)
     }
+  }
+
+  const handleEmailSignUp = async () => {
+    setNameError(null)
+    setEmailError(null)
+    setPasswordError(null)
+    setError(null)
+
+    const nameValidation = validateDisplayName(displayName)
+    const emailValidation = validateEmail(email)
+    const passwordValidation = validatePassword(password)
+
+    if (!nameValidation.isValid) {
+      setNameError(nameValidation.error || null)
+    }
+    if (!emailValidation.isValid) {
+      setEmailError(emailValidation.error || null)
+    }
+    if (!passwordValidation.isValid) {
+      setPasswordError(passwordValidation.error || null)
+    }
+
+    if (!nameValidation.isValid || !emailValidation.isValid || !passwordValidation.isValid) {
+      return
+    }
+
+    setIsLoading(true)
+    const result = await signUpWithEmail(email, password, displayName.trim())
+    setIsLoading(false)
+
+    if (result.success && result.needsConfirmation) {
+      setSignupSuccess(true)
+    } else if (!result.success) {
+      setError(result.error || 'Failed to create account')
+    }
+  }
+
+  if (signupSuccess) {
+    return (
+      <div className="container-mobile bg-gradient-party flex flex-col px-6 py-8">
+        <div className="flex-1 flex flex-col items-center justify-center text-center">
+          <div className="animate-fade-in-up opacity-0">
+            <div className="w-16 h-16 rounded-full bg-teal-500/20 flex items-center justify-center mx-auto mb-6">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-teal-400">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                <polyline points="22 4 12 14.01 9 11.01"/>
+              </svg>
+            </div>
+            <h1 className="text-3xl font-bold mb-4">Check your email</h1>
+            <p className="text-text-secondary mb-8">
+              We've sent a confirmation link to <span className="text-text-primary">{email}</span>. Click the link to activate your account.
+            </p>
+            <button
+              onClick={() => onNavigate('login')}
+              className="btn btn-primary"
+            >
+              Go to Sign In
+            </button>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -437,26 +660,187 @@ function SignupScreen({ onNavigate }: { onNavigate: (screen: Screen) => void }) 
           <div className="flex-1 h-px bg-surface-700"></div>
         </div>
 
-        {/* Email form - placeholder for future */}
+        {/* Email form */}
         <div className="space-y-4 animate-fade-in-up opacity-0 delay-400">
-          <input type="text" placeholder="Display name" className="input" disabled={isLoading} />
-          <input type="email" placeholder="Email address" className="input" disabled={isLoading} />
-          <input type="password" placeholder="Password" className="input" disabled={isLoading} />
+          <div>
+            <input
+              type="text"
+              placeholder="Display name"
+              value={displayName}
+              onChange={(e) => setDisplayNameInput(e.target.value)}
+              className={`input ${nameError ? 'input-error' : ''}`}
+              disabled={isLoading}
+            />
+            {nameError && (
+              <p className="text-red-400 text-sm mt-1">{nameError}</p>
+            )}
+          </div>
+          <div>
+            <input
+              type="email"
+              placeholder="Email address"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className={`input ${emailError ? 'input-error' : ''}`}
+              disabled={isLoading}
+            />
+            {emailError && (
+              <p className="text-red-400 text-sm mt-1">{emailError}</p>
+            )}
+          </div>
+          <div>
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className={`input ${passwordError ? 'input-error' : ''}`}
+              disabled={isLoading}
+            />
+            {passwordError && (
+              <p className="text-red-400 text-sm mt-1">{passwordError}</p>
+            )}
+          </div>
           <button
-            onClick={() => onNavigate('home')}
+            onClick={handleEmailSignUp}
             className="btn btn-primary w-full"
             disabled={isLoading}
           >
-            Create Account
+            {isLoading ? <LoaderIcon /> : 'Create Account'}
           </button>
         </div>
 
         <div className="mt-6 text-center animate-fade-in-up opacity-0 delay-500">
           <button
             onClick={() => onNavigate('login')}
-            className="text-text-muted text-sm"
+            className="text-text-muted text-sm hover:text-text-secondary transition-colors"
           >
             Already have an account? <span className="text-accent-400">Sign in</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function ResetPasswordScreen({ onNavigate }: { onNavigate: (screen: Screen) => void }) {
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [newPassword, setNewPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [passwordError, setPasswordError] = useState<string | null>(null)
+  const [confirmError, setConfirmError] = useState<string | null>(null)
+  const [resetSuccess, setResetSuccess] = useState(false)
+
+  const handleUpdatePassword = async () => {
+    setPasswordError(null)
+    setConfirmError(null)
+    setError(null)
+
+    const passwordValidation = validatePassword(newPassword)
+    if (!passwordValidation.isValid) {
+      setPasswordError(passwordValidation.error || null)
+      return
+    }
+
+    if (newPassword !== confirmPassword) {
+      setConfirmError('Passwords do not match')
+      return
+    }
+
+    setIsLoading(true)
+    const result = await updatePassword(newPassword)
+    setIsLoading(false)
+
+    if (result.success) {
+      setResetSuccess(true)
+    } else {
+      setError(result.error || 'Failed to update password')
+    }
+  }
+
+  if (resetSuccess) {
+    return (
+      <div className="container-mobile bg-gradient-party flex flex-col px-6 py-8">
+        <div className="flex-1 flex flex-col items-center justify-center text-center">
+          <div className="animate-fade-in-up opacity-0">
+            <div className="w-16 h-16 rounded-full bg-teal-500/20 flex items-center justify-center mx-auto mb-6">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-teal-400">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                <polyline points="22 4 12 14.01 9 11.01"/>
+              </svg>
+            </div>
+            <h1 className="text-3xl font-bold mb-4">Password updated</h1>
+            <p className="text-text-secondary mb-8">
+              Your password has been successfully updated. You can now sign in with your new password.
+            </p>
+            <button
+              onClick={() => onNavigate('login')}
+              className="btn btn-primary"
+            >
+              Go to Sign In
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="container-mobile bg-gradient-party flex flex-col px-6 py-8">
+      <button
+        onClick={() => onNavigate('login')}
+        className="btn-ghost p-2 -ml-2 w-fit rounded-full mb-8"
+        disabled={isLoading}
+      >
+        <ChevronLeftIcon />
+      </button>
+
+      <div className="flex-1 flex flex-col">
+        <h1 className="text-3xl font-bold mb-2 animate-fade-in-up opacity-0">
+          Set new password
+        </h1>
+        <p className="text-text-secondary mb-8 animate-fade-in-up opacity-0 delay-100">
+          Enter your new password below
+        </p>
+
+        {error && (
+          <div className="text-red-400 text-sm text-center mb-4">{error}</div>
+        )}
+
+        <div className="space-y-4 animate-fade-in-up opacity-0 delay-200">
+          <div>
+            <input
+              type="password"
+              placeholder="New password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              className={`input ${passwordError ? 'input-error' : ''}`}
+              disabled={isLoading}
+            />
+            {passwordError && (
+              <p className="text-red-400 text-sm mt-1">{passwordError}</p>
+            )}
+          </div>
+          <div>
+            <input
+              type="password"
+              placeholder="Confirm new password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className={`input ${confirmError ? 'input-error' : ''}`}
+              disabled={isLoading}
+            />
+            {confirmError && (
+              <p className="text-red-400 text-sm mt-1">{confirmError}</p>
+            )}
+          </div>
+          <button
+            onClick={handleUpdatePassword}
+            className="btn btn-primary w-full"
+            disabled={isLoading}
+          >
+            {isLoading ? <LoaderIcon /> : 'Update Password'}
           </button>
         </div>
       </div>
@@ -2079,6 +2463,11 @@ function HistoryScreen({ onNavigate }: { onNavigate: (screen: Screen) => void })
 function AppContent() {
   // Use lazy initialization to restore state from localStorage
   const [currentScreen, setCurrentScreen] = useState<Screen>(() => {
+    // Check for password reset URL parameter (Supabase sends type=recovery)
+    const hash = window.location.hash
+    if (hash.includes('type=recovery')) {
+      return 'reset-password'
+    }
     const savedParty = getCurrentParty()
     return savedParty ? 'party' : 'home'
   })
@@ -2091,6 +2480,16 @@ function AppContent() {
     return savedParty?.partyCode ?? null
   })
   const { isLoading: authLoading } = useAuth()
+
+  // Handle password reset redirect from email link
+  useEffect(() => {
+    const hash = window.location.hash
+    if (hash.includes('type=recovery')) {
+      setCurrentScreen('reset-password')
+      // Clean up the URL hash after detecting recovery
+      window.history.replaceState(null, '', window.location.pathname)
+    }
+  }, [])
 
   const handlePartyCreated = (partyId: string, partyCode: string) => {
     setCurrentPartyId(partyId)
@@ -2146,6 +2545,7 @@ function AppContent() {
       <HomeScreen onNavigate={setCurrentScreen} />
     ),
     history: <HistoryScreen onNavigate={setCurrentScreen} />,
+    'reset-password': <ResetPasswordScreen onNavigate={setCurrentScreen} />,
   }
 
   return screens[currentScreen]
