@@ -198,6 +198,15 @@ body {
   color: var(--color-text-muted);
 }
 
+.input-error {
+  border-color: #f87171;
+}
+
+.input-error:focus {
+  border-color: #f87171;
+  box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.15);
+}
+
 /* Card styles */
 .card {
   background: var(--color-surface-900);

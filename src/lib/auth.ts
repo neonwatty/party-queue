@@ -49,3 +49,96 @@ export function onAuthStateChange(callback: (session: Session | null) => void) {
 
   return subscription
 }
+
+export interface AuthResult {
+  success: boolean
+  error?: string
+  needsConfirmation?: boolean
+}
+
+function mapSupabaseError(error: { message: string; code?: string }): string {
+  const code = error.code || ''
+  const message = error.message.toLowerCase()
+
+  if (code === 'invalid_credentials' || message.includes('invalid login credentials')) {
+    return 'Invalid email or password'
+  }
+  if (code === 'email_not_confirmed' || message.includes('email not confirmed')) {
+    return 'Please check your email to confirm your account'
+  }
+  if (code === 'user_already_exists' || message.includes('user already registered')) {
+    return 'An account with this email already exists'
+  }
+  if (code === 'weak_password' || message.includes('password')) {
+    return 'Password must be at least 8 characters'
+  }
+
+  return 'Something went wrong. Please try again.'
+}
+
+export async function signUpWithEmail(
+  email: string,
+  password: string,
+  displayName?: string
+): Promise<AuthResult> {
+  const { error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: {
+        display_name: displayName,
+      },
+      emailRedirectTo: `${window.location.origin}`,
+    },
+  })
+
+  if (error) {
+    console.error('Email sign up error:', error)
+    return { success: false, error: mapSupabaseError(error) }
+  }
+
+  return { success: true, needsConfirmation: true }
+}
+
+export async function signInWithEmail(
+  email: string,
+  password: string
+): Promise<AuthResult> {
+  const { error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  })
+
+  if (error) {
+    console.error('Email sign in error:', error)
+    return { success: false, error: mapSupabaseError(error) }
+  }
+
+  return { success: true }
+}
+
+export async function resetPassword(email: string): Promise<AuthResult> {
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${window.location.origin}`,
+  })
+
+  if (error) {
+    console.error('Password reset error:', error)
+    return { success: false, error: mapSupabaseError(error) }
+  }
+
+  return { success: true }
+}
+
+export async function updatePassword(newPassword: string): Promise<AuthResult> {
+  const { error } = await supabase.auth.updateUser({
+    password: newPassword,
+  })
+
+  if (error) {
+    console.error('Update password error:', error)
+    return { success: false, error: mapSupabaseError(error) }
+  }
+
+  return { success: true }
+}
