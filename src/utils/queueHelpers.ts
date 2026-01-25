@@ -7,11 +7,13 @@ export function getQueueItemTitle(item: QueueItem): string {
     case 'youtube':
       return item.title || 'Untitled Video'
     case 'tweet':
-      return item.tweetContent?.slice(0, 60) + (item.tweetContent && item.tweetContent.length > 60 ? '...' : '') || 'Tweet'
+      if (!item.tweetContent) return 'Tweet'
+      return item.tweetContent.slice(0, 60) + (item.tweetContent.length > 60 ? '...' : '')
     case 'reddit':
       return item.redditTitle || 'Reddit Post'
     case 'note':
-      return item.noteContent?.slice(0, 60) + (item.noteContent && item.noteContent.length > 60 ? '...' : '') || 'Note'
+      if (!item.noteContent) return 'Note'
+      return item.noteContent.slice(0, 60) + (item.noteContent.length > 60 ? '...' : '')
   }
 }
 
