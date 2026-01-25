@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
 import {
   supabase,
@@ -16,210 +16,39 @@ import type { QueueItem } from './hooks/useParty'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
 import { signInWithGoogle, signInWithEmail, signUpWithEmail, resetPassword, updatePassword } from './lib/auth'
 import { validateEmail, validatePassword, validateDisplayName } from './lib/validation'
-
-// Icons as simple SVG components
-const PlayIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M8 5v14l11-7z"/>
-  </svg>
-)
-
-const SkipIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
-  </svg>
-)
-
-const PlusIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <line x1="12" y1="5" x2="12" y2="19"/>
-    <line x1="5" y1="12" x2="19" y2="12"/>
-  </svg>
-)
-
-const UsersIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-    <circle cx="9" cy="7" r="4"/>
-    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-  </svg>
-)
-
-const TvIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <rect x="2" y="7" width="20" height="15" rx="2" ry="2"/>
-    <polyline points="17 2 12 7 7 2"/>
-  </svg>
-)
-
-const HistoryIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <circle cx="12" cy="12" r="10"/>
-    <polyline points="12 6 12 12 16 14"/>
-  </svg>
-)
-
-const ChevronLeftIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <polyline points="15 18 9 12 15 6"/>
-  </svg>
-)
-
-const ShareIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <circle cx="18" cy="5" r="3"/>
-    <circle cx="6" cy="12" r="3"/>
-    <circle cx="18" cy="19" r="3"/>
-    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
-    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
-  </svg>
-)
-
-const DragIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" opacity="0.4">
-    <circle cx="9" cy="6" r="2"/>
-    <circle cx="15" cy="6" r="2"/>
-    <circle cx="9" cy="12" r="2"/>
-    <circle cx="15" cy="12" r="2"/>
-    <circle cx="9" cy="18" r="2"/>
-    <circle cx="15" cy="18" r="2"/>
-  </svg>
-)
-
-const TrashIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <polyline points="3 6 5 6 21 6"/>
-    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-  </svg>
-)
-
-const ArrowUpIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <line x1="12" y1="19" x2="12" y2="5"/>
-    <polyline points="5 12 12 5 19 12"/>
-  </svg>
-)
-
-const ArrowDownIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <line x1="12" y1="5" x2="12" y2="19"/>
-    <polyline points="19 12 12 19 5 12"/>
-  </svg>
-)
-
-const PlayNextIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <polygon points="5 3 19 12 5 21 5 3"/>
-    <line x1="19" y1="5" x2="19" y2="19"/>
-  </svg>
-)
-
-const CloseIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <line x1="18" y1="6" x2="6" y2="18"/>
-    <line x1="6" y1="6" x2="18" y2="18"/>
-  </svg>
-)
-
-const CheckIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <polyline points="20 6 9 17 4 12"/>
-  </svg>
-)
-
-const LoaderIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="animate-spin">
-    <circle cx="12" cy="12" r="10" strokeOpacity="0.25"/>
-    <path d="M12 2a10 10 0 0 1 10 10" strokeLinecap="round"/>
-  </svg>
-)
-
-const EditIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-  </svg>
-)
-
-// Content type icons
-const YoutubeIcon = ({ size = 16 }: { size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
-    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-  </svg>
-)
-
-const TwitterIcon = ({ size = 16 }: { size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
-    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-  </svg>
-)
-
-const RedditIcon = ({ size = 16 }: { size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
-    <path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/>
-  </svg>
-)
-
-const NoteIcon = ({ size = 16 }: { size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-    <polyline points="14 2 14 8 20 8"/>
-    <line x1="16" y1="13" x2="8" y2="13"/>
-    <line x1="16" y1="17" x2="8" y2="17"/>
-    <polyline points="10 9 9 9 8 9"/>
-  </svg>
-)
-
-const LinkIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
-    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
-  </svg>
-)
-
-const CalendarIcon = ({ size = 16 }: { size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-    <line x1="16" y1="2" x2="16" y2="6"/>
-    <line x1="8" y1="2" x2="8" y2="6"/>
-    <line x1="3" y1="10" x2="21" y2="10"/>
-  </svg>
-)
-
-const CheckCircleIcon = ({ size = 16, filled = false }: { size?: number; filled?: boolean }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill={filled ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2">
-    <circle cx="12" cy="12" r="10"/>
-    {filled && <polyline points="9 12 12 15 16 10" stroke="white" strokeWidth="2" fill="none"/>}
-  </svg>
-)
-
-const AlertIcon = ({ size = 16 }: { size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <circle cx="12" cy="12" r="10"/>
-    <line x1="12" y1="8" x2="12" y2="12"/>
-    <line x1="12" y1="16" x2="12.01" y2="16"/>
-  </svg>
-)
-
-const ClockIcon = ({ size = 16 }: { size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <circle cx="12" cy="12" r="10"/>
-    <polyline points="12 6 12 12 16 14"/>
-  </svg>
-)
-
-// Types
-type Screen = 'home' | 'login' | 'signup' | 'create' | 'join' | 'party' | 'tv' | 'history' | 'reset-password'
-type ContentType = 'youtube' | 'tweet' | 'reddit' | 'note'
-
-// Mock data for history screen (keeping as mock for MVP)
-const mockPastParties = [
-  { id: '1', name: 'Game Night', date: 'Jan 10, 2025', members: 6, items: 24 },
-  { id: '2', name: 'New Years Eve', date: 'Dec 31, 2024', members: 12, items: 45 },
-  { id: '3', name: 'Movie Club', date: 'Dec 28, 2024', members: 4, items: 8 },
-  { id: '4', name: 'Thanksgiving', date: 'Nov 28, 2024', members: 8, items: 31 },
-]
+import { fetchContentMetadata, type ContentMetadataResponse } from './lib/contentMetadata'
+import type { Screen, ContentType, AddContentStep } from './types'
+import { detectContentType, getContentTypeBadge } from './utils/contentHelpers'
+import { getQueueItemTitle, getQueueItemSubtitle } from './utils/queueHelpers'
+import { isItemOverdue } from './utils/dateHelpers'
+import {
+  PlayIcon,
+  SkipIcon,
+  PlusIcon,
+  EditIcon,
+  TrashIcon,
+  DragIcon,
+  ArrowUpIcon,
+  ArrowDownIcon,
+  PlayNextIcon,
+  ShareIcon,
+  ChevronLeftIcon,
+  CloseIcon,
+  YoutubeIcon,
+  TwitterIcon,
+  RedditIcon,
+  NoteIcon,
+  LinkIcon,
+  CheckIcon,
+  CheckCircleIcon,
+  LoaderIcon,
+  AlertIcon,
+  ClockIcon,
+  CalendarIcon,
+  UsersIcon,
+  TvIcon,
+  HistoryIcon,
+} from './components/icons'
 
 // Components
 
@@ -1022,10 +851,11 @@ function CreatePartyScreen({ onNavigate, onPartyCreated }: CreatePartyScreenProp
 interface JoinPartyScreenProps {
   onNavigate: (screen: Screen) => void
   onPartyJoined: (partyId: string, partyCode: string) => void
+  initialCode?: string
 }
 
-function JoinPartyScreen({ onNavigate, onPartyJoined }: JoinPartyScreenProps) {
-  const [code, setCode] = useState('')
+function JoinPartyScreen({ onNavigate, onPartyJoined, initialCode = '' }: JoinPartyScreenProps) {
+  const [code, setCode] = useState(initialCode)
   const [displayName, setDisplayNameInput] = useState(getDisplayName() || '')
   const [isJoining, setIsJoining] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -1173,95 +1003,6 @@ function JoinPartyScreen({ onNavigate, onPartyJoined }: JoinPartyScreenProps) {
   )
 }
 
-// Add Content Modal States
-type AddContentStep = 'input' | 'loading' | 'preview' | 'success' | 'note'
-
-// Helper to detect content type from URL
-function detectContentType(url: string): ContentType | null {
-  const lowerUrl = url.toLowerCase()
-  if (lowerUrl.includes('youtube.com') || lowerUrl.includes('youtu.be')) return 'youtube'
-  if (lowerUrl.includes('twitter.com') || lowerUrl.includes('x.com')) return 'tweet'
-  if (lowerUrl.includes('reddit.com')) return 'reddit'
-  return null
-}
-
-// Helper to get content type badge info
-function getContentTypeBadge(type: ContentType) {
-  switch (type) {
-    case 'youtube':
-      return { icon: YoutubeIcon, color: 'text-red-500', bg: 'bg-red-500/20' }
-    case 'tweet':
-      return { icon: TwitterIcon, color: 'text-blue-400', bg: 'bg-blue-400/20' }
-    case 'reddit':
-      return { icon: RedditIcon, color: 'text-orange-500', bg: 'bg-orange-500/20' }
-    case 'note':
-      return { icon: NoteIcon, color: 'text-gray-400', bg: 'bg-gray-400/20' }
-  }
-}
-
-// Helper to get display title for queue item
-function getQueueItemTitle(item: QueueItem): string {
-  switch (item.type) {
-    case 'youtube':
-      return item.title || 'Untitled Video'
-    case 'tweet':
-      return item.tweetContent?.slice(0, 60) + (item.tweetContent && item.tweetContent.length > 60 ? '...' : '') || 'Tweet'
-    case 'reddit':
-      return item.redditTitle || 'Reddit Post'
-    case 'note':
-      return item.noteContent?.slice(0, 60) + (item.noteContent && item.noteContent.length > 60 ? '...' : '') || 'Note'
-  }
-}
-
-// Helper to check if an item is overdue
-function isItemOverdue(item: QueueItem): boolean {
-  if (!item.dueDate || item.isCompleted) return false
-  return new Date(item.dueDate) < new Date()
-}
-
-// Helper to format due date
-function formatDueDate(dueDate: string): string {
-  const date = new Date(dueDate)
-  const now = new Date()
-  const diffMs = date.getTime() - now.getTime()
-  const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24))
-
-  if (diffDays < 0) {
-    return `${Math.abs(diffDays)} day${Math.abs(diffDays) !== 1 ? 's' : ''} overdue`
-  } else if (diffDays === 0) {
-    return 'Due today'
-  } else if (diffDays === 1) {
-    return 'Due tomorrow'
-  } else if (diffDays <= 7) {
-    return `Due in ${diffDays} days`
-  } else {
-    return `Due ${date.toLocaleDateString()}`
-  }
-}
-
-// Helper to get subtitle for queue item
-function getQueueItemSubtitle(item: QueueItem): string {
-  const baseSubtitle = (() => {
-    switch (item.type) {
-      case 'youtube':
-        return `${item.duration || ''} · Added by ${item.addedBy}`
-      case 'tweet':
-        return `${item.tweetAuthor} · Added by ${item.addedBy}`
-      case 'reddit':
-        return `${item.subreddit} · Added by ${item.addedBy}`
-      case 'note':
-        if (item.isCompleted) {
-          return `Completed · Added by ${item.addedBy}`
-        }
-        if (item.dueDate) {
-          return `${formatDueDate(item.dueDate)} · Added by ${item.addedBy}`
-        }
-        return `Added by ${item.addedBy}`
-    }
-  })()
-  return baseSubtitle
-}
-
 interface PartyRoomScreenProps {
   onNavigate: (screen: Screen) => void
   partyId: string
@@ -1290,6 +1031,8 @@ function PartyRoomScreen({ onNavigate, partyId, partyCode, onLeaveParty }: Party
   const [noteText, setNoteText] = useState('')
   const [noteDueDate, setNoteDueDate] = useState<string>('')
   const [detectedType, setDetectedType] = useState<ContentType | null>(null)
+  const [fetchedPreview, setFetchedPreview] = useState<ContentMetadataResponse['data'] | null>(null)
+  const [fetchError, setFetchError] = useState<string | null>(null)
   const [selectedItem, setSelectedItem] = useState<QueueItem | null>(null)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   // Note editing state
@@ -1299,6 +1042,8 @@ function PartyRoomScreen({ onNavigate, partyId, partyCode, onLeaveParty }: Party
   // Note viewing state
   const [showViewNote, setShowViewNote] = useState(false)
   const [viewingNote, setViewingNote] = useState<QueueItem | null>(null)
+  // Share/copy feedback state
+  const [showCopied, setShowCopied] = useState(false)
 
   const sessionId = getSessionId()
   const currentUserDisplayName = getDisplayName() || 'You'
@@ -1307,43 +1052,32 @@ function PartyRoomScreen({ onNavigate, partyId, partyCode, onLeaveParty }: Party
   const currentItem = queue.find(v => v.status === 'showing')
   const pendingItems = queue.filter(v => v.status === 'pending')
 
-  // Simulated preview data for different content types
-  const previewData: Record<ContentType, Partial<QueueItem>> = {
-    youtube: {
-      type: 'youtube',
-      title: 'How to Make Perfect Homemade Pizza',
-      channel: 'Joshua Weissman',
-      duration: '18:42',
-      thumbnail: 'https://picsum.photos/seed/pizza/320/180',
-    },
-    tweet: {
-      type: 'tweet',
-      tweetAuthor: 'Tech News',
-      tweetHandle: '@technews',
-      tweetContent: 'Breaking: New AI model achieves human-level performance on complex reasoning tasks.',
-      tweetTimestamp: 'Just now',
-    },
-    reddit: {
-      type: 'reddit',
-      subreddit: 'r/programming',
-      redditTitle: 'TIL about a programming technique that changed how I write code',
-      redditBody: 'I recently discovered functional composition and it has completely transformed my approach to software development...',
-      upvotes: 5420,
-      commentCount: 342,
-    },
-    note: {
-      type: 'note',
-      noteContent: noteText,
-    },
-  }
-
-  const handleUrlSubmit = () => {
+  // Handle URL submission - fetch real metadata
+  const handleUrlSubmit = async () => {
     const type = detectContentType(contentUrl)
-    if (type) {
-      setDetectedType(type)
-      setAddContentStep('loading')
-      // Simulate API call
-      setTimeout(() => setAddContentStep('preview'), 1500)
+    if (!type) return
+
+    setDetectedType(type)
+    setAddContentStep('loading')
+    setFetchError(null)
+
+    try {
+      const result = await fetchContentMetadata(contentUrl)
+
+      if (result.success && result.data) {
+        setFetchedPreview(result.data)
+        setAddContentStep('preview')
+      } else {
+        setFetchError(result.error || 'Failed to fetch content')
+        // Still show preview with limited data
+        setFetchedPreview(null)
+        setAddContentStep('preview')
+      }
+    } catch (err) {
+      console.error('Metadata fetch error:', err)
+      setFetchError(err instanceof Error ? err.message : 'Failed to fetch content')
+      setFetchedPreview(null)
+      setAddContentStep('preview')
     }
   }
 
@@ -1356,16 +1090,38 @@ function PartyRoomScreen({ onNavigate, partyId, partyCode, onLeaveParty }: Party
     // Then do async work
     const doAddToQueue = async () => {
       try {
-        const preview = detectedType === 'note'
-          ? { noteContent: noteText, dueDate: noteDueDate || undefined }
-          : previewData[detectedType]
+        let queueItemData: Partial<QueueItem>
+
+        if (detectedType === 'note') {
+          queueItemData = { noteContent: noteText, dueDate: noteDueDate || undefined }
+        } else if (fetchedPreview) {
+          // Map fetched preview data to queue item fields
+          queueItemData = {
+            title: fetchedPreview.title,
+            channel: fetchedPreview.channel,
+            duration: fetchedPreview.duration,
+            thumbnail: fetchedPreview.thumbnail,
+            tweetAuthor: fetchedPreview.tweetAuthor,
+            tweetHandle: fetchedPreview.tweetHandle,
+            tweetContent: fetchedPreview.tweetContent,
+            tweetTimestamp: fetchedPreview.tweetTimestamp,
+            subreddit: fetchedPreview.subreddit,
+            redditTitle: fetchedPreview.redditTitle,
+            redditBody: fetchedPreview.redditBody,
+            upvotes: fetchedPreview.upvotes,
+            commentCount: fetchedPreview.commentCount,
+          }
+        } else {
+          // Fallback if no preview data
+          queueItemData = {}
+        }
 
         await addToQueue({
           type: detectedType,
           status: queue.length === 0 ? 'showing' : 'pending',
           addedBy: currentUserDisplayName,
           isCompleted: false,
-          ...preview,
+          ...queueItemData,
         })
       } catch (err) {
         console.error('Failed to add to queue:', err)
@@ -1381,6 +1137,8 @@ function PartyRoomScreen({ onNavigate, partyId, partyCode, onLeaveParty }: Party
       setNoteText('')
       setNoteDueDate('')
       setDetectedType(null)
+      setFetchedPreview(null)
+      setFetchError(null)
     }, 1500)
   }
 
@@ -1467,6 +1225,37 @@ function PartyRoomScreen({ onNavigate, partyId, partyCode, onLeaveParty }: Party
     onLeaveParty()
   }
 
+  const handleShare = async () => {
+    const shareUrl = `${window.location.origin}?join=${partyCode}`
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `Join ${partyInfo?.name || 'Party'}`,
+          text: `Join my Link Party with code ${partyCode}`,
+          url: shareUrl,
+        })
+      } catch (err) {
+        // User cancelled or share failed, fall back to clipboard
+        if ((err as Error).name !== 'AbortError') {
+          await copyToClipboard(shareUrl)
+        }
+      }
+    } else {
+      await copyToClipboard(shareUrl)
+    }
+  }
+
+  const copyToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text)
+      setShowCopied(true)
+      setTimeout(() => setShowCopied(false), 2000)
+    } catch (err) {
+      console.error('Failed to copy:', err)
+    }
+  }
+
   if (isLoading) {
     return (
       <div className="container-mobile bg-surface-950 flex flex-col items-center justify-center">
@@ -1498,7 +1287,11 @@ function PartyRoomScreen({ onNavigate, partyId, partyCode, onLeaveParty }: Party
           >
             <TvIcon />
           </button>
-          <button className="btn-ghost icon-btn rounded-full">
+          <button
+            onClick={handleShare}
+            className="btn-ghost icon-btn rounded-full"
+            title="Share Party"
+          >
             <ShareIcon />
           </button>
         </div>
@@ -1860,32 +1653,46 @@ function PartyRoomScreen({ onNavigate, partyId, partyCode, onLeaveParty }: Party
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-xl font-bold">Add to queue?</h3>
                   <button
-                    onClick={() => { setAddContentStep('input'); setContentUrl(''); setNoteText(''); setDetectedType(null); }}
+                    onClick={() => { setAddContentStep('input'); setContentUrl(''); setNoteText(''); setDetectedType(null); setFetchedPreview(null); setFetchError(null); }}
                     className="text-text-muted"
                   >
                     <CloseIcon />
                   </button>
                 </div>
 
+                {/* Error message if fetch failed */}
+                {fetchError && (
+                  <div className="card p-3 mb-4 border-yellow-500/50 bg-yellow-500/10">
+                    <p className="text-yellow-500 text-sm">{fetchError}</p>
+                    <p className="text-text-muted text-xs mt-1">Content will be added with limited preview</p>
+                  </div>
+                )}
+
                 {/* Preview Card - Different for each type */}
                 <div className="card p-3 mb-4">
                   {detectedType === 'youtube' && (
                     <div className="flex gap-3">
-                      <div className="w-32 h-18 rounded-lg overflow-hidden bg-surface-800 flex-shrink-0">
-                        <img
-                          src={previewData.youtube.thumbnail}
-                          alt={previewData.youtube.title}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
+                      {fetchedPreview?.thumbnail && (
+                        <div className="w-32 h-18 rounded-lg overflow-hidden bg-surface-800 flex-shrink-0">
+                          <img
+                            src={fetchedPreview.thumbnail}
+                            alt={fetchedPreview.title || 'YouTube video'}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      )}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-1 mb-1">
                           <YoutubeIcon size={12} />
                           <span className="text-red-500 text-xs">YouTube</span>
                         </div>
-                        <div className="font-medium text-sm line-clamp-2">{previewData.youtube.title}</div>
-                        <div className="text-text-muted text-xs mt-1">{previewData.youtube.channel}</div>
-                        <div className="text-text-muted text-xs mt-1 font-mono">{previewData.youtube.duration}</div>
+                        <div className="font-medium text-sm line-clamp-2">{fetchedPreview?.title || 'YouTube Video'}</div>
+                        {fetchedPreview?.channel && (
+                          <div className="text-text-muted text-xs mt-1">{fetchedPreview.channel}</div>
+                        )}
+                        {fetchedPreview?.duration && (
+                          <div className="text-text-muted text-xs mt-1 font-mono">{fetchedPreview.duration}</div>
+                        )}
                       </div>
                     </div>
                   )}
@@ -1897,11 +1704,15 @@ function PartyRoomScreen({ onNavigate, partyId, partyCode, onLeaveParty }: Party
                           <TwitterIcon size={16} />
                         </div>
                         <div>
-                          <div className="font-medium text-sm">{previewData.tweet.tweetAuthor}</div>
-                          <div className="text-text-muted text-xs">{previewData.tweet.tweetHandle}</div>
+                          <div className="font-medium text-sm">{fetchedPreview?.tweetAuthor || 'Twitter User'}</div>
+                          {fetchedPreview?.tweetHandle && (
+                            <div className="text-text-muted text-xs">{fetchedPreview.tweetHandle}</div>
+                          )}
                         </div>
                       </div>
-                      <p className="text-sm">{previewData.tweet.tweetContent}</p>
+                      {fetchedPreview?.tweetContent && (
+                        <p className="text-sm">{fetchedPreview.tweetContent}</p>
+                      )}
                     </div>
                   )}
 
@@ -1909,10 +1720,12 @@ function PartyRoomScreen({ onNavigate, partyId, partyCode, onLeaveParty }: Party
                     <div>
                       <div className="flex items-center gap-2 mb-2">
                         <span className="text-orange-500"><RedditIcon size={16} /></span>
-                        <span className="text-orange-500 text-sm">{previewData.reddit.subreddit}</span>
+                        <span className="text-orange-500 text-sm">{fetchedPreview?.subreddit || 'Reddit'}</span>
                       </div>
-                      <div className="font-medium text-sm mb-1">{previewData.reddit.redditTitle}</div>
-                      <p className="text-text-muted text-xs line-clamp-2">{previewData.reddit.redditBody}</p>
+                      <div className="font-medium text-sm mb-1">{fetchedPreview?.redditTitle || 'Reddit Post'}</div>
+                      {fetchedPreview?.redditBody && (
+                        <p className="text-text-muted text-xs line-clamp-2">{fetchedPreview.redditBody}</p>
+                      )}
                     </div>
                   )}
 
@@ -1933,8 +1746,8 @@ function PartyRoomScreen({ onNavigate, partyId, partyCode, onLeaveParty }: Party
 
                 <div className="flex gap-3 pb-2">
                   <button
-                    onClick={() => { setAddContentStep('input'); setContentUrl(''); setNoteText(''); setDetectedType(null); }}
-                    onTouchEnd={(e) => { e.stopPropagation(); e.preventDefault(); setAddContentStep('input'); setContentUrl(''); setNoteText(''); setDetectedType(null); }}
+                    onClick={() => { setAddContentStep('input'); setContentUrl(''); setNoteText(''); setDetectedType(null); setFetchedPreview(null); setFetchError(null); }}
+                    onTouchEnd={(e) => { e.stopPropagation(); e.preventDefault(); setAddContentStep('input'); setContentUrl(''); setNoteText(''); setDetectedType(null); setFetchedPreview(null); setFetchError(null); }}
                     className="btn btn-secondary flex-1 min-h-[52px]"
                   >
                     Cancel
@@ -2039,18 +1852,20 @@ function PartyRoomScreen({ onNavigate, partyId, partyCode, onLeaveParty }: Party
                     </div>
                   </button>
 
-                  <button
-                    onClick={() => handleOpenEditNote(selectedItem)}
-                    className="w-full flex items-center gap-4 p-3 rounded-xl hover:bg-surface-800 transition-colors text-left"
-                  >
-                    <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400">
-                      <EditIcon />
-                    </div>
-                    <div>
-                      <div className="font-medium">Edit Note</div>
-                      <div className="text-text-muted text-xs">Modify note content</div>
-                    </div>
-                  </button>
+                  {selectedItem.addedBySessionId === sessionId && (
+                    <button
+                      onClick={() => handleOpenEditNote(selectedItem)}
+                      className="w-full flex items-center gap-4 p-3 rounded-xl hover:bg-surface-800 transition-colors text-left"
+                    >
+                      <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400">
+                        <EditIcon />
+                      </div>
+                      <div>
+                        <div className="font-medium">Edit Note</div>
+                        <div className="text-text-muted text-xs">Modify note content</div>
+                      </div>
+                    </button>
+                  )}
 
                   <div className="h-px bg-surface-700 my-2"></div>
                 </>
@@ -2184,17 +1999,19 @@ function PartyRoomScreen({ onNavigate, partyId, partyCode, onLeaveParty }: Party
             </div>
 
             <div className="flex gap-3 mt-4">
-              <button
-                onClick={() => {
-                  setShowViewNote(false)
-                  setViewingNote(null)
-                  handleOpenEditNote(viewingNote)
-                }}
-                className="btn btn-secondary flex-1 flex items-center justify-center gap-2"
-              >
-                <EditIcon />
-                Edit
-              </button>
+              {viewingNote.addedBySessionId === sessionId && (
+                <button
+                  onClick={() => {
+                    setShowViewNote(false)
+                    setViewingNote(null)
+                    handleOpenEditNote(viewingNote)
+                  }}
+                  className="btn btn-secondary flex-1 flex items-center justify-center gap-2"
+                >
+                  <EditIcon />
+                  Edit
+                </button>
+              )}
               <button
                 onClick={() => { setShowViewNote(false); setViewingNote(null); }}
                 className="btn btn-primary flex-1"
@@ -2252,6 +2069,13 @@ function PartyRoomScreen({ onNavigate, partyId, partyCode, onLeaveParty }: Party
               </button>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Share toast notification */}
+      {showCopied && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-surface-800 text-white px-4 py-2 rounded-full shadow-lg z-50 animate-fade-in">
+          Party link copied!
         </div>
       )}
     </div>
@@ -2418,7 +2242,114 @@ function TVModeScreen({ onNavigate, partyId, partyCode }: TVModeScreenProps) {
   )
 }
 
+interface PartyHistoryItem {
+  id: string
+  name: string
+  date: string
+  members: number
+  items: number
+}
+
 function HistoryScreen({ onNavigate }: { onNavigate: (screen: Screen) => void }) {
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [parties, setParties] = useState<PartyHistoryItem[]>([])
+
+  useEffect(() => {
+    async function fetchPartyHistory() {
+      try {
+        setLoading(true)
+        setError(null)
+        const sessionId = getSessionId()
+
+        // Fetch parties the user has joined
+        const { data: memberData, error: memberError } = await supabase
+          .from('party_members')
+          .select(`
+            party_id,
+            joined_at,
+            parties (id, code, name, created_at)
+          `)
+          .eq('session_id', sessionId)
+          .order('joined_at', { ascending: false })
+          .limit(10)
+
+        if (memberError) {
+          throw memberError
+        }
+
+        if (!memberData || memberData.length === 0) {
+          setParties([])
+          return
+        }
+
+        // Get unique party IDs
+        const partyIds = memberData.map(m => m.party_id)
+
+        // Get member counts for each party
+        const { data: memberCounts, error: countError } = await supabase
+          .from('party_members')
+          .select('party_id')
+          .in('party_id', partyIds)
+
+        if (countError) {
+          throw countError
+        }
+
+        // Get item counts for each party
+        const { data: itemCounts, error: itemError } = await supabase
+          .from('queue_items')
+          .select('party_id')
+          .in('party_id', partyIds)
+
+        if (itemError) {
+          throw itemError
+        }
+
+        // Count members per party
+        const memberCountMap: Record<string, number> = {}
+        memberCounts?.forEach(m => {
+          memberCountMap[m.party_id] = (memberCountMap[m.party_id] || 0) + 1
+        })
+
+        // Count items per party
+        const itemCountMap: Record<string, number> = {}
+        itemCounts?.forEach(i => {
+          itemCountMap[i.party_id] = (itemCountMap[i.party_id] || 0) + 1
+        })
+
+        // Format the data
+        const formattedParties: PartyHistoryItem[] = memberData
+          .filter(m => m.parties)
+          .map(m => {
+            const party = m.parties as unknown as { id: string; code: string; name: string | null; created_at: string }
+            const createdAt = new Date(party.created_at)
+            const dateStr = createdAt.toLocaleDateString('en-US', {
+              month: 'short',
+              day: 'numeric',
+              year: 'numeric'
+            })
+            return {
+              id: party.id,
+              name: party.name || `Party ${party.code}`,
+              date: dateStr,
+              members: memberCountMap[party.id] || 1,
+              items: itemCountMap[party.id] || 0
+            }
+          })
+
+        setParties(formattedParties)
+      } catch (err) {
+        console.error('Error fetching party history:', err)
+        setError('Failed to load party history')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchPartyHistory()
+  }, [])
+
   return (
     <div className="container-mobile bg-gradient-party flex flex-col px-6 py-8">
       <button
@@ -2435,32 +2366,65 @@ function HistoryScreen({ onNavigate }: { onNavigate: (screen: Screen) => void })
         Your past watch sessions
       </p>
 
-      <div className="space-y-3">
-        {mockPastParties.map((party, index) => (
-          <div
-            key={party.id}
-            className="card p-4 cursor-pointer hover:border-surface-600 transition-colors animate-fade-in-up opacity-0"
-            style={{ animationDelay: `${150 + index * 50}ms` }}
-          >
-            <div className="flex items-start justify-between">
-              <div>
-                <div className="font-semibold">{party.name}</div>
-                <div className="text-text-muted text-sm mt-1">{party.date}</div>
-              </div>
-              <div className="text-right text-sm">
-                <div className="text-text-secondary">{party.items} items</div>
-                <div className="text-text-muted">{party.members} people</div>
+      {loading && (
+        <div className="flex justify-center py-12">
+          <div className="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full"></div>
+        </div>
+      )}
+
+      {error && (
+        <div className="card p-4 text-center text-red-400 animate-fade-in-up opacity-0 delay-150">
+          {error}
+        </div>
+      )}
+
+      {!loading && !error && parties.length === 0 && (
+        <div className="card p-8 text-center animate-fade-in-up opacity-0 delay-150">
+          <div className="text-4xl mb-4">🎉</div>
+          <div className="text-text-secondary">No party history yet</div>
+          <div className="text-text-muted text-sm mt-2">Join or create a party to get started!</div>
+        </div>
+      )}
+
+      {!loading && !error && parties.length > 0 && (
+        <div className="space-y-3">
+          {parties.map((party, index) => (
+            <div
+              key={party.id}
+              className="card p-4 cursor-pointer hover:border-surface-600 transition-colors animate-fade-in-up opacity-0"
+              style={{ animationDelay: `${150 + index * 50}ms` }}
+            >
+              <div className="flex items-start justify-between">
+                <div>
+                  <div className="font-semibold">{party.name}</div>
+                  <div className="text-text-muted text-sm mt-1">{party.date}</div>
+                </div>
+                <div className="text-right text-sm">
+                  <div className="text-text-secondary">{party.items} items</div>
+                  <div className="text-text-muted">{party.members} people</div>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
 
 // Main App Content
 function AppContent() {
+  // Check for join code in URL parameters
+  const [joinCodeFromUrl] = useState<string>(() => {
+    const params = new URLSearchParams(window.location.search)
+    const joinCode = params.get('join') || ''
+    // Clean up the URL parameter after extracting
+    if (joinCode) {
+      window.history.replaceState(null, '', window.location.pathname)
+    }
+    return joinCode
+  })
+
   // Use lazy initialization to restore state from localStorage
   const [currentScreen, setCurrentScreen] = useState<Screen>(() => {
     // Check for password reset URL parameter (Supabase sends type=recovery)
@@ -2469,6 +2433,11 @@ function AppContent() {
       // Clean up the URL hash after detecting recovery
       window.history.replaceState(null, '', window.location.pathname)
       return 'reset-password'
+    }
+    // Check for join code in URL - navigate to join screen
+    const params = new URLSearchParams(window.location.search)
+    if (params.get('join')) {
+      return 'join'
     }
     const savedParty = getCurrentParty()
     return savedParty ? 'party' : 'home'
@@ -2516,7 +2485,7 @@ function AppContent() {
     login: <LoginScreen onNavigate={setCurrentScreen} />,
     signup: <SignupScreen onNavigate={setCurrentScreen} />,
     create: <CreatePartyScreen onNavigate={setCurrentScreen} onPartyCreated={handlePartyCreated} />,
-    join: <JoinPartyScreen onNavigate={setCurrentScreen} onPartyJoined={handlePartyJoined} />,
+    join: <JoinPartyScreen onNavigate={setCurrentScreen} onPartyJoined={handlePartyJoined} initialCode={joinCodeFromUrl} />,
     party: currentPartyId && currentPartyCode ? (
       <PartyRoomScreen
         onNavigate={setCurrentScreen}

@@ -593,6 +593,16 @@ export function useParty(partyId: string | null) {
     async (itemId: string, content: string) => {
       if (!partyId) return
 
+      // Validate ownership - only the note creator can edit
+      const currentSessionId = getSessionId()
+      const item = queue.find(q => q.id === itemId)
+      if (!item) {
+        throw new Error('Note not found')
+      }
+      if (item.addedBySessionId !== currentSessionId) {
+        throw new Error('You can only edit notes you created')
+      }
+
       if (IS_MOCK_MODE) {
         // In mock mode, update note content in local state
         setQueue(prev => prev.map(q =>
@@ -611,7 +621,7 @@ export function useParty(partyId: string | null) {
         throw error
       }
     },
-    [partyId]
+    [partyId, queue]
   )
 
   const toggleComplete = useCallback(
