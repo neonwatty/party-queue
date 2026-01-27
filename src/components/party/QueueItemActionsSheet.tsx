@@ -73,6 +73,7 @@ export function QueueItemActionsSheet({
                 src={item.thumbnail}
                 alt={item.title}
                 className="w-full h-full object-cover"
+                loading="lazy"
               />
             ) : (
               <span className={badge.color}>
