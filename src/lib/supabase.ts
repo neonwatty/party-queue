@@ -1,10 +1,11 @@
 import { createClient } from '@supabase/supabase-js'
+import { logger } from './logger'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  console.warn('Supabase credentials not configured. Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to .env.local')
+  logger.warn('Supabase credentials not configured. Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to .env.local')
 }
 
 export const supabase = createClient(
@@ -120,12 +121,13 @@ export interface DbPartyMember {
 export interface DbQueueItem {
   id: string
   party_id: string
-  type: 'youtube' | 'tweet' | 'reddit' | 'note'
+  type: 'youtube' | 'tweet' | 'reddit' | 'note' | 'image'
   status: 'pending' | 'showing' | 'shown'
   position: number
   added_by_name: string
   added_by_session_id: string
   created_at: string
+  updated_at: string
   // YouTube fields
   title: string | null
   channel: string | null
@@ -144,6 +146,11 @@ export interface DbQueueItem {
   comment_count: number | null
   // Note fields
   note_content: string | null
+  // Image fields
+  image_name: string | null
+  image_url: string | null
+  image_storage_path: string | null
+  image_caption: string | null
   // Reminder/completion fields
   due_date: string | null
   is_completed: boolean
