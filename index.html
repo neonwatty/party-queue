@@ -35,17 +35,31 @@
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
 
-    <!-- Service Worker Registration -->
+    <!-- Service Worker Registration - Force update on each load -->
     <script>
       if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js')
-            .then((registration) => {
-              console.log('SW registered:', registration.scope);
-            })
-            .catch((error) => {
-              console.log('SW registration failed:', error);
-            });
+        window.addEventListener('load', async () => {
+          try {
+            // Unregister old service workers to fix caching issues
+            const registrations = await navigator.serviceWorker.getRegistrations();
+            for (const registration of registrations) {
+              await registration.unregister();
+              console.log('SW unregistered for cache reset');
+            }
+            // Clear all caches
+            if ('caches' in window) {
+              const cacheNames = await caches.keys();
+              await Promise.all(cacheNames.map(name => caches.delete(name)));
+              console.log('All caches cleared');
+            }
+            // Reload to get fresh content (only once)
+            if (!sessionStorage.getItem('cache-cleared')) {
+              sessionStorage.setItem('cache-cleared', 'true');
+              location.reload();
+            }
+          } catch (error) {
+            console.log('Cache clear failed:', error);
+          }
         });
       }
     </script>
