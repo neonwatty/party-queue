@@ -109,12 +109,14 @@ const QueueListItem = memo(function QueueListItem({
             src={item.thumbnail}
             alt={item.title}
             className="w-full h-full object-cover"
+            loading="lazy"
           />
         ) : item.type === 'image' && item.imageUrl ? (
           <img
             src={item.imageUrl}
             alt={item.imageCaption || item.imageName || 'Image'}
             className="w-full h-full object-cover"
+            loading="lazy"
             onError={(e) => {
               e.currentTarget.style.display = 'none'
               e.currentTarget.nextElementSibling?.classList.remove('hidden')

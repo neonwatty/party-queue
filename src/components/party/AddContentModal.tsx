@@ -288,6 +288,7 @@ export function AddContentModal({
                         src={fetchedPreview.thumbnail}
                         alt={fetchedPreview.title || 'YouTube video'}
                         className="w-full h-full object-cover"
+                        loading="lazy"
                       />
                     </div>
                   )}
@@ -360,6 +361,7 @@ export function AddContentModal({
                       src={imagePreviewUrl}
                       alt="Preview"
                       className="w-full h-auto max-h-48 object-contain"
+                      loading="lazy"
                     />
                   </div>
                   {selectedImageFile && (

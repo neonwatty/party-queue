@@ -181,6 +181,14 @@ export function TVModeScreen({ onNavigate, partyId, partyCode }: TVModeScreenPro
                           src={item.thumbnail}
                           alt={item.title}
                           className="w-full h-full object-cover opacity-70"
+                          loading="lazy"
+                        />
+                      ) : item.type === 'image' && item.imageUrl ? (
+                        <img
+                          src={item.imageUrl}
+                          alt={item.imageCaption || item.imageName || 'Image'}
+                          className="w-full h-full object-cover opacity-70"
+                          loading="lazy"
                         />
                       ) : item.type === 'image' && item.imageUrl ? (
                         <img
