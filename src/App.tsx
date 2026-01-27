@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, lazy, Suspense } from 'react'
 import './App.css'
 import { getCurrentParty } from './lib/supabase'
 import { initAnalytics } from './lib/analytics'
@@ -9,17 +9,29 @@ import { OfflineIndicator } from './components/ui/OfflineIndicator'
 import { InstallPrompt } from './components/ui/InstallPrompt'
 import type { Screen } from './types'
 import { LoaderIcon } from './components/icons'
-import {
-  HomeScreen,
-  LoginScreen,
-  SignupScreen,
-  ResetPasswordScreen,
-  CreatePartyScreen,
-  JoinPartyScreen,
-  PartyRoomScreen,
-  TVModeScreen,
-  HistoryScreen,
-} from './components/screens'
+
+// Eager load common entry screens
+import { HomeScreen } from './components/screens/HomeScreen'
+import { CreatePartyScreen } from './components/screens/CreatePartyScreen'
+import { JoinPartyScreen } from './components/screens/JoinPartyScreen'
+
+// Lazy load less frequently accessed screens
+const LoginScreen = lazy(() => import('./components/screens/LoginScreen').then(m => ({ default: m.LoginScreen })))
+const SignupScreen = lazy(() => import('./components/screens/SignupScreen').then(m => ({ default: m.SignupScreen })))
+const ResetPasswordScreen = lazy(() => import('./components/screens/ResetPasswordScreen').then(m => ({ default: m.ResetPasswordScreen })))
+const PartyRoomScreen = lazy(() => import('./components/screens/PartyRoomScreen').then(m => ({ default: m.PartyRoomScreen })))
+const TVModeScreen = lazy(() => import('./components/screens/TVModeScreen').then(m => ({ default: m.TVModeScreen })))
+const HistoryScreen = lazy(() => import('./components/screens/HistoryScreen').then(m => ({ default: m.HistoryScreen })))
+
+// Loading fallback for lazy screens
+function ScreenLoader() {
+  return (
+    <div className="container-mobile bg-gradient-party flex flex-col items-center justify-center">
+      <LoaderIcon />
+      <p className="text-text-muted mt-4">Loading...</p>
+    </div>
+  )
+}
 
 // Main App Content
 function AppContent() {
@@ -121,7 +133,9 @@ function AppContent() {
   return (
     <>
       <OfflineIndicator />
-      {screens[currentScreen]}
+      <Suspense fallback={<ScreenLoader />}>
+        {screens[currentScreen]}
+      </Suspense>
       <InstallPrompt />
     </>
   )
