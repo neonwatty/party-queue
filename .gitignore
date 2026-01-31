@@ -1,3 +1,14 @@
+# Environment files
+.env
+.env.*
+!.env.example
+
+# TypeScript build cache
+tsconfig.tsbuildinfo
+
+# Claude Code
+.claude/
+
 # Logs
 logs
 *.log
