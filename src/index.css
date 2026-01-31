@@ -2,26 +2,69 @@
 
 /* Fonts loaded via index.html with preload and display=swap for non-blocking load */
 
-@theme {
-  /* Custom color palette - warm coral accent on deep dark */
+/*
+ * Design Tokens Configuration
+ *
+ * We use BOTH :root and @theme because they serve different purposes:
+ * - :root: Defines CSS custom properties for use with var() in custom CSS
+ * - @theme: Defines Tailwind v4 design tokens for utility class generation
+ *
+ * This duplication is intentional - :root enables var(--color-accent-500) in
+ * custom styles like .btn-primary, while @theme enables Tailwind utilities
+ * like bg-accent-500 and text-surface-900.
+ */
+
+/* CSS Custom Properties - for var() usage in custom CSS */
+:root {
+  /* Surface colors */
   --color-surface-950: #0a0a0b;
   --color-surface-900: #111113;
   --color-surface-800: #1a1a1d;
   --color-surface-700: #252529;
   --color-surface-600: #35353b;
 
-  /* Vibrant coral/orange accent - party energy */
+  /* Accent colors (coral/orange) */
   --color-accent-500: #ff6b4a;
   --color-accent-400: #ff8266;
   --color-accent-300: #ffa08a;
   --color-accent-600: #e85a3a;
 
-  /* Electric teal for secondary actions */
+  /* Teal colors */
   --color-teal-500: #2dd4bf;
   --color-teal-400: #5eead4;
   --color-teal-600: #14b8a6;
 
-  /* Muted text colors */
+  /* Text colors */
+  --color-text-primary: #fafafa;
+  --color-text-secondary: #a1a1aa;
+  --color-text-muted: #71717a;
+
+  /* Fonts */
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+/* Tailwind v4 Design Tokens - for utility class generation */
+@theme {
+  /* Surface colors */
+  --color-surface-950: #0a0a0b;
+  --color-surface-900: #111113;
+  --color-surface-800: #1a1a1d;
+  --color-surface-700: #252529;
+  --color-surface-600: #35353b;
+
+  /* Accent colors (coral/orange) */
+  --color-accent-500: #ff6b4a;
+  --color-accent-400: #ff8266;
+  --color-accent-300: #ffa08a;
+  --color-accent-600: #e85a3a;
+
+  /* Teal colors */
+  --color-teal-500: #2dd4bf;
+  --color-teal-400: #5eead4;
+  --color-teal-600: #14b8a6;
+
+  /* Text colors */
   --color-text-primary: #fafafa;
   --color-text-secondary: #a1a1aa;
   --color-text-muted: #71717a;

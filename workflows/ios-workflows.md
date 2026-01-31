@@ -1,7 +1,7 @@
 # iOS Workflows
 
 > Auto-generated workflow documentation for Link Party
-> Last updated: 2026-01-20
+> Last updated: 2026-01-27
 > Bundle ID: com.linkparty.app
 
 ## Quick Reference
@@ -25,6 +25,8 @@
 | 15 | TV Mode | Enter TV display | 5 | ✅ Passed (2026-01-21) |
 | 16 | View History | View past parties | 4 | ✅ Passed (2026-01-21) |
 | 17 | Google OAuth Login | [MANUAL] OAuth flow | 5 | ⬜ |
+| 18 | Add Image Content | Upload image to queue | 8 | ⬜ |
+| 19 | View Image in Lightbox | Full-screen image view | 4 | ⬜ |
 
 **Legend:** ✅ Passed | ⚠️ Partial | ❌ Failed | ⬜ Not tested
 
@@ -663,6 +665,83 @@
 
 ---
 
+### Workflow 18: Add Image Content
+
+> Tests uploading an image to the party queue with optional caption.
+
+**Prerequisites:** In an active party room
+
+1. Open add content modal
+   - Tap the floating "+" button
+   - Verify bottom sheet modal slides up
+   - Verify "Upload an image" button is visible
+
+2. Initiate image upload
+   - Tap "Upload an image" button
+   - [MANUAL] iOS photo picker or file dialog appears
+   - Note: System file picker cannot be automated
+
+3. Select an image
+   - [MANUAL] Select a JPG, PNG, GIF, or WebP image (under 5MB)
+   - Verify modal returns to preview step
+   - Verify selected image preview is displayed
+   - Verify filename is shown below preview
+
+4. Add optional caption
+   - Tap the caption textarea (below preview)
+   - Type "This is my test image caption"
+   - Verify character count shows (e.g., "32/200")
+
+5. Verify preview state
+   - Verify purple "Your image" badge at top
+   - Verify image thumbnail is displayed
+   - Verify caption text is visible
+
+6. Add to queue
+   - Tap "Add to Queue" button
+   - Verify upload progress toast appears (if image needs optimization)
+   - Wait for upload to complete
+   - Verify success message appears
+
+7. Verify modal closes
+   - Verify modal closes automatically
+   - Verify back in party room
+
+8. Verify in queue
+   - Verify image item appears in "Up Next" queue
+   - Verify image thumbnail visible in queue item
+   - Verify caption text shown (if provided)
+   - Verify "Added by [Your Name]" attribution
+
+---
+
+### Workflow 19: View Image in Lightbox
+
+> Tests viewing an uploaded image in full-screen lightbox.
+
+**Prerequisites:** In party room with at least one image in queue or now showing
+
+1. Display image in now showing
+   - Ensure an image is currently in "Now Showing" section
+   - OR tap an image item to show it next
+
+2. Open lightbox
+   - Tap on the image in the "Now Showing" display area
+   - Verify full-screen lightbox opens
+   - Verify dark overlay background
+
+3. Verify lightbox content
+   - Verify image displayed at full resolution
+   - Verify caption displayed below image (if any)
+   - Verify close button (X) visible
+
+4. Close lightbox
+   - Tap the X button or tap outside the image
+   - Verify lightbox closes
+   - Verify returns to party room view
+
+---
+
 ## iOS Platform UX Verification
 
 When testing workflows, verify these iOS conventions are followed:
@@ -702,5 +781,7 @@ Some workflows require state from previous workflows:
 | 5-10 (Content) | 2 or 3 (active party) |
 | 11-14 (Queue Mgmt) | 5-9 (items in queue) |
 | 15 (TV Mode) | 2 or 3 (active party) |
+| 18 (Add Image) | 2 or 3 (active party) |
+| 19 (Image Lightbox) | 18 (image in queue) |
 
-**Suggested execution order:** 1 → 2 → 5 → 8 → 9 → 10 → 11 → 12 → 13 → 14 → 15 → 4 → 3 → 16 → 17
+**Suggested execution order:** 1 → 2 → 5 → 8 → 9 → 10 → 11 → 12 → 13 → 14 → 18 → 19 → 15 → 4 → 3 → 16 → 17
