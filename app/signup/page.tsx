@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { signInWithGoogle, signUpWithEmail } from '@/lib/auth'
 import { validateEmail, validatePassword, validateDisplayName } from '@/lib/validation'
 import { ChevronLeftIcon, LoaderIcon } from '@/components/icons'
+import { TwinklingStars } from '@/components/ui/TwinklingStars'
 
 export default function SignupPage() {
   const [isLoading, setIsLoading] = useState(false)
@@ -72,8 +73,10 @@ export default function SignupPage() {
 
   if (signupSuccess) {
     return (
-      <div className="container-mobile bg-gradient-party flex flex-col px-6 py-8">
-        <div className="flex-1 flex flex-col items-center justify-center text-center">
+      <div className="container-mobile bg-gradient-party flex flex-col px-6 py-8 relative">
+        <TwinklingStars count={25} />
+
+        <div className="flex-1 flex flex-col items-center justify-center text-center relative z-10">
           <div className="animate-fade-in-up opacity-0">
             <div className="w-16 h-16 rounded-full bg-teal-500/20 flex items-center justify-center mx-auto mb-6">
               <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-teal-400">
@@ -98,16 +101,18 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="container-mobile bg-gradient-party flex flex-col px-6 py-8">
+    <div className="container-mobile bg-gradient-party flex flex-col px-6 py-8 relative">
+      <TwinklingStars count={25} />
+
       <Link
         href="/"
-        className="btn-ghost p-2 -ml-2 w-fit rounded-full mb-8"
+        className="btn-ghost p-2 -ml-2 w-fit rounded-full mb-8 relative z-10"
         aria-label="Go back to home"
       >
         <ChevronLeftIcon />
       </Link>
 
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col relative z-10">
         <h1 className="text-3xl font-bold mb-2 animate-fade-in-up opacity-0">
           Create account
         </h1>

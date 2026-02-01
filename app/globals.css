@@ -1,84 +1,106 @@
 @import "tailwindcss";
 
-/* Fonts loaded via layout.tsx or index.html with preload and display=swap for non-blocking load */
+/* Fonts loaded via layout.tsx with preload and display=swap for non-blocking load */
 
 /*
- * Design Tokens Configuration
+ * Design Tokens Configuration - Campfire Theme
  *
  * We use BOTH :root and @theme because they serve different purposes:
  * - :root: Defines CSS custom properties for use with var() in custom CSS
  * - @theme: Defines Tailwind v4 design tokens for utility class generation
- *
- * This duplication is intentional - :root enables var(--color-accent-500) in
- * custom styles like .btn-primary, while @theme enables Tailwind utilities
- * like bg-accent-500 and text-surface-900.
  */
 
 /* CSS Custom Properties - for var() usage in custom CSS */
 :root {
-  /* Surface colors (light cream backgrounds) */
-  --color-surface-950: #faf8f3;  /* Main background (cream) */
-  --color-surface-900: #f2efe8;  /* Card backgrounds (soft beige) */
-  --color-surface-800: #e8e5dc;  /* Elevated surfaces */
-  --color-surface-700: #d8d4c8;  /* Borders, dividers */
-  --color-surface-600: #c8c4b8;  /* Interactive borders */
+  /* Surface colors (dark navy backgrounds) */
+  --color-surface-950: #1A1D2E;  /* Main background (deep navy) */
+  --color-surface-900: #242838;  /* Card backgrounds (dark card) */
+  --color-surface-800: #2D3244;  /* Elevated surfaces */
+  --color-surface-700: #3A3F52;  /* Borders, dividers */
+  --color-surface-600: #4A5068;  /* Interactive borders */
 
-  /* Accent colors (sage green) */
-  --color-accent-500: #6b8f71;  /* Primary sage */
-  --color-accent-400: #7da183;  /* Lighter sage */
-  --color-accent-300: #9ab89f;  /* Light accent */
-  --color-accent-600: #4a6b4f;  /* Darker sage */
+  /* Primary colors (warm orange) */
+  --color-primary: #FF8A5C;
+  --color-primary-hover: #E86B3A;
+  --color-primary-glow: rgba(255, 138, 92, 0.4);
 
-  /* Teal colors (kept for compatibility, adjusted for light mode) */
-  --color-teal-500: #4a9e8f;
-  --color-teal-400: #6bb5a6;
-  --color-teal-600: #3a8578;
+  /* Secondary colors (golden yellow) */
+  --color-secondary: #F4C95D;
+  --color-secondary-glow: rgba(244, 201, 93, 0.3);
 
-  /* Text colors (dark on light) */
-  --color-text-primary: #2d3a2e;    /* Deep forest */
-  --color-text-secondary: #5a6b5c;  /* Warm gray */
-  --color-text-muted: #8a9a8c;      /* Muted sage-gray */
+  /* Accent colors (warm palette) */
+  --color-accent-500: #FF8A5C;  /* Primary orange */
+  --color-accent-400: #FF9E76;  /* Lighter orange */
+  --color-accent-300: #FFB899;  /* Light accent */
+  --color-accent-600: #E86B3A;  /* Darker orange */
+
+  /* Legacy teal mapping to new palette */
+  --color-teal-500: #F4C95D;  /* Now golden */
+  --color-teal-400: #F7D67A;
+  --color-teal-600: #E8B23A;
+
+  /* Additional accent colors */
+  --color-lavender: #A8A4CE;
+  --color-forest: #4A7C59;
+
+  /* Content type colors */
+  --color-youtube: #FF6B6B;
+  --color-twitter: #4A9EFF;
+  --color-reddit: #FF8C00;
+  --color-note: #A8A4CE;
+
+  /* Text colors (light on dark) */
+  --color-text-primary: #F5F0E8;    /* Warm white */
+  --color-text-secondary: #B8B2A8;  /* Muted cream */
+  --color-text-muted: #7A756C;      /* Dim */
 
   /* Fonts */
-  --font-display: 'Fraunces', Georgia, serif;
-  --font-body: 'Source Sans 3', system-ui, sans-serif;
+  --font-display: 'Instrument Serif', Georgia, serif;
+  --font-body: 'Inter', system-ui, sans-serif;
 }
 
 /* Tailwind v4 Design Tokens - for utility class generation */
 @theme {
-  /* Surface colors (light cream backgrounds) */
-  --color-surface-950: #faf8f3;  /* Main background (cream) */
-  --color-surface-900: #f2efe8;  /* Card backgrounds (soft beige) */
-  --color-surface-800: #e8e5dc;  /* Elevated surfaces */
-  --color-surface-700: #d8d4c8;  /* Borders, dividers */
-  --color-surface-600: #c8c4b8;  /* Interactive borders */
+  /* Surface colors (dark navy backgrounds) */
+  --color-surface-950: #1A1D2E;  /* Main background (deep navy) */
+  --color-surface-900: #242838;  /* Card backgrounds (dark card) */
+  --color-surface-800: #2D3244;  /* Elevated surfaces */
+  --color-surface-700: #3A3F52;  /* Borders, dividers */
+  --color-surface-600: #4A5068;  /* Interactive borders */
 
-  /* Accent colors (sage green) */
-  --color-accent-500: #6b8f71;  /* Primary sage */
-  --color-accent-400: #7da183;  /* Lighter sage */
-  --color-accent-300: #9ab89f;  /* Light accent */
-  --color-accent-600: #4a6b4f;  /* Darker sage */
+  /* Primary colors (warm orange) */
+  --color-primary: #FF8A5C;
+  --color-primary-hover: #E86B3A;
 
-  /* Teal colors (kept for compatibility, adjusted for light mode) */
-  --color-teal-500: #4a9e8f;
-  --color-teal-400: #6bb5a6;
-  --color-teal-600: #3a8578;
+  /* Secondary colors (golden yellow) */
+  --color-secondary: #F4C95D;
 
-  /* Text colors (dark on light) */
-  --color-text-primary: #2d3a2e;    /* Deep forest */
-  --color-text-secondary: #5a6b5c;  /* Warm gray */
-  --color-text-muted: #8a9a8c;      /* Muted sage-gray */
+  /* Accent colors (warm palette) */
+  --color-accent-500: #FF8A5C;  /* Primary orange */
+  --color-accent-400: #FF9E76;  /* Lighter orange */
+  --color-accent-300: #FFB899;  /* Light accent */
+  --color-accent-600: #E86B3A;  /* Darker orange */
+
+  /* Legacy teal mapping */
+  --color-teal-500: #F4C95D;
+  --color-teal-400: #F7D67A;
+  --color-teal-600: #E8B23A;
+
+  /* Text colors (light on dark) */
+  --color-text-primary: #F5F0E8;    /* Warm white */
+  --color-text-secondary: #B8B2A8;  /* Muted cream */
+  --color-text-muted: #7A756C;      /* Dim */
 
   /* Fonts */
-  --font-display: 'Fraunces', Georgia, serif;
-  --font-body: 'Source Sans 3', system-ui, sans-serif;
+  --font-display: 'Instrument Serif', Georgia, serif;
+  --font-body: 'Inter', system-ui, sans-serif;
 }
 
 /* Base styles */
 html {
-  font-family: var(--font-body);  /* Source Sans 3 for body */
-  background-color: var(--color-surface-950);  /* Cream */
-  color: var(--color-text-primary);  /* Dark forest */
+  font-family: var(--font-body);
+  background-color: var(--color-surface-950);
+  color: var(--color-text-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -91,6 +113,8 @@ body {
   padding-top: env(safe-area-inset-top);
   padding-left: env(safe-area-inset-left);
   padding-right: env(safe-area-inset-right);
+  position: relative;
+  overflow-x: hidden;
 }
 
 /* Safe area utilities */
@@ -102,27 +126,101 @@ body {
   padding-top: env(safe-area-inset-top, 0px);
 }
 
-/* Gradient backgrounds for depth */
+/* ========================================
+   TWINKLING STARS BACKGROUND
+   ======================================== */
+
+.stars-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.star {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: white;
+  border-radius: 50%;
+  opacity: 0.2;
+  animation: twinkle var(--duration, 3s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+.star.bright {
+  width: 3px;
+  height: 3px;
+  opacity: 0.4;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.15; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.2); }
+}
+
+/* ========================================
+   CAMPFIRE GLOW EFFECT
+   ======================================== */
+
+.campfire-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, var(--color-primary-glow) 0%, transparent 70%);
+  border-radius: 50%;
+  filter: blur(40px);
+  animation: breathe 4s ease-in-out infinite;
+  z-index: -1;
+  pointer-events: none;
+}
+
+@keyframes breathe {
+  0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+  50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.1); }
+}
+
+/* ========================================
+   GRADIENT BACKGROUNDS
+   ======================================== */
+
 .bg-gradient-radial {
   background: radial-gradient(ellipse at top, var(--color-surface-900) 0%, var(--color-surface-950) 70%);
 }
 
 .bg-gradient-party {
   background:
-    radial-gradient(ellipse at 50% 0%, rgba(107, 143, 113, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 0%, rgba(255, 138, 92, 0.08) 0%, transparent 50%),
     var(--color-surface-950);
 }
 
-/* Glow effects */
+/* ========================================
+   GLOW EFFECTS
+   ======================================== */
+
 .glow-accent {
-  box-shadow: 0 0 40px rgba(107, 143, 113, 0.2);
+  box-shadow: 0 0 40px var(--color-primary-glow);
 }
 
 .glow-teal {
-  box-shadow: 0 0 30px rgba(74, 158, 143, 0.2);
+  box-shadow: 0 0 30px var(--color-secondary-glow);
 }
 
-/* Animation utilities */
+.glow-primary {
+  box-shadow: 0 0 30px var(--color-primary-glow);
+}
+
+/* ========================================
+   CAMPFIRE ANIMATIONS
+   ======================================== */
+
 @keyframes fade-in-up {
   from {
     opacity: 0;
@@ -136,11 +234,38 @@ body {
 
 @keyframes pulse-glow {
   0%, 100% {
-    box-shadow: 0 0 20px rgba(107, 143, 113, 0.3);
+    box-shadow: 0 0 20px var(--color-primary-glow);
   }
   50% {
-    box-shadow: 0 0 40px rgba(107, 143, 113, 0.5);
+    box-shadow: 0 0 40px var(--color-primary-glow);
   }
+}
+
+@keyframes warmGlow {
+  0%, 100% { box-shadow: 0 0 20px var(--color-primary-glow); }
+  50% { box-shadow: 0 0 30px var(--color-primary-glow), 0 0 40px rgba(255, 138, 92, 0.2); }
+}
+
+@keyframes buttonEmber {
+  0%, 100% { box-shadow: 0 8px 32px var(--color-primary-glow); }
+  50% { box-shadow: 0 8px 40px var(--color-primary-glow), 0 4px 20px var(--color-secondary-glow); }
+}
+
+@keyframes logoGlow {
+  0%, 100% { box-shadow: 0 0 40px var(--color-primary-glow); }
+  50% { box-shadow: 0 0 50px var(--color-primary-glow), 0 0 60px var(--color-secondary-glow); }
+}
+
+@keyframes fabGlow {
+  0%, 100% { box-shadow: 0 0 30px var(--color-primary-glow); }
+  50% { box-shadow: 0 0 45px var(--color-primary-glow), 0 0 60px var(--color-secondary-glow); }
+}
+
+@keyframes flicker {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  25% { opacity: 0.8; transform: scale(0.98); }
+  50% { opacity: 1; transform: scale(1.02); }
+  75% { opacity: 0.9; transform: scale(0.99); }
 }
 
 .animate-fade-in-up {
@@ -151,6 +276,18 @@ body {
   animation: pulse-glow 2s ease-in-out infinite;
 }
 
+.animate-warm-glow {
+  animation: warmGlow 1.5s ease-in-out infinite;
+}
+
+.animate-logo-glow {
+  animation: logoGlow 3s ease-in-out infinite;
+}
+
+.animate-flicker {
+  animation: flicker 3s ease-in-out infinite;
+}
+
 /* Staggered animation delays */
 .delay-100 { animation-delay: 100ms; }
 .delay-200 { animation-delay: 200ms; }
@@ -158,7 +295,10 @@ body {
 .delay-400 { animation-delay: 400ms; }
 .delay-500 { animation-delay: 500ms; }
 
-/* Button base styles */
+/* ========================================
+   BUTTON STYLES
+   ======================================== */
+
 .btn {
   font-family: var(--font-display);
   font-weight: 600;
@@ -168,32 +308,48 @@ body {
   cursor: pointer;
   border: none;
   outline: none;
-  min-height: 52px; /* Ensure minimum touch target */
+  min-height: 52px;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
+  position: relative;
+  overflow: hidden;
 }
 
 .btn-primary {
-  background: var(--color-accent-500);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-hover));
   color: white;
-  box-shadow: 0 4px 16px rgba(107, 143, 113, 0.25);
+  box-shadow: 0 4px 24px var(--color-primary-glow);
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  background: var(--color-accent-600);
-  box-shadow: 0 8px 24px rgba(107, 143, 113, 0.35);
+  box-shadow: 0 8px 32px var(--color-primary-glow);
+  animation: buttonEmber 2s ease-in-out infinite;
+}
+
+.btn-primary:hover::before {
+  opacity: 1;
 }
 
 .btn-secondary {
-  background: var(--color-surface-700);
+  background: transparent;
   color: var(--color-text-primary);
-  border: 1px solid var(--color-surface-600);
+  border: 1px solid var(--color-surface-700);
 }
 
 .btn-secondary:hover {
-  background: var(--color-surface-600);
-  border-color: var(--color-surface-500);
+  background: var(--color-surface-900);
+  border-color: var(--color-secondary);
+  box-shadow: 0 0 20px var(--color-secondary-glow);
 }
 
 .btn-ghost {
@@ -206,11 +362,31 @@ body {
   background: var(--color-surface-800);
 }
 
-/* Input styles */
+/* Force touch event handling for primary buttons in Capacitor */
+.btn-primary {
+  cursor: pointer;
+  -webkit-appearance: none;
+  -webkit-touch-callout: none;
+}
+
+/* Improved active states for touch */
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn-primary:active {
+  transform: scale(0.97);
+  box-shadow: 0 4px 15px var(--color-primary-glow);
+}
+
+/* ========================================
+   INPUT STYLES
+   ======================================== */
+
 .input {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   background: var(--color-surface-800);
-  border: 1px solid var(--color-surface-600);
+  border: 1px solid var(--color-surface-700);
   border-radius: 12px;
   padding: 0.875rem 1rem;
   color: var(--color-text-primary);
@@ -221,8 +397,8 @@ body {
 }
 
 .input:focus {
-  border-color: var(--color-accent-500);
-  box-shadow: 0 0 0 3px rgba(107, 143, 113, 0.15);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(255, 138, 92, 0.15);
 }
 
 .input::placeholder {
@@ -238,7 +414,10 @@ body {
   box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.15);
 }
 
-/* Card styles */
+/* ========================================
+   CARD STYLES
+   ======================================== */
+
 .card {
   background: var(--color-surface-900);
   border: 1px solid var(--color-surface-700);
@@ -248,10 +427,32 @@ body {
 
 .card-elevated {
   background: var(--color-surface-900);
-  box-shadow: 0 4px 24px rgba(45, 58, 46, 0.08);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
 }
 
-/* Now Playing indicator */
+/* Card with gradient border */
+.card-glow {
+  position: relative;
+}
+
+.card-glow::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  padding: 1px;
+  background: linear-gradient(135deg, var(--color-primary), transparent, var(--color-secondary));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0.5;
+}
+
+/* ========================================
+   NOW PLAYING INDICATOR
+   ======================================== */
+
 .now-playing {
   position: relative;
 }
@@ -263,11 +464,15 @@ body {
   top: 0;
   bottom: 0;
   width: 3px;
-  background: var(--color-accent-500);
+  background: var(--color-primary);
   border-radius: 0 2px 2px 0;
+  box-shadow: 0 0 10px var(--color-primary-glow);
 }
 
-/* Queue item */
+/* ========================================
+   QUEUE ITEM
+   ======================================== */
+
 .queue-item {
   display: flex;
   align-items: center;
@@ -275,19 +480,207 @@ body {
   padding: 14px 12px;
   border-radius: 12px;
   transition: all 0.2s ease;
-  min-height: 72px; /* Better touch target */
+  min-height: 72px;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  background: var(--color-surface-900);
+  border: 1px solid var(--color-surface-700);
+}
+
+.queue-item:hover {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 20px rgba(255, 138, 92, 0.15);
+}
+
+.queue-item:active {
+  background: var(--color-surface-800);
+  transform: scale(0.98);
+}
+
+/* ========================================
+   ICON BUTTON
+   ======================================== */
+
+.icon-btn {
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid var(--color-surface-700);
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 0.3s ease;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 }
 
-.queue-item:hover {
-  background: var(--color-surface-800);
+.icon-btn:hover {
+  background: var(--color-surface-900);
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 20px var(--color-primary-glow);
+  animation: warmGlow 1.5s ease-in-out infinite;
 }
 
-.queue-item:active {
-  background: var(--color-surface-700);
-  transform: scale(0.98);
+/* ========================================
+   MEMBER AVATARS
+   ======================================== */
+
+.member-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid var(--color-surface-950);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  transition: all 0.3s ease;
 }
+
+.member-avatar:hover {
+  transform: translateY(-4px);
+  z-index: 10;
+}
+
+.member-avatar.ember {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-hover));
+}
+
+.member-avatar.gold {
+  background: linear-gradient(135deg, var(--color-secondary), #E8B23A);
+}
+
+.member-avatar.lavender {
+  background: linear-gradient(135deg, var(--color-lavender), #8A86B8);
+}
+
+.member-avatar.forest {
+  background: linear-gradient(135deg, var(--color-forest), #3A5C42);
+}
+
+/* Host ring glow */
+.host-ring {
+  position: absolute;
+  inset: -4px;
+  border: 2px solid var(--color-secondary);
+  border-radius: 50%;
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* ========================================
+   FLOATING ACTION BUTTON
+   ======================================== */
+
+.fab {
+  position: fixed;
+  bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  right: 24px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-hover));
+  color: white;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 30px var(--color-primary-glow);
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  z-index: 40;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  animation: fabGlow 3s ease-in-out infinite;
+}
+
+.fab:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 50px var(--color-primary-glow);
+}
+
+/* ========================================
+   CONTENT TYPE ICONS
+   ======================================== */
+
+.content-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.content-icon.youtube {
+  background: rgba(255, 107, 107, 0.2);
+  color: var(--color-youtube);
+}
+
+.content-icon.twitter {
+  background: rgba(74, 158, 255, 0.2);
+  color: var(--color-twitter);
+}
+
+.content-icon.reddit {
+  background: rgba(255, 140, 0, 0.2);
+  color: var(--color-reddit);
+}
+
+.content-icon.note {
+  background: rgba(168, 164, 206, 0.2);
+  color: var(--color-note);
+}
+
+/* ========================================
+   LOGO ICON
+   ======================================== */
+
+.logo-icon {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 40px var(--color-primary-glow);
+  animation: logoGlow 3s ease-in-out infinite;
+}
+
+.logo-icon svg {
+  color: white;
+}
+
+/* ========================================
+   BOTTOM SHEET MODAL
+   ======================================== */
+
+.bottom-sheet {
+  padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  pointer-events: auto;
+  touch-action: manipulation;
+  background: var(--color-surface-900);
+  border-top: 1px solid var(--color-surface-700);
+}
+
+.bottom-sheet .btn {
+  position: relative;
+  z-index: 1;
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* ========================================
+   UTILITY CLASSES
+   ======================================== */
 
 /* Mobile-first responsive container */
 .container-mobile {
@@ -315,67 +708,6 @@ body {
   animation: spin 1s linear infinite;
 }
 
-/* Floating Action Button with safe area */
-.fab {
-  position: fixed;
-  bottom: calc(24px + env(safe-area-inset-bottom, 0px));
-  right: 24px;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
-  z-index: 40;
-}
-
-/* Bottom sheet modal improvements */
-.bottom-sheet {
-  padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
-  pointer-events: auto;
-  touch-action: manipulation;
-}
-
-/* Ensure buttons in modals receive touches on iOS WebView */
-.bottom-sheet .btn {
-  position: relative;
-  z-index: 1;
-  cursor: pointer;
-  -webkit-user-select: none;
-  user-select: none;
-}
-
-/* Force touch event handling for primary buttons in Capacitor */
-.btn-primary {
-  cursor: pointer;
-  -webkit-appearance: none;
-  -webkit-touch-callout: none;
-}
-
-/* Improved active states for touch */
-.btn:active {
-  transform: scale(0.97);
-}
-
-.btn-primary:active {
-  transform: scale(0.97);
-  box-shadow: 0 4px 15px rgba(107, 143, 113, 0.3);
-}
-
-/* Icon button touch target */
-.icon-btn {
-  min-width: 44px;
-  min-height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
-}
-
 /* Prevent text selection during swipe */
 .no-select {
   -webkit-user-select: none;
@@ -386,4 +718,25 @@ body {
 .scroll-smooth {
   -webkit-overflow-scrolling: touch;
   scroll-behavior: smooth;
+}
+
+/* Text colors */
+.text-primary {
+  color: var(--color-text-primary);
+}
+
+.text-secondary {
+  color: var(--color-text-secondary);
+}
+
+.text-muted {
+  color: var(--color-text-muted);
+}
+
+.text-accent {
+  color: var(--color-primary);
+}
+
+.text-gold {
+  color: var(--color-secondary);
 }

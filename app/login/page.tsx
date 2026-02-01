@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { signInWithGoogle, signInWithEmail, resetPassword } from '@/lib/auth'
 import { validateEmail, validatePassword } from '@/lib/validation'
 import { ChevronLeftIcon, LoaderIcon } from '@/components/icons'
+import { TwinklingStars } from '@/components/ui/TwinklingStars'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -93,7 +94,9 @@ export default function LoginPage() {
 
   if (showForgotPassword) {
     return (
-      <div className="container-mobile bg-gradient-party flex flex-col px-6 py-8">
+      <div className="container-mobile bg-gradient-party flex flex-col px-6 py-8 relative">
+        <TwinklingStars count={25} />
+
         <button
           onClick={() => {
             setShowForgotPassword(false)
@@ -169,7 +172,9 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="container-mobile bg-gradient-party flex flex-col px-6 py-8">
+    <div className="container-mobile bg-gradient-party flex flex-col px-6 py-8 relative">
+      <TwinklingStars count={25} />
+
       {/* Back button */}
       <Link
         href="/"

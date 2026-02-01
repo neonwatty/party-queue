@@ -1,20 +1,20 @@
 import type { Metadata, Viewport } from 'next'
-import { Fraunces, Source_Sans_3 } from 'next/font/google'
+import { Instrument_Serif, Inter } from 'next/font/google'
 import { Providers } from './providers'
 import './globals.css'
 
-const fraunces = Fraunces({
+const instrumentSerif = Instrument_Serif({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-display',
-  weight: ['300', '400', '500', '600'],
+  weight: ['400'],
 })
 
-const sourceSans3 = Source_Sans_3({
+const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-body',
-  weight: ['300', '400', '500', '600'],
+  weight: ['400', '500', '600', '700'],
 })
 
 export const metadata: Metadata = {
@@ -38,7 +38,7 @@ export const viewport: Viewport = {
   maximumScale: 1,
   userScalable: false,
   viewportFit: 'cover',
-  themeColor: '#6b8f71',
+  themeColor: '#1A1D2E',
 }
 
 export default function RootLayout({
@@ -47,7 +47,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${fraunces.variable} ${sourceSans3.variable}`}>
+    <html lang="en" className={`${instrumentSerif.variable} ${inter.variable}`}>
       <body>
         <Providers>
           {children}

@@ -8,6 +8,7 @@ import { logger } from '@/lib/logger'
 import { tryAction } from '@/lib/rateLimit'
 import { useAuth } from '@/contexts/AuthContext'
 import { ChevronLeftIcon, LoaderIcon } from '@/components/icons'
+import { TwinklingStars } from '@/components/ui/TwinklingStars'
 
 const log = logger.createLogger('CreateParty')
 
@@ -105,7 +106,9 @@ export default function CreatePartyPage() {
   }
 
   return (
-    <div className="container-mobile bg-gradient-party flex flex-col px-6 py-8">
+    <div className="container-mobile bg-gradient-party flex flex-col px-6 py-8 relative">
+      <TwinklingStars count={25} />
+
       <Link
         href="/"
         className="btn-ghost p-2 -ml-2 w-fit rounded-full mb-8"
