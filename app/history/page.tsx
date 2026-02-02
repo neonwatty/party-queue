@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { supabase, getSessionId } from '@/lib/supabase'
 import { logger } from '@/lib/logger'
 import { ChevronLeftIcon } from '@/components/icons'
+import { TwinklingStars } from '@/components/ui/TwinklingStars'
 
 const log = logger.createLogger('History')
 
@@ -117,16 +118,18 @@ export default function HistoryPage() {
   }, [])
 
   return (
-    <div className="container-mobile bg-gradient-party flex flex-col px-6 py-8">
+    <div className="container-mobile bg-gradient-party flex flex-col px-6 py-8 relative">
+      <TwinklingStars count={25} />
+
       <Link
         href="/"
-        className="btn-ghost p-2 -ml-2 w-fit rounded-full mb-8"
+        className="btn-ghost p-2 -ml-2 w-fit rounded-full mb-8 relative z-10"
         aria-label="Go back to home"
       >
         <ChevronLeftIcon />
       </Link>
 
-      <h1 className="text-3xl font-bold mb-2 animate-fade-in-up opacity-0">
+      <h1 className="text-3xl font-bold mb-2 animate-fade-in-up opacity-0 relative z-10">
         Party History
       </h1>
       <p className="text-text-secondary mb-8 animate-fade-in-up opacity-0 delay-100">

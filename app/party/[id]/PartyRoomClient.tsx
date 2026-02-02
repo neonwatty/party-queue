@@ -14,6 +14,7 @@ import { validateImage, createPreviewUrl, revokePreviewUrl, deleteImage } from '
 import { UploadToast } from '@/components/ui/UploadToast'
 import { ImageLightbox } from '@/components/ui/ImageLightbox'
 import { ConflictToast } from '@/components/ui/ConflictToast'
+import { TwinklingStars } from '@/components/ui/TwinklingStars'
 import { PlusIcon, LoaderIcon } from '@/components/icons'
 import {
   PartyHeader,
@@ -476,7 +477,10 @@ export default function PartyRoomClient() {
   }
 
   return (
-    <div className="container-mobile bg-surface-950 flex flex-col min-h-screen">
+    <div className="container-mobile bg-surface-950 flex flex-col min-h-screen relative">
+      {/* Twinkling Stars */}
+      <TwinklingStars count={30} />
+
       <PartyHeader
         partyName={partyInfo?.name || 'Party'}
         partyCode={partyCode}
