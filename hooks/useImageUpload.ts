@@ -118,7 +118,7 @@ export function useImageUpload(options: UseImageUploadOptions = {}): UseImageUpl
         log.error('Image upload failed', err)
       }
     },
-    [onSuccess, onError]
+    [onSuccess, onError],
   )
 
   const retry = useCallback(() => {

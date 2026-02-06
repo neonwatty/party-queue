@@ -7,18 +7,18 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
 // Check if we're in mock mode (no real Supabase credentials)
-export const IS_MOCK_MODE = !supabaseUrl ||
-  supabaseUrl.includes('placeholder') ||
-  supabaseUrl.includes('your-project-id') ||
-  !supabaseAnonKey
+export const IS_MOCK_MODE =
+  !supabaseUrl || supabaseUrl.includes('placeholder') || supabaseUrl.includes('your-project-id') || !supabaseAnonKey
 
 if (IS_MOCK_MODE) {
-  logger.warn('Supabase credentials not configured. Running in mock mode. Add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY to .env.local for full functionality.')
+  logger.warn(
+    'Supabase credentials not configured. Running in mock mode. Add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY to .env.local for full functionality.',
+  )
 }
 
 export const supabase = createClient(
   supabaseUrl || 'https://placeholder.supabase.co',
-  supabaseAnonKey || 'placeholder-key'
+  supabaseAnonKey || 'placeholder-key',
 )
 
 // Migrate localStorage keys from old brand to new brand

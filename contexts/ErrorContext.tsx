@@ -41,11 +41,7 @@ export function ErrorProvider({ children }: ErrorProviderProps) {
     <ErrorContext.Provider value={{ showError, clearError, handleError }}>
       {children}
       {error && (
-        <ErrorToast
-          message={error.message}
-          onDismiss={clearError}
-          onRetry={error.retryFn ? handleRetry : undefined}
-        />
+        <ErrorToast message={error.message} onDismiss={clearError} onRetry={error.retryFn ? handleRetry : undefined} />
       )}
     </ErrorContext.Provider>
   )

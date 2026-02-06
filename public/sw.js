@@ -5,16 +5,14 @@ const OFFLINE_URL = '/offline.html'
 
 // Only cache static assets that don't change often
 // DO NOT cache index.html or hashed JS bundles - they have their own cache busting
-const PRECACHE_ASSETS = [
-  '/manifest.json',
-]
+const PRECACHE_ASSETS = ['/manifest.json']
 
 // Install event - cache core assets
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll(PRECACHE_ASSETS)
-    })
+    }),
   )
   // Activate immediately
   self.skipWaiting()
@@ -24,12 +22,8 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames
-          .filter((name) => name !== CACHE_NAME)
-          .map((name) => caches.delete(name))
-      )
-    })
+      return Promise.all(cacheNames.filter((name) => name !== CACHE_NAME).map((name) => caches.delete(name)))
+    }),
   )
   // Take control of all pages immediately
   self.clients.claim()
@@ -87,7 +81,7 @@ self.addEventListener('fetch', (event) => {
 
           return new Response('Offline', { status: 503 })
         })
-      })
+      }),
   )
 })
 
@@ -106,9 +100,7 @@ self.addEventListener('push', (event) => {
     },
   }
 
-  event.waitUntil(
-    self.registration.showNotification(data.title || 'Link Party', options)
-  )
+  event.waitUntil(self.registration.showNotification(data.title || 'Link Party', options))
 })
 
 // Handle notification click
@@ -127,6 +119,6 @@ self.addEventListener('notificationclick', (event) => {
       if (clients.openWindow) {
         return clients.openWindow(event.notification.data.url)
       }
-    })
+    }),
   )
 })

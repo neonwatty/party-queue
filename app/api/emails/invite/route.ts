@@ -46,32 +46,23 @@ export async function POST(request: NextRequest) {
     if (!email || !partyCode || !partyName || !inviterName) {
       return NextResponse.json(
         { error: 'Missing required fields: email, partyCode, partyName, inviterName' },
-        { status: 400 }
+        { status: 400 },
       )
     }
 
     // Validate email format
     if (!isValidEmail(email)) {
-      return NextResponse.json(
-        { error: 'Invalid email address' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Invalid email address' }, { status: 400 })
     }
 
     // Validate party code format (6 alphanumeric characters)
     if (!/^[A-Z0-9]{6}$/.test(partyCode.toUpperCase())) {
-      return NextResponse.json(
-        { error: 'Invalid party code format' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Invalid party code format' }, { status: 400 })
     }
 
     // Check rate limit
     if (!checkRateLimit(partyCode)) {
-      return NextResponse.json(
-        { error: 'Too many invitations sent. Please try again later.' },
-        { status: 429 }
-      )
+      return NextResponse.json({ error: 'Too many invitations sent. Please try again later.' }, { status: 429 })
     }
 
     // Verify party exists (optional - requires service role)
@@ -87,18 +78,12 @@ export async function POST(request: NextRequest) {
         .single()
 
       if (error || !party) {
-        return NextResponse.json(
-          { error: 'Party not found' },
-          { status: 404 }
-        )
+        return NextResponse.json({ error: 'Party not found' }, { status: 404 })
       }
 
       // Check if party has expired
       if (new Date(party.expires_at) < new Date()) {
-        return NextResponse.json(
-          { error: 'This party has expired' },
-          { status: 410 }
-        )
+        return NextResponse.json({ error: 'This party has expired' }, { status: 410 })
       }
     }
 
@@ -113,10 +98,7 @@ export async function POST(request: NextRequest) {
 
     if (!result.success) {
       console.error('Failed to send invitation:', result.error)
-      return NextResponse.json(
-        { error: result.error || 'Failed to send invitation' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: result.error || 'Failed to send invitation' }, { status: 500 })
     }
 
     return NextResponse.json({
@@ -126,9 +108,6 @@ export async function POST(request: NextRequest) {
     })
   } catch (err) {
     console.error('Invite API error:', err)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

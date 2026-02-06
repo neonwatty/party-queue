@@ -13,19 +13,9 @@ export {
   ShareIcon,
 } from './ActionIcons'
 
-export {
-  ChevronLeftIcon,
-  CloseIcon,
-} from './NavigationIcons'
+export { ChevronLeftIcon, CloseIcon } from './NavigationIcons'
 
-export {
-  YoutubeIcon,
-  TwitterIcon,
-  RedditIcon,
-  NoteIcon,
-  LinkIcon,
-  ImageIcon,
-} from './ContentTypeIcons'
+export { YoutubeIcon, TwitterIcon, RedditIcon, NoteIcon, LinkIcon, ImageIcon } from './ContentTypeIcons'
 
 export {
   CheckIcon,

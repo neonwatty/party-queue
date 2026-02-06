@@ -110,9 +110,7 @@ export default function LoginPage() {
         </button>
 
         <div className="flex-1 flex flex-col">
-          <h1 className="text-3xl font-bold mb-2 animate-fade-in-up opacity-0">
-            Reset password
-          </h1>
+          <h1 className="text-3xl font-bold mb-2 animate-fade-in-up opacity-0">Reset password</h1>
           <p className="text-text-secondary mb-8 animate-fade-in-up opacity-0 delay-100">
             Enter your email to receive a reset link
           </p>
@@ -121,9 +119,7 @@ export default function LoginPage() {
             <div className="animate-fade-in-up opacity-0 delay-200">
               <div className="bg-teal-500/10 border border-teal-500/30 rounded-xl p-4 text-center">
                 <p className="text-teal-400 font-medium mb-2">Check your email</p>
-                <p className="text-text-secondary text-sm">
-                  We've sent a password reset link to {email}
-                </p>
+                <p className="text-text-secondary text-sm">We've sent a password reset link to {email}</p>
               </div>
               <button
                 onClick={() => {
@@ -137,9 +133,7 @@ export default function LoginPage() {
             </div>
           ) : (
             <>
-              {error && (
-                <div className="text-red-400 text-sm text-center mb-4">{error}</div>
-              )}
+              {error && <div className="text-red-400 text-sm text-center mb-4">{error}</div>}
 
               <div className="space-y-4 animate-fade-in-up opacity-0 delay-200">
                 <div>
@@ -152,15 +146,9 @@ export default function LoginPage() {
                     className={`input ${emailError ? 'input-error' : ''}`}
                     disabled={isLoading}
                   />
-                  {emailError && (
-                    <p className="text-red-400 text-sm mt-1">{emailError}</p>
-                  )}
+                  {emailError && <p className="text-red-400 text-sm mt-1">{emailError}</p>}
                 </div>
-                <button
-                  onClick={handleForgotPassword}
-                  className="btn btn-primary w-full"
-                  disabled={isLoading}
-                >
+                <button onClick={handleForgotPassword} className="btn btn-primary w-full" disabled={isLoading}>
                   {isLoading ? <LoaderIcon /> : 'Send Reset Link'}
                 </button>
               </div>
@@ -176,25 +164,17 @@ export default function LoginPage() {
       <TwinklingStars count={25} />
 
       {/* Back button */}
-      <Link
-        href="/"
-        className="btn-ghost p-2 -ml-2 w-fit rounded-full mb-8"
-        aria-label="Go back to home"
-      >
+      <Link href="/" className="btn-ghost p-2 -ml-2 w-fit rounded-full mb-8" aria-label="Go back to home">
         <ChevronLeftIcon />
       </Link>
 
       <div className="flex-1 flex flex-col">
-        <h1 className="text-3xl font-bold mb-2 animate-fade-in-up opacity-0">
-          Welcome back
-        </h1>
+        <h1 className="text-3xl font-bold mb-2 animate-fade-in-up opacity-0">Welcome back</h1>
         <p className="text-text-secondary mb-8 animate-fade-in-up opacity-0 delay-100">
           Sign in to access your party history
         </p>
 
-        {error && (
-          <div className="text-red-400 text-sm text-center mb-4">{error}</div>
-        )}
+        {error && <div className="text-red-400 text-sm text-center mb-4">{error}</div>}
 
         {/* OAuth buttons */}
         <div className="space-y-3 mb-8 animate-fade-in-up opacity-0 delay-200">
@@ -207,7 +187,7 @@ export default function LoginPage() {
               <LoaderIcon />
             ) : (
               <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z"/>
+                <path d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z" />
               </svg>
             )}
             Continue with Google
@@ -232,9 +212,7 @@ export default function LoginPage() {
               className={`input ${emailError ? 'input-error' : ''}`}
               disabled={isLoading}
             />
-            {emailError && (
-              <p className="text-red-400 text-sm mt-1">{emailError}</p>
-            )}
+            {emailError && <p className="text-red-400 text-sm mt-1">{emailError}</p>}
           </div>
           <div>
             <input
@@ -246,15 +224,9 @@ export default function LoginPage() {
               className={`input ${passwordError ? 'input-error' : ''}`}
               disabled={isLoading}
             />
-            {passwordError && (
-              <p className="text-red-400 text-sm mt-1">{passwordError}</p>
-            )}
+            {passwordError && <p className="text-red-400 text-sm mt-1">{passwordError}</p>}
           </div>
-          <button
-            onClick={handleEmailSignIn}
-            className="btn btn-primary w-full"
-            disabled={isLoading}
-          >
+          <button onClick={handleEmailSignIn} className="btn btn-primary w-full" disabled={isLoading}>
             {isLoading ? <LoaderIcon /> : 'Sign In'}
           </button>
         </div>
@@ -269,10 +241,7 @@ export default function LoginPage() {
         </div>
 
         <div className="mt-4 text-center animate-fade-in-up opacity-0 delay-500">
-          <Link
-            href="/signup"
-            className="text-text-muted text-sm hover:text-text-secondary transition-colors"
-          >
+          <Link href="/signup" className="text-text-muted text-sm hover:text-text-secondary transition-colors">
             Don't have an account? <span className="text-accent-400">Sign up</span>
           </Link>
         </div>

@@ -33,9 +33,9 @@ test.describe('Share and Invite Flows', () => {
         // Mock clipboard API
         Object.defineProperty(navigator, 'clipboard', {
           value: {
-            writeText: () => Promise.resolve()
+            writeText: () => Promise.resolve(),
           },
-          writable: true
+          writable: true,
         })
       })
 
@@ -94,9 +94,9 @@ test.describe('Email Invitation API', () => {
   test('rejects request with missing fields', async ({ request }) => {
     const response = await request.post('/api/emails/invite', {
       data: {
-        email: 'test@example.com'
+        email: 'test@example.com',
         // Missing partyCode, partyName, inviterName
-      }
+      },
     })
 
     expect(response.status()).toBe(400)
@@ -110,8 +110,8 @@ test.describe('Email Invitation API', () => {
         email: 'not-an-email',
         partyCode: 'ABC123',
         partyName: 'Test Party',
-        inviterName: 'Test User'
-      }
+        inviterName: 'Test User',
+      },
     })
 
     expect(response.status()).toBe(400)
@@ -125,8 +125,8 @@ test.describe('Email Invitation API', () => {
         email: 'test@example.com',
         partyCode: 'INVALID', // 7 characters
         partyName: 'Test Party',
-        inviterName: 'Test User'
-      }
+        inviterName: 'Test User',
+      },
     })
 
     // Either 400 for format or 404 for not found
@@ -140,8 +140,8 @@ test.describe('Email Invitation API', () => {
         partyCode: 'ABC123',
         partyName: 'Test Party',
         inviterName: 'Test User',
-        personalMessage: 'Join my party!'
-      }
+        personalMessage: 'Join my party!',
+      },
     })
 
     // In test environment without Resend configured, might get 404 (party not found)

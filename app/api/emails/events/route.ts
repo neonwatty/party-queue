@@ -27,10 +27,7 @@ export async function GET(request: NextRequest) {
   const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
   if (!supabaseUrl || !supabaseServiceKey) {
-    return NextResponse.json(
-      { error: 'Server configuration error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Server configuration error' }, { status: 500 })
   }
 
   const supabase = createClient(supabaseUrl, supabaseServiceKey)
@@ -62,16 +59,11 @@ export async function GET(request: NextRequest) {
 
     if (error) {
       console.error('Failed to fetch email events:', error)
-      return NextResponse.json(
-        { error: 'Failed to fetch email events' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Failed to fetch email events' }, { status: 500 })
     }
 
     // Get stats (aggregate counts by event type)
-    const { data: statsData, error: statsError } = await supabase
-      .from('email_events')
-      .select('event_type')
+    const { data: statsData, error: statsError } = await supabase.from('email_events').select('event_type')
 
     if (statsError) {
       console.error('Failed to fetch email stats:', statsError)
@@ -122,9 +114,6 @@ export async function GET(request: NextRequest) {
     })
   } catch (err) {
     console.error('Email events API error:', err)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

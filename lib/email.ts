@@ -50,7 +50,7 @@ export async function sendEmail(options: SendEmailOptions): Promise<SendEmailRes
     const response = await fetch(RESEND_API_URL, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${apiKey}`,
+        Authorization: `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
@@ -179,14 +179,18 @@ function generatePartyInviteHtml(options: {
                 </p>
               </div>
 
-              ${personalMessage ? `
+              ${
+                personalMessage
+                  ? `
               <!-- Personal Message -->
               <div style="background-color: #1f1f1f; border-left: 3px solid #7c3aed; border-radius: 0 8px 8px 0; padding: 16px; margin-bottom: 24px;">
                 <p style="margin: 0; font-size: 14px; font-style: italic; color: #d4d4d4;">
                   "${personalMessage}"
                 </p>
               </div>
-              ` : ''}
+              `
+                  : ''
+              }
 
               <!-- CTA Button -->
               <a href="${joinUrl}" style="display: block; width: 100%; padding: 16px 24px; background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%); color: #ffffff; text-decoration: none; text-align: center; font-size: 16px; font-weight: 600; border-radius: 8px; box-sizing: border-box;">

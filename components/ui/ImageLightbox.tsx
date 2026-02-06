@@ -18,7 +18,7 @@ export function ImageLightbox({ imageUrl, caption, isOpen, onClose }: ImageLight
         onClose()
       }
     },
-    [onClose]
+    [onClose],
   )
 
   useEffect(() => {
@@ -51,10 +51,7 @@ export function ImageLightbox({ imageUrl, caption, isOpen, onClose }: ImageLight
       </button>
 
       {/* Image container */}
-      <div
-        className="max-w-[95vw] max-h-[90vh] flex flex-col items-center"
-        onClick={(e) => e.stopPropagation()}
-      >
+      <div className="max-w-[95vw] max-h-[90vh] flex flex-col items-center" onClick={(e) => e.stopPropagation()}>
         <img
           src={imageUrl}
           alt={caption || 'Full size image'}
@@ -70,9 +67,7 @@ export function ImageLightbox({ imageUrl, caption, isOpen, onClose }: ImageLight
       </div>
 
       {/* Tap anywhere hint on mobile */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-text-muted text-xs">
-        Tap anywhere to close
-      </div>
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-text-muted text-xs">Tap anywhere to close</div>
     </div>
   )
 }

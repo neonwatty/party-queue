@@ -2,14 +2,7 @@
 
 import { memo, useMemo, useCallback } from 'react'
 import type { QueueItem } from '@/hooks/useParty'
-import {
-  PlayIcon,
-  SkipIcon,
-  TwitterIcon,
-  RedditIcon,
-  NoteIcon,
-  ImageIcon,
-} from '@/components/icons'
+import { PlayIcon, SkipIcon, TwitterIcon, RedditIcon, NoteIcon, ImageIcon } from '@/components/icons'
 
 interface NowShowingSectionProps {
   currentItem: QueueItem
@@ -68,11 +61,7 @@ export const NowShowingSection = memo(function NowShowingSection({
       {currentItem.type === 'youtube' && (
         <>
           <div className="relative aspect-video bg-surface-800 rounded-xl overflow-hidden mb-4 glow-accent">
-            <img
-              src={currentItem.thumbnail}
-              alt={currentItem.title}
-              className="w-full h-full object-cover"
-            />
+            <img src={currentItem.thumbnail} alt={currentItem.title} className="w-full h-full object-cover" />
             <div className="absolute inset-0 flex items-center justify-center bg-black/30">
               <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur flex items-center justify-center">
                 <PlayIcon />
@@ -139,10 +128,7 @@ export const NowShowingSection = memo(function NowShowingSection({
       {/* Image Content */}
       {currentItem.type === 'image' && (
         <div className="mb-4">
-          <div
-            className="relative rounded-xl overflow-hidden cursor-pointer"
-            onClick={handleImageClick}
-          >
+          <div className="relative rounded-xl overflow-hidden cursor-pointer" onClick={handleImageClick}>
             {currentItem.imageUrl ? (
               <img
                 src={currentItem.imageUrl}
@@ -160,9 +146,7 @@ export const NowShowingSection = memo(function NowShowingSection({
           {currentItem.imageCaption && (
             <p className="text-text-secondary text-sm mt-2 text-center">{currentItem.imageCaption}</p>
           )}
-          <p className="text-text-muted text-xs mt-1 text-center">
-            Shared by {currentItem.addedBy} · Tap to expand
-          </p>
+          <p className="text-text-muted text-xs mt-1 text-center">Shared by {currentItem.addedBy} · Tap to expand</p>
         </div>
       )}
 

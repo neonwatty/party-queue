@@ -12,13 +12,7 @@ interface NoteViewModalProps {
   onEdit: () => void
 }
 
-export function NoteViewModal({
-  isOpen,
-  note,
-  isOwnNote,
-  onClose,
-  onEdit,
-}: NoteViewModalProps) {
+export function NoteViewModal({ isOpen, note, isOwnNote, onClose, onEdit }: NoteViewModalProps) {
   // Handle Escape key to close modal
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -67,18 +61,12 @@ export function NoteViewModal({
 
         <div className="flex gap-3 mt-4">
           {isOwnNote && (
-            <button
-              onClick={onEdit}
-              className="btn btn-secondary flex-1 flex items-center justify-center gap-2"
-            >
+            <button onClick={onEdit} className="btn btn-secondary flex-1 flex items-center justify-center gap-2">
               <EditIcon />
               Edit
             </button>
           )}
-          <button
-            onClick={onClose}
-            className="btn btn-primary flex-1"
-          >
+          <button onClick={onClose} className="btn btn-primary flex-1">
             Done
           </button>
         </div>

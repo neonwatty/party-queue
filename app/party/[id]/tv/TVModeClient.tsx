@@ -7,14 +7,7 @@ import { getQueueItemTitle } from '@/utils/queueHelpers'
 import { getContentTypeBadge } from '@/utils/contentHelpers'
 import { getCurrentParty } from '@/lib/supabase'
 import { ImageLightbox } from '@/components/ui/ImageLightbox'
-import {
-  ChevronLeftIcon,
-  TwitterIcon,
-  RedditIcon,
-  NoteIcon,
-  ImageIcon,
-  UsersIcon,
-} from '@/components/icons'
+import { ChevronLeftIcon, TwitterIcon, RedditIcon, NoteIcon, ImageIcon, UsersIcon } from '@/components/icons'
 
 export default function TVModeClient() {
   const router = useRouter()
@@ -25,8 +18,8 @@ export default function TVModeClient() {
   const { queue, members, partyInfo } = useParty(partyId)
   const [lightboxImage, setLightboxImage] = useState<{ url: string; caption?: string } | null>(null)
 
-  const currentItem = queue.find(v => v.status === 'showing')
-  const upNext = queue.filter(v => v.status === 'pending').slice(0, 3)
+  const currentItem = queue.find((v) => v.status === 'showing')
+  const upNext = queue.filter((v) => v.status === 'pending').slice(0, 3)
 
   const handleExit = () => {
     router.push(`/party/${partyId}`)
@@ -114,10 +107,13 @@ export default function TVModeClient() {
           <div className="max-w-5xl mx-auto p-8 flex items-center justify-center">
             <div
               className="cursor-pointer"
-              onClick={() => currentItem.imageUrl && setLightboxImage({
-                url: currentItem.imageUrl,
-                caption: currentItem.imageCaption,
-              })}
+              onClick={() =>
+                currentItem.imageUrl &&
+                setLightboxImage({
+                  url: currentItem.imageUrl,
+                  caption: currentItem.imageCaption,
+                })
+              }
             >
               {currentItem.imageUrl ? (
                 <div className="text-center">
@@ -129,9 +125,7 @@ export default function TVModeClient() {
                   {currentItem.imageCaption && (
                     <p className="text-text-secondary text-xl mt-4">{currentItem.imageCaption}</p>
                   )}
-                  <p className="text-text-muted text-sm mt-2">
-                    Shared by {currentItem.addedBy} · Click to expand
-                  </p>
+                  <p className="text-text-muted text-sm mt-2">Shared by {currentItem.addedBy} · Click to expand</p>
                 </div>
               ) : (
                 <div className="bg-surface-900/90 backdrop-blur rounded-2xl p-12 flex flex-col items-center justify-center">
@@ -181,7 +175,10 @@ export default function TVModeClient() {
                   const badge = getContentTypeBadge(item.type)
                   const BadgeIcon = badge.icon
                   return (
-                    <div key={item.id} className={`w-24 h-14 rounded-lg overflow-hidden ${badge.bg} flex items-center justify-center`}>
+                    <div
+                      key={item.id}
+                      className={`w-24 h-14 rounded-lg overflow-hidden ${badge.bg} flex items-center justify-center`}
+                    >
                       {item.type === 'youtube' && item.thumbnail ? (
                         <img
                           src={item.thumbnail}
@@ -216,9 +213,7 @@ export default function TVModeClient() {
             <UsersIcon />
             <span>{members.length}</span>
           </div>
-          {partyInfo?.name && (
-            <div className="text-text-muted text-sm">{partyInfo.name}</div>
-          )}
+          {partyInfo?.name && <div className="text-text-muted text-sm">{partyInfo.name}</div>}
         </div>
       </div>
 

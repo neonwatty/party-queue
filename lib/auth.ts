@@ -35,7 +35,10 @@ export async function signOut() {
 }
 
 export async function getCurrentSession(): Promise<Session | null> {
-  const { data: { session }, error } = await supabase.auth.getSession()
+  const {
+    data: { session },
+    error,
+  } = await supabase.auth.getSession()
 
   if (error) {
     log.error('Failed to get session', error)
@@ -46,11 +49,11 @@ export async function getCurrentSession(): Promise<Session | null> {
 }
 
 export function onAuthStateChange(callback: (session: Session | null) => void) {
-  const { data: { subscription } } = supabase.auth.onAuthStateChange(
-    (_event, session) => {
-      callback(session)
-    }
-  )
+  const {
+    data: { subscription },
+  } = supabase.auth.onAuthStateChange((_event, session) => {
+    callback(session)
+  })
 
   return subscription
 }
@@ -81,11 +84,7 @@ function mapSupabaseError(error: { message: string; code?: string }): string {
   return 'Something went wrong. Please try again.'
 }
 
-export async function signUpWithEmail(
-  email: string,
-  password: string,
-  displayName?: string
-): Promise<AuthResult> {
+export async function signUpWithEmail(email: string, password: string, displayName?: string): Promise<AuthResult> {
   const { error } = await supabase.auth.signUp({
     email,
     password,
@@ -105,10 +104,7 @@ export async function signUpWithEmail(
   return { success: true, needsConfirmation: true }
 }
 
-export async function signInWithEmail(
-  email: string,
-  password: string
-): Promise<AuthResult> {
+export async function signInWithEmail(email: string, password: string): Promise<AuthResult> {
   const { error } = await supabase.auth.signInWithPassword({
     email,
     password,

@@ -96,16 +96,10 @@ export function UploadToast({
               <div className="text-sm font-medium text-red-400">Upload failed</div>
               <div className="text-xs text-text-muted truncate max-w-[150px]">{error}</div>
             </div>
-            <button
-              onClick={onRetry}
-              className="text-xs text-accent-400 hover:text-accent-300 font-medium"
-            >
+            <button onClick={onRetry} className="text-xs text-accent-400 hover:text-accent-300 font-medium">
               Retry
             </button>
-            <button
-              onClick={onDismiss}
-              className="text-text-muted hover:text-text-secondary"
-            >
+            <button onClick={onDismiss} className="text-text-muted hover:text-text-secondary">
               <CloseIcon size={16} />
             </button>
           </>

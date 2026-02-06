@@ -85,7 +85,7 @@ export async function fetchContentMetadata(url: string): Promise<ContentMetadata
   // Return mock data if Supabase is not configured
   if (!supabaseUrl || supabaseUrl.includes('placeholder')) {
     // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 500))
+    await new Promise((resolve) => setTimeout(resolve, 500))
     return getMockMetadata(url)
   }
 
@@ -94,7 +94,7 @@ export async function fetchContentMetadata(url: string): Promise<ContentMetadata
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${supabaseKey}`,
+        Authorization: `Bearer ${supabaseKey}`,
       },
       body: JSON.stringify({ url }),
     })

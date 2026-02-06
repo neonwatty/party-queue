@@ -43,7 +43,6 @@ export function usePWAInstall(): PWAInstallState {
   const [dismissed, setDismissed] = useState(getInitialDismissed)
 
   useEffect(() => {
-
     // Listen for beforeinstallprompt
     const handleBeforeInstall = (e: Event) => {
       e.preventDefault()

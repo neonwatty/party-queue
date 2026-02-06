@@ -3,7 +3,15 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { supabase, generatePartyCode, getSessionId, getDisplayName, setDisplayName, getAvatar, setCurrentParty } from '@/lib/supabase'
+import {
+  supabase,
+  generatePartyCode,
+  getSessionId,
+  getDisplayName,
+  setDisplayName,
+  getAvatar,
+  setCurrentParty,
+} from '@/lib/supabase'
 import { logger } from '@/lib/logger'
 import { tryAction } from '@/lib/rateLimit'
 import { useAuth } from '@/contexts/AuthContext'
@@ -86,9 +94,7 @@ export default function CreatePartyPage() {
       if (user?.id) {
         memberData.user_id = user.id
       }
-      const { error: memberError } = await supabase
-        .from('party_members')
-        .insert(memberData)
+      const { error: memberError } = await supabase.from('party_members').insert(memberData)
 
       if (memberError) throw memberError
 
@@ -109,27 +115,19 @@ export default function CreatePartyPage() {
     <div className="container-mobile bg-gradient-party flex flex-col px-6 py-8 relative">
       <TwinklingStars count={25} />
 
-      <Link
-        href="/"
-        className="btn-ghost p-2 -ml-2 w-fit rounded-full mb-8"
-        aria-label="Go back to home"
-      >
+      <Link href="/" className="btn-ghost p-2 -ml-2 w-fit rounded-full mb-8" aria-label="Go back to home">
         <ChevronLeftIcon />
       </Link>
 
       <div className="flex-1 flex flex-col">
-        <h1 className="text-3xl font-bold mb-2 animate-fade-in-up opacity-0">
-          Start a party
-        </h1>
+        <h1 className="text-3xl font-bold mb-2 animate-fade-in-up opacity-0">Start a party</h1>
         <p className="text-text-secondary mb-8 animate-fade-in-up opacity-0 delay-100">
           Create a room and invite your friends
         </p>
 
         <div className="space-y-6 animate-fade-in-up opacity-0 delay-200">
           <div>
-            <label className="block text-sm text-text-secondary mb-2">
-              Your name
-            </label>
+            <label className="block text-sm text-text-secondary mb-2">Your name</label>
             <input
               type="text"
               placeholder="Enter your display name"
@@ -141,7 +139,9 @@ export default function CreatePartyPage() {
               maxLength={50}
             />
             <div className="flex justify-between mt-1">
-              <span className={`text-xs ${displayName.trim().length > 0 && displayName.trim().length < 2 ? 'text-red-400' : 'text-text-muted'}`}>
+              <span
+                className={`text-xs ${displayName.trim().length > 0 && displayName.trim().length < 2 ? 'text-red-400' : 'text-text-muted'}`}
+              >
                 {displayName.trim().length > 0 && displayName.trim().length < 2 ? 'Min 2 characters' : ''}
               </span>
               <span className={`text-xs ${displayName.length >= 45 ? 'text-yellow-400' : 'text-text-muted'}`}>
@@ -151,9 +151,7 @@ export default function CreatePartyPage() {
           </div>
 
           <div>
-            <label className="block text-sm text-text-secondary mb-2">
-              Party name (optional)
-            </label>
+            <label className="block text-sm text-text-secondary mb-2">Party name (optional)</label>
             <input
               type="text"
               placeholder="Saturday Night Hangout"
@@ -180,9 +178,7 @@ export default function CreatePartyPage() {
                 <div className="text-sm font-medium">Queue limit</div>
                 <div className="text-xs text-text-muted">Max items in queue</div>
               </div>
-              <div className="bg-surface-700 px-3 py-1.5 rounded-lg font-mono text-sm">
-                100
-              </div>
+              <div className="bg-surface-700 px-3 py-1.5 rounded-lg font-mono text-sm">100</div>
             </div>
             <div className="h-px bg-surface-700"></div>
             <div className="flex items-center justify-between">
@@ -190,15 +186,11 @@ export default function CreatePartyPage() {
                 <div className="text-sm font-medium">Rate limit</div>
                 <div className="text-xs text-text-muted">Items per person/minute</div>
               </div>
-              <div className="bg-surface-700 px-3 py-1.5 rounded-lg font-mono text-sm">
-                5
-              </div>
+              <div className="bg-surface-700 px-3 py-1.5 rounded-lg font-mono text-sm">5</div>
             </div>
           </div>
 
-          {error && (
-            <div className="text-red-400 text-sm text-center">{error}</div>
-          )}
+          {error && <div className="text-red-400 text-sm text-center">{error}</div>}
 
           <button
             onClick={handleCreate}

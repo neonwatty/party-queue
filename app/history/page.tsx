@@ -32,11 +32,13 @@ export default function HistoryPage() {
         // Fetch parties the user has joined
         const { data: memberData, error: memberError } = await supabase
           .from('party_members')
-          .select(`
+          .select(
+            `
             party_id,
             joined_at,
             parties (id, code, name, created_at)
-          `)
+          `,
+          )
           .eq('session_id', sessionId)
           .order('joined_at', { ascending: false })
           .limit(10)
@@ -51,7 +53,7 @@ export default function HistoryPage() {
         }
 
         // Get unique party IDs
-        const partyIds = memberData.map(m => m.party_id)
+        const partyIds = memberData.map((m) => m.party_id)
 
         // Get member counts for each party
         const { data: memberCounts, error: countError } = await supabase
@@ -75,33 +77,33 @@ export default function HistoryPage() {
 
         // Count members per party
         const memberCountMap: Record<string, number> = {}
-        memberCounts?.forEach(m => {
+        memberCounts?.forEach((m) => {
           memberCountMap[m.party_id] = (memberCountMap[m.party_id] || 0) + 1
         })
 
         // Count items per party
         const itemCountMap: Record<string, number> = {}
-        itemCounts?.forEach(i => {
+        itemCounts?.forEach((i) => {
           itemCountMap[i.party_id] = (itemCountMap[i.party_id] || 0) + 1
         })
 
         // Format the data
         const formattedParties: PartyHistoryItem[] = memberData
-          .filter(m => m.parties)
-          .map(m => {
+          .filter((m) => m.parties)
+          .map((m) => {
             const party = m.parties as unknown as { id: string; code: string; name: string | null; created_at: string }
             const createdAt = new Date(party.created_at)
             const dateStr = createdAt.toLocaleDateString('en-US', {
               month: 'short',
               day: 'numeric',
-              year: 'numeric'
+              year: 'numeric',
             })
             return {
               id: party.id,
               name: party.name || `Party ${party.code}`,
               date: dateStr,
               members: memberCountMap[party.id] || 1,
-              items: itemCountMap[party.id] || 0
+              items: itemCountMap[party.id] || 0,
             }
           })
 
@@ -121,20 +123,12 @@ export default function HistoryPage() {
     <div className="container-mobile bg-gradient-party flex flex-col px-6 py-8 relative">
       <TwinklingStars count={25} />
 
-      <Link
-        href="/"
-        className="btn-ghost p-2 -ml-2 w-fit rounded-full mb-8 relative z-10"
-        aria-label="Go back to home"
-      >
+      <Link href="/" className="btn-ghost p-2 -ml-2 w-fit rounded-full mb-8 relative z-10" aria-label="Go back to home">
         <ChevronLeftIcon />
       </Link>
 
-      <h1 className="text-3xl font-bold mb-2 animate-fade-in-up opacity-0 relative z-10">
-        Party History
-      </h1>
-      <p className="text-text-secondary mb-8 animate-fade-in-up opacity-0 delay-100">
-        Your past watch sessions
-      </p>
+      <h1 className="text-3xl font-bold mb-2 animate-fade-in-up opacity-0 relative z-10">Party History</h1>
+      <p className="text-text-secondary mb-8 animate-fade-in-up opacity-0 delay-100">Your past watch sessions</p>
 
       {loading && (
         <div className="flex justify-center py-12">
@@ -142,11 +136,7 @@ export default function HistoryPage() {
         </div>
       )}
 
-      {error && (
-        <div className="card p-4 text-center text-red-400 animate-fade-in-up opacity-0 delay-150">
-          {error}
-        </div>
-      )}
+      {error && <div className="card p-4 text-center text-red-400 animate-fade-in-up opacity-0 delay-150">{error}</div>}
 
       {!loading && !error && parties.length === 0 && (
         <div className="card p-8 text-center animate-fade-in-up opacity-0 delay-150">

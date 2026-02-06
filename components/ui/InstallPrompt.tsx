@@ -17,9 +17,7 @@ export function InstallPrompt() {
           <div className="text-2xl">📲</div>
           <div className="flex-1">
             <h3 className="font-semibold text-white mb-1">Install Link Party</h3>
-            <p className="text-sm text-text-muted mb-3">
-              Add to your home screen for the best experience
-            </p>
+            <p className="text-sm text-text-muted mb-3">Add to your home screen for the best experience</p>
             <div className="flex gap-2">
               <button
                 onClick={install}

@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 /* Fonts loaded via layout.tsx with preload and display=swap for non-blocking load */
 
@@ -13,46 +13,46 @@
 /* CSS Custom Properties - for var() usage in custom CSS */
 :root {
   /* Surface colors (dark navy backgrounds) */
-  --color-surface-950: #1A1D2E;  /* Main background (deep navy) */
-  --color-surface-900: #242838;  /* Card backgrounds (dark card) */
-  --color-surface-800: #2D3244;  /* Elevated surfaces */
-  --color-surface-700: #3A3F52;  /* Borders, dividers */
-  --color-surface-600: #4A5068;  /* Interactive borders */
+  --color-surface-950: #1a1d2e; /* Main background (deep navy) */
+  --color-surface-900: #242838; /* Card backgrounds (dark card) */
+  --color-surface-800: #2d3244; /* Elevated surfaces */
+  --color-surface-700: #3a3f52; /* Borders, dividers */
+  --color-surface-600: #4a5068; /* Interactive borders */
 
   /* Primary colors (warm orange) */
-  --color-primary: #FF8A5C;
-  --color-primary-hover: #E86B3A;
+  --color-primary: #ff8a5c;
+  --color-primary-hover: #e86b3a;
   --color-primary-glow: rgba(255, 138, 92, 0.4);
 
   /* Secondary colors (golden yellow) */
-  --color-secondary: #F4C95D;
+  --color-secondary: #f4c95d;
   --color-secondary-glow: rgba(244, 201, 93, 0.3);
 
   /* Accent colors (warm palette) */
-  --color-accent-500: #FF8A5C;  /* Primary orange */
-  --color-accent-400: #FF9E76;  /* Lighter orange */
-  --color-accent-300: #FFB899;  /* Light accent */
-  --color-accent-600: #E86B3A;  /* Darker orange */
+  --color-accent-500: #ff8a5c; /* Primary orange */
+  --color-accent-400: #ff9e76; /* Lighter orange */
+  --color-accent-300: #ffb899; /* Light accent */
+  --color-accent-600: #e86b3a; /* Darker orange */
 
   /* Legacy teal mapping to new palette */
-  --color-teal-500: #F4C95D;  /* Now golden */
-  --color-teal-400: #F7D67A;
-  --color-teal-600: #E8B23A;
+  --color-teal-500: #f4c95d; /* Now golden */
+  --color-teal-400: #f7d67a;
+  --color-teal-600: #e8b23a;
 
   /* Additional accent colors */
-  --color-lavender: #A8A4CE;
-  --color-forest: #4A7C59;
+  --color-lavender: #a8a4ce;
+  --color-forest: #4a7c59;
 
   /* Content type colors */
-  --color-youtube: #FF6B6B;
-  --color-twitter: #4A9EFF;
-  --color-reddit: #FF8C00;
-  --color-note: #A8A4CE;
+  --color-youtube: #ff6b6b;
+  --color-twitter: #4a9eff;
+  --color-reddit: #ff8c00;
+  --color-note: #a8a4ce;
 
   /* Text colors (light on dark) */
-  --color-text-primary: #F5F0E8;    /* Warm white */
-  --color-text-secondary: #B8B2A8;  /* Muted cream */
-  --color-text-muted: #7A756C;      /* Dim */
+  --color-text-primary: #f5f0e8; /* Warm white */
+  --color-text-secondary: #b8b2a8; /* Muted cream */
+  --color-text-muted: #7a756c; /* Dim */
 
   /* Fonts */
   --font-display: 'Instrument Serif', Georgia, serif;
@@ -62,34 +62,34 @@
 /* Tailwind v4 Design Tokens - for utility class generation */
 @theme {
   /* Surface colors (dark navy backgrounds) */
-  --color-surface-950: #1A1D2E;  /* Main background (deep navy) */
-  --color-surface-900: #242838;  /* Card backgrounds (dark card) */
-  --color-surface-800: #2D3244;  /* Elevated surfaces */
-  --color-surface-700: #3A3F52;  /* Borders, dividers */
-  --color-surface-600: #4A5068;  /* Interactive borders */
+  --color-surface-950: #1a1d2e; /* Main background (deep navy) */
+  --color-surface-900: #242838; /* Card backgrounds (dark card) */
+  --color-surface-800: #2d3244; /* Elevated surfaces */
+  --color-surface-700: #3a3f52; /* Borders, dividers */
+  --color-surface-600: #4a5068; /* Interactive borders */
 
   /* Primary colors (warm orange) */
-  --color-primary: #FF8A5C;
-  --color-primary-hover: #E86B3A;
+  --color-primary: #ff8a5c;
+  --color-primary-hover: #e86b3a;
 
   /* Secondary colors (golden yellow) */
-  --color-secondary: #F4C95D;
+  --color-secondary: #f4c95d;
 
   /* Accent colors (warm palette) */
-  --color-accent-500: #FF8A5C;  /* Primary orange */
-  --color-accent-400: #FF9E76;  /* Lighter orange */
-  --color-accent-300: #FFB899;  /* Light accent */
-  --color-accent-600: #E86B3A;  /* Darker orange */
+  --color-accent-500: #ff8a5c; /* Primary orange */
+  --color-accent-400: #ff9e76; /* Lighter orange */
+  --color-accent-300: #ffb899; /* Light accent */
+  --color-accent-600: #e86b3a; /* Darker orange */
 
   /* Legacy teal mapping */
-  --color-teal-500: #F4C95D;
-  --color-teal-400: #F7D67A;
-  --color-teal-600: #E8B23A;
+  --color-teal-500: #f4c95d;
+  --color-teal-400: #f7d67a;
+  --color-teal-600: #e8b23a;
 
   /* Text colors (light on dark) */
-  --color-text-primary: #F5F0E8;    /* Warm white */
-  --color-text-secondary: #B8B2A8;  /* Muted cream */
-  --color-text-muted: #7A756C;      /* Dim */
+  --color-text-primary: #f5f0e8; /* Warm white */
+  --color-text-secondary: #b8b2a8; /* Muted cream */
+  --color-text-muted: #7a756c; /* Dim */
 
   /* Fonts */
   --font-display: 'Instrument Serif', Georgia, serif;
@@ -159,8 +159,15 @@ body {
 }
 
 @keyframes twinkle {
-  0%, 100% { opacity: 0.15; transform: scale(1); }
-  50% { opacity: 0.6; transform: scale(1.2); }
+  0%,
+  100% {
+    opacity: 0.15;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.2);
+  }
 }
 
 /* ========================================
@@ -183,8 +190,15 @@ body {
 }
 
 @keyframes breathe {
-  0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
-  50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.1); }
+  0%,
+  100% {
+    opacity: 0.6;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: translate(-50%, -50%) scale(1.1);
+  }
 }
 
 /* ========================================
@@ -197,8 +211,7 @@ body {
 
 .bg-gradient-party {
   background:
-    radial-gradient(ellipse at 50% 0%, rgba(255, 138, 92, 0.08) 0%, transparent 50%),
-    var(--color-surface-950);
+    radial-gradient(ellipse at 50% 0%, rgba(255, 138, 92, 0.08) 0%, transparent 50%), var(--color-surface-950);
 }
 
 /* ========================================
@@ -233,7 +246,8 @@ body {
 }
 
 @keyframes pulse-glow {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow: 0 0 20px var(--color-primary-glow);
   }
   50% {
@@ -242,30 +256,71 @@ body {
 }
 
 @keyframes warmGlow {
-  0%, 100% { box-shadow: 0 0 20px var(--color-primary-glow); }
-  50% { box-shadow: 0 0 30px var(--color-primary-glow), 0 0 40px rgba(255, 138, 92, 0.2); }
+  0%,
+  100% {
+    box-shadow: 0 0 20px var(--color-primary-glow);
+  }
+  50% {
+    box-shadow:
+      0 0 30px var(--color-primary-glow),
+      0 0 40px rgba(255, 138, 92, 0.2);
+  }
 }
 
 @keyframes buttonEmber {
-  0%, 100% { box-shadow: 0 8px 32px var(--color-primary-glow); }
-  50% { box-shadow: 0 8px 40px var(--color-primary-glow), 0 4px 20px var(--color-secondary-glow); }
+  0%,
+  100% {
+    box-shadow: 0 8px 32px var(--color-primary-glow);
+  }
+  50% {
+    box-shadow:
+      0 8px 40px var(--color-primary-glow),
+      0 4px 20px var(--color-secondary-glow);
+  }
 }
 
 @keyframes logoGlow {
-  0%, 100% { box-shadow: 0 0 40px var(--color-primary-glow); }
-  50% { box-shadow: 0 0 50px var(--color-primary-glow), 0 0 60px var(--color-secondary-glow); }
+  0%,
+  100% {
+    box-shadow: 0 0 40px var(--color-primary-glow);
+  }
+  50% {
+    box-shadow:
+      0 0 50px var(--color-primary-glow),
+      0 0 60px var(--color-secondary-glow);
+  }
 }
 
 @keyframes fabGlow {
-  0%, 100% { box-shadow: 0 0 30px var(--color-primary-glow); }
-  50% { box-shadow: 0 0 45px var(--color-primary-glow), 0 0 60px var(--color-secondary-glow); }
+  0%,
+  100% {
+    box-shadow: 0 0 30px var(--color-primary-glow);
+  }
+  50% {
+    box-shadow:
+      0 0 45px var(--color-primary-glow),
+      0 0 60px var(--color-secondary-glow);
+  }
 }
 
 @keyframes flicker {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  25% { opacity: 0.8; transform: scale(0.98); }
-  50% { opacity: 1; transform: scale(1.02); }
-  75% { opacity: 0.9; transform: scale(0.99); }
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  25% {
+    opacity: 0.8;
+    transform: scale(0.98);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.02);
+  }
+  75% {
+    opacity: 0.9;
+    transform: scale(0.99);
+  }
 }
 
 .animate-fade-in-up {
@@ -289,11 +344,21 @@ body {
 }
 
 /* Staggered animation delays */
-.delay-100 { animation-delay: 100ms; }
-.delay-200 { animation-delay: 200ms; }
-.delay-300 { animation-delay: 300ms; }
-.delay-400 { animation-delay: 400ms; }
-.delay-500 { animation-delay: 500ms; }
+.delay-100 {
+  animation-delay: 100ms;
+}
+.delay-200 {
+  animation-delay: 200ms;
+}
+.delay-300 {
+  animation-delay: 300ms;
+}
+.delay-400 {
+  animation-delay: 400ms;
+}
+.delay-500 {
+  animation-delay: 500ms;
+}
 
 /* ========================================
    BUTTON STYLES
@@ -325,7 +390,7 @@ body {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent);
   opacity: 0;
   transition: opacity 0.3s ease;
 }
@@ -442,8 +507,12 @@ body {
   border-radius: 16px;
   padding: 1px;
   background: linear-gradient(135deg, var(--color-primary), transparent, var(--color-secondary));
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   opacity: 0.5;
@@ -553,15 +622,15 @@ body {
 }
 
 .member-avatar.gold {
-  background: linear-gradient(135deg, var(--color-secondary), #E8B23A);
+  background: linear-gradient(135deg, var(--color-secondary), #e8b23a);
 }
 
 .member-avatar.lavender {
-  background: linear-gradient(135deg, var(--color-lavender), #8A86B8);
+  background: linear-gradient(135deg, var(--color-lavender), #8a86b8);
 }
 
 .member-avatar.forest {
-  background: linear-gradient(135deg, var(--color-forest), #3A5C42);
+  background: linear-gradient(135deg, var(--color-forest), #3a5c42);
 }
 
 /* Host ring glow */
@@ -700,8 +769,12 @@ body {
 
 /* Spinner animation */
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .animate-spin {

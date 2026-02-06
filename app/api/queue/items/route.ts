@@ -65,7 +65,7 @@ function checkRateLimit(sessionId: string): { isLimited: boolean; retryAfterMs: 
   }
 
   // Clean up expired timestamps
-  entry.timestamps = entry.timestamps.filter(ts => now - ts < RATE_LIMIT.windowMs)
+  entry.timestamps = entry.timestamps.filter((ts) => now - ts < RATE_LIMIT.windowMs)
 
   // Check if rate limited
   if (entry.timestamps.length >= RATE_LIMIT.maxItems) {
@@ -93,7 +93,7 @@ function recordAction(sessionId: string): void {
 function cleanupRateLimitMap(): void {
   const now = Date.now()
   for (const [key, entry] of rateLimitMap.entries()) {
-    entry.timestamps = entry.timestamps.filter(ts => now - ts < RATE_LIMIT.windowMs)
+    entry.timestamps = entry.timestamps.filter((ts) => now - ts < RATE_LIMIT.windowMs)
     if (entry.timestamps.length === 0) {
       rateLimitMap.delete(key)
     }
@@ -152,10 +152,7 @@ export async function POST(request: NextRequest) {
     // Validate request
     const validationError = validateRequest(body)
     if (validationError) {
-      return NextResponse.json(
-        { error: validationError },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: validationError }, { status: 400 })
     }
 
     // Check rate limit
@@ -165,14 +162,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           error: 'Rate limit exceeded. Too many items added.',
-          retryAfter: retryAfterSec
+          retryAfter: retryAfterSec,
         },
         {
           status: 429,
           headers: {
-            'Retry-After': retryAfterSec.toString()
-          }
-        }
+            'Retry-After': retryAfterSec.toString(),
+          },
+        },
       )
     }
 
@@ -186,7 +183,7 @@ export async function POST(request: NextRequest) {
       console.warn('Supabase service role key not configured, skipping server-side validation')
       return NextResponse.json(
         { success: true, skipped: true, message: 'Server-side validation skipped (no service key)' },
-        { status: 200 }
+        { status: 200 },
       )
     }
 
@@ -200,17 +197,11 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (partyError || !party) {
-      return NextResponse.json(
-        { error: 'Party not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Party not found' }, { status: 404 })
     }
 
     if (new Date(party.expires_at) < new Date()) {
-      return NextResponse.json(
-        { error: 'This party has expired' },
-        { status: 410 }
-      )
+      return NextResponse.json({ error: 'This party has expired' }, { status: 410 })
     }
 
     // Check queue size limit
@@ -222,17 +213,11 @@ export async function POST(request: NextRequest) {
 
     if (countError) {
       console.error('Failed to count queue items:', countError)
-      return NextResponse.json(
-        { error: 'Failed to check queue size' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Failed to check queue size' }, { status: 500 })
     }
 
     if ((count ?? 0) >= QUEUE_LIMIT) {
-      return NextResponse.json(
-        { error: `Queue is full. Maximum ${QUEUE_LIMIT} items allowed.` },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: `Queue is full. Maximum ${QUEUE_LIMIT} items allowed.` }, { status: 400 })
     }
 
     // Insert the queue item
@@ -273,10 +258,7 @@ export async function POST(request: NextRequest) {
 
     if (insertError) {
       console.error('Failed to insert queue item:', insertError)
-      return NextResponse.json(
-        { error: 'Failed to add item to queue' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Failed to add item to queue' }, { status: 500 })
     }
 
     // Record the action for rate limiting
@@ -286,12 +268,8 @@ export async function POST(request: NextRequest) {
       success: true,
       item: insertedItem,
     })
-
   } catch (err) {
     console.error('Queue items API error:', err)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

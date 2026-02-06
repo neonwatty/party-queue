@@ -170,16 +170,20 @@ function generateMockQueueItems(sessionId: string): QueueItem[] {
 export function useParty(partyId: string | null) {
   const sessionId = getSessionId()
   const [queue, setQueue] = useState<QueueItem[]>(IS_MOCK_MODE ? generateMockQueueItems(sessionId) : [])
-  const [members, setMembers] = useState<PartyMember[]>(IS_MOCK_MODE ? [
-    { id: 'mock-member-1', name: 'TestUser1', avatar: '🎉', isHost: true, sessionId }
-  ] : [])
-  const [partyInfo, setPartyInfo] = useState<PartyInfo | null>(IS_MOCK_MODE ? {
-    id: partyId || 'mock-party',
-    code: partyId?.substring(0, 6).toUpperCase() || 'MOCK01',
-    name: 'Test Party',
-    hostSessionId: sessionId,
-    createdAt: new Date().toISOString(),
-  } : null)
+  const [members, setMembers] = useState<PartyMember[]>(
+    IS_MOCK_MODE ? [{ id: 'mock-member-1', name: 'TestUser1', avatar: '🎉', isHost: true, sessionId }] : [],
+  )
+  const [partyInfo, setPartyInfo] = useState<PartyInfo | null>(
+    IS_MOCK_MODE
+      ? {
+          id: partyId || 'mock-party',
+          code: partyId?.substring(0, 6).toUpperCase() || 'MOCK01',
+          name: 'Test Party',
+          hostSessionId: sessionId,
+          createdAt: new Date().toISOString(),
+        }
+      : null,
+  )
   const [isLoading, setIsLoading] = useState(!IS_MOCK_MODE)
   const [error, setError] = useState<string | null>(null)
   const [lastConflict, setLastConflict] = useState<ConflictInfo[] | null>(null)
@@ -385,7 +389,7 @@ export function useParty(partyId: string | null) {
           } catch (err) {
             log.error('Queue subscription callback failed', err)
           }
-        }
+        },
       )
       .subscribe()
 
@@ -423,7 +427,7 @@ export function useParty(partyId: string | null) {
           } catch (err) {
             log.error('Members subscription callback failed', err)
           }
-        }
+        },
       )
       .subscribe()
 
@@ -446,7 +450,7 @@ export function useParty(partyId: string | null) {
       }
 
       const currentSessionId = getSessionId()
-      const maxPos = queue.length > 0 ? Math.max(...queue.map(q => q.position)) : -1
+      const maxPos = queue.length > 0 ? Math.max(...queue.map((q) => q.position)) : -1
       const newPosition = maxPos + 1
       const tempId = `temp-${Date.now()}`
 
@@ -458,12 +462,12 @@ export function useParty(partyId: string | null) {
         updatedAt: new Date().toISOString(),
         ...item,
       }
-      setQueue(prev => [...prev, optimisticItem])
-      setSyncingItemIds(prev => new Set(prev).add(tempId))
+      setQueue((prev) => [...prev, optimisticItem])
+      setSyncingItemIds((prev) => new Set(prev).add(tempId))
 
       if (IS_MOCK_MODE) {
         // In mock mode, just clear syncing state
-        setSyncingItemIds(prev => {
+        setSyncingItemIds((prev) => {
           const next = new Set(prev)
           next.delete(tempId)
           return next
@@ -513,7 +517,7 @@ export function useParty(partyId: string | null) {
           if (apiResponse.status === 429) {
             // Server-side rate limit exceeded
             const errorData = await apiResponse.json()
-            setQueue(prev => prev.filter(q => q.id !== tempId))
+            setQueue((prev) => prev.filter((q) => q.id !== tempId))
             throw new Error(errorData.error || 'Rate limit exceeded. Please wait before adding more items.')
           }
 
@@ -521,7 +525,7 @@ export function useParty(partyId: string | null) {
             const errorData = await apiResponse.json()
             // For 4xx errors (except 429), throw the error
             if (apiResponse.status >= 400 && apiResponse.status < 500) {
-              setQueue(prev => prev.filter(q => q.id !== tempId))
+              setQueue((prev) => prev.filter((q) => q.id !== tempId))
               throw new Error(errorData.error || 'Failed to add item to queue')
             }
             // For 5xx errors, fall back to direct Supabase
@@ -578,14 +582,14 @@ export function useParty(partyId: string | null) {
 
           if (error) {
             // Rollback: remove optimistic item
-            setQueue(prev => prev.filter(q => q.id !== tempId))
+            setQueue((prev) => prev.filter((q) => q.id !== tempId))
             log.error('Failed to add to queue', error)
             throw error
           }
         }
 
         // Clear syncing state (real-time subscription will update with real ID)
-        setSyncingItemIds(prev => {
+        setSyncingItemIds((prev) => {
           const next = new Set(prev)
           next.delete(tempId)
           return next
@@ -594,17 +598,17 @@ export function useParty(partyId: string | null) {
         // Trigger notifications for other party members
         if (areNotificationsEnabled()) {
           const sessionId = getSessionId()
-          const membersList = membersRef.current.map(m => ({
+          const membersList = membersRef.current.map((m) => ({
             sessionId: m.sessionId,
             name: m.name,
           }))
-          triggerItemAddedNotification(partyId, item, sessionId, membersList).catch(err => {
+          triggerItemAddedNotification(partyId, item, sessionId, membersList).catch((err) => {
             log.error('Failed to trigger notification', err)
           })
         }
       } catch (err) {
         // Ensure cleanup on any error
-        setSyncingItemIds(prev => {
+        setSyncingItemIds((prev) => {
           const next = new Set(prev)
           next.delete(tempId)
           return next
@@ -612,7 +616,7 @@ export function useParty(partyId: string | null) {
         throw err
       }
     },
-    [partyId, queue]
+    [partyId, queue],
   )
 
   const moveItem = useCallback(
@@ -623,8 +627,8 @@ export function useParty(partyId: string | null) {
       if (itemIndex === -1) return
 
       // Get only pending items for reordering
-      const pendingItems = queue.filter(q => q.status === 'pending')
-      const pendingItemIndex = pendingItems.findIndex(q => q.id === itemId)
+      const pendingItems = queue.filter((q) => q.status === 'pending')
+      const pendingItemIndex = pendingItems.findIndex((q) => q.id === itemId)
       if (pendingItemIndex === -1) return
 
       // Calculate target index in pending items
@@ -663,17 +667,17 @@ export function useParty(partyId: string | null) {
         const originalTargetPos = targetItem.position
 
         // Optimistic update: swap items immediately
-        setQueue(prev => {
+        setQueue((prev) => {
           const newQueue = [...prev]
-          const idx = newQueue.findIndex(q => q.id === item.id)
-          const targetIdx = newQueue.findIndex(q => q.id === targetItem.id)
+          const idx = newQueue.findIndex((q) => q.id === item.id)
+          const targetIdx = newQueue.findIndex((q) => q.id === targetItem.id)
           if (idx !== -1 && targetIdx !== -1) {
             newQueue[idx] = { ...newQueue[idx], position: originalTargetPos }
             newQueue[targetIdx] = { ...newQueue[targetIdx], position: originalItemPos }
           }
           return newQueue.sort((a, b) => a.position - b.position)
         })
-        setSyncingItemIds(prev => {
+        setSyncingItemIds((prev) => {
           const next = new Set(prev)
           next.add(item.id)
           next.add(targetItem.id)
@@ -683,7 +687,7 @@ export function useParty(partyId: string | null) {
         if (IS_MOCK_MODE) {
           pendingChanges.clearChanges(item.id)
           pendingChanges.clearChanges(targetItem.id)
-          setSyncingItemIds(prev => {
+          setSyncingItemIds((prev) => {
             const next = new Set(prev)
             next.delete(item.id)
             next.delete(targetItem.id)
@@ -701,10 +705,10 @@ export function useParty(partyId: string | null) {
 
           if (error1) {
             // Rollback on error
-            setQueue(prev => {
+            setQueue((prev) => {
               const newQueue = [...prev]
-              const idx = newQueue.findIndex(q => q.id === item.id)
-              const targetIdx = newQueue.findIndex(q => q.id === targetItem.id)
+              const idx = newQueue.findIndex((q) => q.id === item.id)
+              const targetIdx = newQueue.findIndex((q) => q.id === targetItem.id)
               if (idx !== -1 && targetIdx !== -1) {
                 newQueue[idx] = { ...newQueue[idx], position: originalItemPos }
                 newQueue[targetIdx] = { ...newQueue[targetIdx], position: originalTargetPos }
@@ -727,7 +731,7 @@ export function useParty(partyId: string | null) {
           // Clear pending changes and syncing state
           pendingChanges.clearChanges(item.id)
           pendingChanges.clearChanges(targetItem.id)
-          setSyncingItemIds(prev => {
+          setSyncingItemIds((prev) => {
             const next = new Set(prev)
             next.delete(item.id)
             next.delete(targetItem.id)
@@ -766,18 +770,18 @@ export function useParty(partyId: string | null) {
         }
 
         // Track syncing items
-        const syncingIds = positionUpdates.map(u => u.id)
-        setSyncingItemIds(prev => {
+        const syncingIds = positionUpdates.map((u) => u.id)
+        setSyncingItemIds((prev) => {
           const next = new Set(prev)
-          syncingIds.forEach(id => next.add(id))
+          syncingIds.forEach((id) => next.add(id))
           return next
         })
 
         // Optimistic update
-        setQueue(prev => {
+        setQueue((prev) => {
           const newQueue = [...prev]
           for (const update of positionUpdates) {
-            const idx = newQueue.findIndex(q => q.id === update.id)
+            const idx = newQueue.findIndex((q) => q.id === update.id)
             if (idx !== -1) {
               newQueue[idx] = { ...newQueue[idx], position: update.newPosition }
             }
@@ -786,10 +790,10 @@ export function useParty(partyId: string | null) {
         })
 
         if (IS_MOCK_MODE) {
-          syncingIds.forEach(id => pendingChanges.clearChanges(id))
-          setSyncingItemIds(prev => {
+          syncingIds.forEach((id) => pendingChanges.clearChanges(id))
+          setSyncingItemIds((prev) => {
             const next = new Set(prev)
-            syncingIds.forEach(id => next.delete(id))
+            syncingIds.forEach((id) => next.delete(id))
             return next
           })
           return
@@ -808,16 +812,16 @@ export function useParty(partyId: string | null) {
             }
           }
         } finally {
-          syncingIds.forEach(id => pendingChanges.clearChanges(id))
-          setSyncingItemIds(prev => {
+          syncingIds.forEach((id) => pendingChanges.clearChanges(id))
+          setSyncingItemIds((prev) => {
             const next = new Set(prev)
-            syncingIds.forEach(id => next.delete(id))
+            syncingIds.forEach((id) => next.delete(id))
             return next
           })
         }
       }
     },
-    [partyId, queue]
+    [partyId, queue],
   )
 
   const deleteItem = useCallback(
@@ -825,15 +829,15 @@ export function useParty(partyId: string | null) {
       if (!partyId) return
 
       // Store item for potential rollback
-      const deletedItem = queue.find(item => item.id === itemId)
+      const deletedItem = queue.find((item) => item.id === itemId)
       if (!deletedItem) return
 
       // Optimistic update: remove item immediately
-      setQueue(prev => prev.filter(item => item.id !== itemId))
-      setSyncingItemIds(prev => new Set(prev).add(itemId))
+      setQueue((prev) => prev.filter((item) => item.id !== itemId))
+      setSyncingItemIds((prev) => new Set(prev).add(itemId))
 
       if (IS_MOCK_MODE) {
-        setSyncingItemIds(prev => {
+        setSyncingItemIds((prev) => {
           const next = new Set(prev)
           next.delete(itemId)
           return next
@@ -846,19 +850,19 @@ export function useParty(partyId: string | null) {
 
         if (error) {
           // Rollback: restore deleted item
-          setQueue(prev => [...prev, deletedItem].sort((a, b) => a.position - b.position))
+          setQueue((prev) => [...prev, deletedItem].sort((a, b) => a.position - b.position))
           log.error('Failed to delete item', error)
           throw error
         }
       } finally {
-        setSyncingItemIds(prev => {
+        setSyncingItemIds((prev) => {
           const next = new Set(prev)
           next.delete(itemId)
           return next
         })
       }
     },
-    [partyId, queue]
+    [partyId, queue],
   )
 
   const advanceQueue = useCallback(async () => {
@@ -868,27 +872,31 @@ export function useParty(partyId: string | null) {
     const firstPending = queue.find((q) => q.status === 'pending')
 
     // Optimistic update: apply status changes immediately
-    setQueue(prev => prev.map(q => {
-      if (showingItem && q.id === showingItem.id) {
-        return { ...q, status: 'shown' as const }
-      }
-      if (firstPending && q.id === firstPending.id) {
-        return { ...q, status: 'showing' as const }
-      }
-      return q
-    }).filter(q => q.status !== 'shown')) // Remove shown items from view
+    setQueue((prev) =>
+      prev
+        .map((q) => {
+          if (showingItem && q.id === showingItem.id) {
+            return { ...q, status: 'shown' as const }
+          }
+          if (firstPending && q.id === firstPending.id) {
+            return { ...q, status: 'showing' as const }
+          }
+          return q
+        })
+        .filter((q) => q.status !== 'shown'),
+    ) // Remove shown items from view
 
     const itemIds = [showingItem?.id, firstPending?.id].filter(Boolean) as string[]
-    setSyncingItemIds(prev => {
+    setSyncingItemIds((prev) => {
       const next = new Set(prev)
-      itemIds.forEach(id => next.add(id))
+      itemIds.forEach((id) => next.add(id))
       return next
     })
 
     if (IS_MOCK_MODE) {
-      setSyncingItemIds(prev => {
+      setSyncingItemIds((prev) => {
         const next = new Set(prev)
-        itemIds.forEach(id => next.delete(id))
+        itemIds.forEach((id) => next.delete(id))
         return next
       })
       return
@@ -903,9 +911,9 @@ export function useParty(partyId: string | null) {
         await supabase.from('queue_items').update({ status: 'showing' }).eq('id', firstPending.id)
       }
     } finally {
-      setSyncingItemIds(prev => {
+      setSyncingItemIds((prev) => {
         const next = new Set(prev)
-        itemIds.forEach(id => next.delete(id))
+        itemIds.forEach((id) => next.delete(id))
         return next
       })
     }
@@ -927,16 +935,14 @@ export function useParty(partyId: string | null) {
       const originalPosition = item.position
 
       // Optimistic update: move item immediately
-      setQueue(prev => {
-        const newQueue = prev.map(q =>
-          q.id === itemId ? { ...q, position: newPosition } : q
-        )
+      setQueue((prev) => {
+        const newQueue = prev.map((q) => (q.id === itemId ? { ...q, position: newPosition } : q))
         return newQueue.sort((a, b) => a.position - b.position)
       })
-      setSyncingItemIds(prev => new Set(prev).add(itemId))
+      setSyncingItemIds((prev) => new Set(prev).add(itemId))
 
       if (IS_MOCK_MODE) {
-        setSyncingItemIds(prev => {
+        setSyncingItemIds((prev) => {
           const next = new Set(prev)
           next.delete(itemId)
           return next
@@ -945,30 +951,25 @@ export function useParty(partyId: string | null) {
       }
 
       try {
-        const { error } = await supabase
-          .from('queue_items')
-          .update({ position: newPosition })
-          .eq('id', itemId)
+        const { error } = await supabase.from('queue_items').update({ position: newPosition }).eq('id', itemId)
 
         if (error) {
           // Rollback on error
-          setQueue(prev => {
-            const newQueue = prev.map(q =>
-              q.id === itemId ? { ...q, position: originalPosition } : q
-            )
+          setQueue((prev) => {
+            const newQueue = prev.map((q) => (q.id === itemId ? { ...q, position: originalPosition } : q))
             return newQueue.sort((a, b) => a.position - b.position)
           })
           log.error('Failed to move item to next', error)
         }
       } finally {
-        setSyncingItemIds(prev => {
+        setSyncingItemIds((prev) => {
           const next = new Set(prev)
           next.delete(itemId)
           return next
         })
       }
     },
-    [partyId, queue]
+    [partyId, queue],
   )
 
   const updateNoteContent = useCallback(
@@ -977,7 +978,7 @@ export function useParty(partyId: string | null) {
 
       // Validate ownership - only the note creator can edit
       const currentSessionId = getSessionId()
-      const item = queue.find(q => q.id === itemId)
+      const item = queue.find((q) => q.id === itemId)
       if (!item) {
         throw new Error('Note not found')
       }
@@ -996,16 +997,11 @@ export function useParty(partyId: string | null) {
 
       if (IS_MOCK_MODE) {
         // In mock mode, update note content in local state
-        setQueue(prev => prev.map(q =>
-          q.id === itemId ? { ...q, noteContent: content } : q
-        ))
+        setQueue((prev) => prev.map((q) => (q.id === itemId ? { ...q, noteContent: content } : q)))
         return
       }
 
-      const { error } = await supabase
-        .from('queue_items')
-        .update({ note_content: content })
-        .eq('id', itemId)
+      const { error } = await supabase.from('queue_items').update({ note_content: content }).eq('id', itemId)
 
       if (error) {
         log.error('Failed to update note', error)
@@ -1013,7 +1009,7 @@ export function useParty(partyId: string | null) {
         throw error
       }
     },
-    [partyId, queue]
+    [partyId, queue],
   )
 
   const toggleComplete = useCallback(
@@ -1037,14 +1033,18 @@ export function useParty(partyId: string | null) {
       })
 
       // Optimistic UI update for immediate feedback
-      setQueue(prev => prev.map(q =>
-        q.id === itemId ? {
-          ...q,
-          isCompleted,
-          completedAt,
-          completedByUserId,
-        } : q
-      ))
+      setQueue((prev) =>
+        prev.map((q) =>
+          q.id === itemId
+            ? {
+                ...q,
+                isCompleted,
+                completedAt,
+                completedByUserId,
+              }
+            : q,
+        ),
+      )
 
       if (IS_MOCK_MODE) {
         return
@@ -1056,64 +1056,53 @@ export function useParty(partyId: string | null) {
         completed_by_user_id: isCompleted ? (userId ?? null) : null,
       }
 
-      const { error } = await supabase
-        .from('queue_items')
-        .update(updates)
-        .eq('id', itemId)
+      const { error } = await supabase.from('queue_items').update(updates).eq('id', itemId)
 
       if (error) {
         log.error('Failed to toggle completion', error)
         pendingChanges.clearChanges(itemId)
         // Revert optimistic update on error
-        setQueue(prev => prev.map(q =>
-          q.id === itemId ? {
-            ...q,
-            isCompleted: !isCompleted,
-            completedAt: !isCompleted ? completedAt : undefined,
-            completedByUserId: !isCompleted ? completedByUserId : undefined,
-          } : q
-        ))
+        setQueue((prev) =>
+          prev.map((q) =>
+            q.id === itemId
+              ? {
+                  ...q,
+                  isCompleted: !isCompleted,
+                  completedAt: !isCompleted ? completedAt : undefined,
+                  completedByUserId: !isCompleted ? completedByUserId : undefined,
+                }
+              : q,
+          ),
+        )
         throw error
       }
     },
-    [partyId, queue]
+    [partyId, queue],
   )
 
   const updateDueDate = useCallback(
     async (itemId: string, dueDate: string | null) => {
       if (!partyId) return
 
-      const { error } = await supabase
-        .from('queue_items')
-        .update({ due_date: dueDate })
-        .eq('id', itemId)
+      const { error } = await supabase.from('queue_items').update({ due_date: dueDate }).eq('id', itemId)
 
       if (error) {
         log.error('Failed to update due date', error)
         throw error
       }
     },
-    [partyId]
+    [partyId],
   )
 
   // Helper to check if a specific item is syncing
   const isSyncing = useCallback((itemId: string) => syncingItemIds.has(itemId), [syncingItemIds])
 
   // Memoize filtered queue items by status to prevent unnecessary re-computations
-  const pendingItems = useMemo(
-    () => queue.filter(item => item.status === 'pending'),
-    [queue]
-  )
+  const pendingItems = useMemo(() => queue.filter((item) => item.status === 'pending'), [queue])
 
-  const showingItem = useMemo(
-    () => queue.find(item => item.status === 'showing') ?? null,
-    [queue]
-  )
+  const showingItem = useMemo(() => queue.find((item) => item.status === 'showing') ?? null, [queue])
 
-  const shownItems = useMemo(
-    () => queue.filter(item => item.status === 'shown'),
-    [queue]
-  )
+  const shownItems = useMemo(() => queue.filter((item) => item.status === 'shown'), [queue])
 
   return {
     queue,

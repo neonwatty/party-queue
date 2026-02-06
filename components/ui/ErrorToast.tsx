@@ -13,12 +13,7 @@ interface ErrorToastProps {
 /**
  * Toast notification for errors with optional retry action
  */
-export function ErrorToast({
-  message,
-  onDismiss,
-  onRetry,
-  autoDismissMs = 8000,
-}: ErrorToastProps) {
+export function ErrorToast({ message, onDismiss, onRetry, autoDismissMs = 8000 }: ErrorToastProps) {
   useEffect(() => {
     if (autoDismissMs > 0) {
       const timer = setTimeout(onDismiss, autoDismissMs)
