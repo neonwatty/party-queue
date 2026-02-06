@@ -1,36 +1,36 @@
 # Browser Workflows
 
 > Auto-generated workflow documentation for Link Party
-> Last updated: 2026-01-27
-> Base URL: https://linkparty.app (production) or http://localhost:5173 (development)
+> Last updated: 2026-01-31
+> Base URL: https://linkparty.app (production) or http://localhost:3000 (development)
 > Platform: Desktop web browsers (Chrome, Safari, Firefox, Edge)
 
 ## Quick Reference
 
-| # | Workflow | Purpose | Steps | Status |
-|---|----------|---------|-------|--------|
-| 1 | App Launch (Fresh) | First-time app open | 4 | ⬜ |
-| 2 | Create a New Party | Party creation flow | 8 | ⬜ |
-| 3 | Join an Existing Party | Join with code | 7 | ⬜ |
-| 4 | Join via Deep Link | Join using URL param | 4 | ⬜ |
-| 5 | Leave Party | Exit to home | 4 | ⬜ |
-| 6 | Add YouTube Content | Add video to queue | 7 | ⬜ |
-| 7 | Add Tweet Content | Add tweet to queue | 7 | ⬜ |
-| 8 | Add Reddit Content | Add post to queue | 7 | ⬜ |
-| 9 | Add Simple Note | Add text note | 6 | ⬜ |
-| 10 | Add Note with Due Date | Add reminder | 7 | ⬜ |
-| 11 | Mark Note Complete | Toggle completion | 4 | ⬜ |
-| 12 | View and Edit Note | Open and modify note | 8 | ⬜ |
-| 13 | Add Image Content | Upload image to queue | 8 | ⬜ |
-| 14 | View Image in Lightbox | Full-screen image view | 4 | ⬜ |
-| 15 | Reorder Queue Items | Move items up/down | 6 | ⬜ |
-| 16 | Show Item Next | Bump to show next | 5 | ⬜ |
-| 17 | Remove Queue Item | Delete from queue | 6 | ⬜ |
-| 18 | TV Mode | Enter TV display | 5 | ⬜ |
-| 19 | View History | View past parties | 4 | ⬜ |
-| 20 | Google OAuth Login | OAuth flow | 5 | ⬜ |
-| 21 | Keyboard Navigation | Tab/Enter navigation | 5 | ⬜ |
-| 22 | Responsive Layout | Test viewport sizes | 4 | ⬜ |
+| #   | Workflow               | Purpose                | Steps | Status |
+| --- | ---------------------- | ---------------------- | ----- | ------ |
+| 1   | App Launch (Fresh)     | First-time app open    | 4     | ⬜     |
+| 2   | Create a New Party     | Party creation flow    | 8     | ⬜     |
+| 3   | Join an Existing Party | Join with code         | 7     | ⬜     |
+| 4   | Join via Deep Link     | Join using URL param   | 4     | ⬜     |
+| 5   | Leave Party            | Exit to home           | 4     | ⬜     |
+| 6   | Add YouTube Content    | Add video to queue     | 7     | ⬜     |
+| 7   | Add Tweet Content      | Add tweet to queue     | 7     | ⬜     |
+| 8   | Add Reddit Content     | Add post to queue      | 7     | ⬜     |
+| 9   | Add Simple Note        | Add text note          | 6     | ⬜     |
+| 10  | Add Note with Due Date | Add reminder           | 7     | ⬜     |
+| 11  | Mark Note Complete     | Toggle completion      | 4     | ⬜     |
+| 12  | View and Edit Note     | Open and modify note   | 8     | ⬜     |
+| 13  | Add Image Content      | Upload image to queue  | 8     | ⬜     |
+| 14  | View Image in Lightbox | Full-screen image view | 4     | ⬜     |
+| 15  | Reorder Queue Items    | Move items up/down     | 6     | ⬜     |
+| 16  | Show Item Next         | Bump to show next      | 5     | ⬜     |
+| 17  | Remove Queue Item      | Delete from queue      | 6     | ⬜     |
+| 18  | TV Mode                | Enter TV display       | 5     | ⬜     |
+| 19  | View History           | View past parties      | 4     | ⬜     |
+| 20  | Google OAuth Login     | OAuth flow             | 5     | ⬜     |
+| 21  | Keyboard Navigation    | Tab/Enter navigation   | 5     | ⬜     |
+| 22  | Responsive Layout      | Test viewport sizes    | 4     | ⬜     |
 
 **Legend:** ✅ Passed | ⚠️ Partial | ❌ Failed | ⬜ Not tested
 
@@ -39,14 +39,44 @@
 ## Browser Setup
 
 **Prerequisites for testing:**
+
 1. Modern browser (Chrome 90+, Safari 15+, Firefox 90+, Edge 90+)
 2. Development server running (`npm run dev`) or production URL
 3. Clear browser cache for fresh testing
 4. Network access for Supabase connection
 
 **Test URLs:**
-- Development: http://localhost:5173
+
+- Development: http://localhost:3000
 - Production: https://linkparty.app
+
+---
+
+## Visual Design Reference (Sage & Cream Theme)
+
+The app uses a **light "Sage & Cream" theme** with the following design tokens:
+
+### Colors
+
+| Token          | Hex     | Usage                         |
+| -------------- | ------- | ----------------------------- |
+| surface-950    | #faf8f3 | Main background (cream)       |
+| surface-900    | #f2efe8 | Card backgrounds (soft beige) |
+| surface-800    | #e8e5dc | Elevated surfaces             |
+| surface-700    | #d8d4c8 | Borders, dividers             |
+| accent-500     | #6b8f71 | Primary sage green            |
+| accent-600     | #4a6b4f | Darker sage (hover/active)    |
+| teal-500       | #4a9e8f | Secondary accent              |
+| text-primary   | #2d3a2e | Deep forest (main text)       |
+| text-secondary | #5a6b5c | Warm gray                     |
+| text-muted     | #8a9a8c | Muted sage-gray               |
+
+### Typography
+
+| Font    | Family                     | Usage                     |
+| ------- | -------------------------- | ------------------------- |
+| Display | Fraunces (serif)           | Headings, buttons, inputs |
+| Body    | Source Sans 3 (sans-serif) | Body text, paragraphs     |
 
 ---
 
@@ -59,20 +89,20 @@
 **Prerequisites:** Clear localStorage, fresh browser session
 
 1. Navigate to the app
-   - Open browser and navigate to https://linkparty.app (or localhost:5173)
+   - Open browser and navigate to https://linkparty.app (or localhost:3000)
    - Wait for page to fully load
    - Verify no loading spinner stuck
 
 2. Verify home screen branding
    - Verify "Link Party" title is visible
    - Verify tagline text is displayed
-   - Verify gradient background renders correctly
-   - Verify fonts load properly (Space Grotesk)
+   - Verify cream gradient background (#faf8f3) renders correctly
+   - Verify fonts load properly (Fraunces for headings, Source Sans 3 for body)
 
 3. Verify primary CTAs
-   - Verify "Start a Party" button is visible
-   - Verify "Join with Code" button is visible
-   - Verify buttons have hover states (test by hovering)
+   - Verify "Start a Party" button is visible (sage green #6b8f71)
+   - Verify "Join with Code" button is visible (secondary style)
+   - Verify buttons have hover states (test by hovering - darker sage #4a6b4f)
 
 4. Verify navigation elements
    - Verify history icon button in top-right corner
@@ -97,12 +127,13 @@
    - Verify "Your Name" input field has focus (autofocus)
    - Verify "Party Name" optional input is present
    - Verify settings display shows queue limit (100) and rate limit (5/min)
+   - Verify inputs use Fraunces font with cream/beige styling
 
 3. Enter display name
    - Click the "Your Name" text field
    - Type "TestUser1"
    - Verify text appears in field
-   - Verify input has focus ring styling
+   - Verify input has sage green focus ring styling (#6b8f71)
 
 4. Enter party name (optional)
    - Click the "Party Name" text field
@@ -123,7 +154,7 @@
    - Verify "Now Showing" section (empty state or content)
    - Verify "Members" section shows "TestUser1" with host badge
    - Verify "Up Next" queue section is present
-   - Verify floating "+" button for adding content
+   - Verify floating "+" button for adding content (sage green with glow)
 
 8. Note the party code
    - Record the 6-character code displayed in header
@@ -182,13 +213,13 @@
 **Prerequisites:** Have a valid party code
 
 1. Navigate to join URL
-   - Open browser and navigate to https://linkparty.app?join=ABC123 (replace with real code)
+   - Open browser and navigate to https://linkparty.app/join/ABC123 (replace with real code)
    - Wait for page to load
 
 2. Verify auto-navigation
    - Verify app automatically navigates to join screen
-   - Verify party code field is pre-populated with "ABC123"
-   - Verify URL query param is cleared after extraction
+   - Verify party code field is pre-populated with the code
+   - Verify name field is ready for input
 
 3. Enter name and join
    - Type display name in "Your Name" field
@@ -235,7 +266,7 @@
 **Prerequisites:** In an active party room
 
 1. Open add content modal
-   - Click the floating "+" button (bottom-right)
+   - Click the floating "+" button (bottom-right, sage green)
    - Verify bottom sheet modal slides up
    - Verify URL input field has focus (autofocus)
    - Verify "Write a note" and "Upload an image" buttons present
@@ -243,7 +274,7 @@
 2. Enter YouTube URL
    - Type "https://youtube.com/watch?v=dQw4w9WgXcQ"
    - Verify URL appears in field
-   - Verify YouTube icon indicator appears
+   - Verify YouTube icon indicator appears (red badge)
 
 3. Detect content type
    - Verify YouTube badge shown (content type detected)
@@ -287,7 +318,7 @@
    - Verify URL appears in field
 
 3. Detect content type
-   - Verify Twitter/X icon appears (content type detected)
+   - Verify Twitter/X icon appears (blue badge, content type detected)
    - Verify "Continue" button becomes enabled
 
 4. Submit URL
@@ -327,7 +358,7 @@
    - Verify URL appears in field
 
 3. Detect content type
-   - Verify Reddit icon appears (content type detected)
+   - Verify Reddit icon appears (orange badge, content type detected)
    - Verify "Continue" button becomes enabled
 
 4. Submit URL
@@ -375,7 +406,7 @@
 4. Preview note
    - Click "Preview" button
    - Verify note preview displays entered text
-   - Verify "Your note" header with note icon
+   - Verify "Your note" header with note icon (gray badge)
    - Verify no due date indicator shown
 
 5. Add to queue
@@ -782,7 +813,7 @@
 1. Tab through home screen
    - Press Tab key repeatedly
    - Verify focus moves to "Start a Party" button
-   - Verify focus ring is visible
+   - Verify focus ring is visible (sage green outline)
    - Press Tab to move to "Join with Code"
    - Press Tab to move to history icon
 
@@ -817,7 +848,7 @@
 1. Test desktop (1920px)
    - Set viewport to 1920x1080
    - Verify layout looks good
-   - Verify content is centered with max-width
+   - Verify content is centered with max-width (430px container)
    - Verify no horizontal scroll
 
 2. Test laptop (1280px)
@@ -843,36 +874,42 @@
 When testing workflows, verify these web conventions are followed:
 
 ### Navigation
+
 - Uses URL-based navigation where appropriate (deep links work)
 - Browser back button behavior is intuitive
 - No hamburger menu on desktop (good)
 - Clear visual hierarchy for CTAs
 
 ### Hover States
+
 - All interactive elements have hover states
 - Buttons show cursor: pointer
-- Links change color on hover
+- Primary buttons darken on hover (sage #6b8f71 → darker #4a6b4f)
 - Cards/list items have hover feedback
 
 ### Focus States
-- All focusable elements have visible focus rings
+
+- All focusable elements have visible focus rings (sage green)
 - Tab order is logical
 - Keyboard navigation works throughout
 
 ### Responsive Design
+
 - Layout adapts to different viewport sizes
 - Content is readable at all sizes
-- Touch targets adequate on mobile
+- Touch targets adequate on mobile (44px+ minimum)
 - No horizontal scrolling
 
 ### Performance
+
 - Fast initial load (<3 seconds)
 - No layout shifts during load
 - Images lazy load appropriately
-- Fonts load without FOUT/FOIT issues
+- Fonts load without FOUT/FOIT issues (Fraunces + Source Sans 3)
 
 ### Accessibility
-- Color contrast meets WCAG AA
+
+- Color contrast meets WCAG AA (dark text on cream background)
 - All images have alt text
 - Form inputs have labels
 - Screen reader announces state changes
@@ -883,14 +920,14 @@ When testing workflows, verify these web conventions are followed:
 
 Some workflows require state from previous workflows:
 
-| Workflow | Depends On |
-|----------|------------|
-| 3 (Join Party) | 2 (Create Party) - needs party code |
+| Workflow               | Depends On                          |
+| ---------------------- | ----------------------------------- |
+| 3 (Join Party)         | 2 (Create Party) - needs party code |
 | 4 (Join via Deep Link) | 2 (Create Party) - needs party code |
-| 5 (Leave Party) | 2 or 3 (active party) |
-| 6-13 (Content) | 2 or 3 (active party) |
-| 14 (Image Lightbox) | 13 (image in queue) |
-| 15-17 (Queue Mgmt) | 6-13 (items in queue) |
-| 18 (TV Mode) | 2 or 3 (active party) |
+| 5 (Leave Party)        | 2 or 3 (active party)               |
+| 6-13 (Content)         | 2 or 3 (active party)               |
+| 14 (Image Lightbox)    | 13 (image in queue)                 |
+| 15-17 (Queue Mgmt)     | 6-13 (items in queue)               |
+| 18 (TV Mode)           | 2 or 3 (active party)               |
 
 **Suggested execution order:** 1 → 2 → 6 → 9 → 10 → 11 → 12 → 13 → 14 → 15 → 16 → 17 → 18 → 5 → 3 → 4 → 19 → 20 → 21 → 22

@@ -1,32 +1,33 @@
 # iOS Workflows
 
 > Auto-generated workflow documentation for Link Party
-> Last updated: 2026-01-27
+> Last updated: 2026-01-31
 > Bundle ID: com.linkparty.app
+> Platform: Web app tested in Safari on iOS Simulator
 
 ## Quick Reference
 
-| # | Workflow | Purpose | Steps | Status |
-|---|----------|---------|-------|--------|
-| 1 | App Launch (Fresh) | First-time app open | 4 | ✅ Passed (2026-01-21) - Sign in link not in current UI |
-| 2 | Create a New Party | Party creation flow | 8 | ✅ Passed (2026-01-20) |
-| 3 | Join an Existing Party | Join with code | 7 | ✅ Passed (2026-01-20) |
-| 4 | Leave Party | Exit to home | 4 | ✅ Passed (2026-01-21) |
-| 5 | Add YouTube Content | Add video to queue | 7 | ✅ Passed (2026-01-21) |
-| 6 | Add Tweet Content | Add tweet to queue | 7 | ✅ Passed (2026-01-21) |
-| 7 | Add Reddit Content | Add post to queue | 7 | ✅ Passed (2026-01-21) |
-| 8 | Add Simple Note | Add text note | 6 | ✅ Passed (2026-01-20) |
-| 9 | Add Note with Due Date | Add reminder | 7 | ✅ Passed (2026-01-21) - Note: due date saved but indicator not visible in queue list |
-| 10 | Mark Note Complete | Toggle completion | 4 | ✅ Passed (2026-01-20) |
-| 11 | View and Edit Note | Open and modify note | 8 | ✅ Passed (2026-01-21) |
-| 12 | Reorder Queue Items | Move items up/down | 6 | ✅ Passed (2026-01-21) |
-| 13 | Show Item Next | Bump to show next | 5 | ✅ Passed (2026-01-21) |
-| 14 | Remove Queue Item | Delete from queue | 6 | ✅ Passed (2026-01-21) - Fixed action sheet overflow |
-| 15 | TV Mode | Enter TV display | 5 | ✅ Passed (2026-01-21) |
-| 16 | View History | View past parties | 4 | ✅ Passed (2026-01-21) |
-| 17 | Google OAuth Login | [MANUAL] OAuth flow | 5 | ⬜ |
-| 18 | Add Image Content | Upload image to queue | 8 | ⬜ |
-| 19 | View Image in Lightbox | Full-screen image view | 4 | ⬜ |
+| #   | Workflow               | Purpose                | Steps | Status |
+| --- | ---------------------- | ---------------------- | ----- | ------ |
+| 1   | App Launch (Fresh)     | First-time app open    | 4     | ⬜     |
+| 2   | Create a New Party     | Party creation flow    | 8     | ⬜     |
+| 3   | Join an Existing Party | Join with code         | 7     | ⬜     |
+| 4   | Leave Party            | Exit to home           | 4     | ⬜     |
+| 5   | Add YouTube Content    | Add video to queue     | 7     | ⬜     |
+| 6   | Add Tweet Content      | Add tweet to queue     | 7     | ⬜     |
+| 7   | Add Reddit Content     | Add post to queue      | 7     | ⬜     |
+| 8   | Add Simple Note        | Add text note          | 6     | ⬜     |
+| 9   | Add Note with Due Date | Add reminder           | 7     | ⬜     |
+| 10  | Mark Note Complete     | Toggle completion      | 4     | ⬜     |
+| 11  | View and Edit Note     | Open and modify note   | 8     | ⬜     |
+| 12  | Reorder Queue Items    | Move items up/down     | 6     | ⬜     |
+| 13  | Show Item Next         | Bump to show next      | 5     | ⬜     |
+| 14  | Remove Queue Item      | Delete from queue      | 6     | ⬜     |
+| 15  | TV Mode                | Enter TV display       | 5     | ⬜     |
+| 16  | View History           | View past parties      | 4     | ⬜     |
+| 17  | Google OAuth Login     | [MANUAL] OAuth flow    | 5     | ⬜     |
+| 18  | Add Image Content      | Upload image to queue  | 8     | ⬜     |
+| 19  | View Image in Lightbox | Full-screen image view | 4     | ⬜     |
 
 **Legend:** ✅ Passed | ⚠️ Partial | ❌ Failed | ⬜ Not tested
 
@@ -35,12 +36,50 @@
 ## Simulator Setup (One-Time)
 
 **Prerequisites for automation:**
+
 1. iOS Simulator booted with iPhone 15 Pro or similar
 2. App built and installed via `npm run build:ios` and Xcode
 3. Network access available for Supabase connection
 4. Safari cookies cleared for fresh OAuth testing
 
 **Bundle ID:** `com.linkparty.app`
+
+**Base URL:** http://localhost:3000 (development) or https://linkparty.app (production)
+
+---
+
+## Visual Design Reference (Sage & Cream Theme)
+
+The app uses a **light "Sage & Cream" theme** optimized for both web and iOS:
+
+### Colors
+
+| Token          | Hex     | Usage                         |
+| -------------- | ------- | ----------------------------- |
+| surface-950    | #faf8f3 | Main background (warm cream)  |
+| surface-900    | #f2efe8 | Card backgrounds (soft beige) |
+| surface-800    | #e8e5dc | Elevated surfaces             |
+| surface-700    | #d8d4c8 | Borders, dividers             |
+| accent-500     | #6b8f71 | Primary sage green            |
+| accent-600     | #4a6b4f | Darker sage (pressed states)  |
+| teal-500       | #4a9e8f | Secondary accent              |
+| text-primary   | #2d3a2e | Deep forest (main text)       |
+| text-secondary | #5a6b5c | Warm gray                     |
+| text-muted     | #8a9a8c | Muted sage-gray               |
+
+### Typography
+
+| Font    | Family                     | Usage                     |
+| ------- | -------------------------- | ------------------------- |
+| Display | Fraunces (serif)           | Headings, buttons, inputs |
+| Body    | Source Sans 3 (sans-serif) | Body text, paragraphs     |
+
+### iOS-Specific Design
+
+- Safe area insets for notch/Dynamic Island
+- Touch targets minimum 44pt
+- Bottom sheets slide up (iOS modal pattern)
+- FAB with safe area offset
 
 ---
 
@@ -58,17 +97,16 @@
    - Verify home screen loads
 
 2. Verify home screen branding
-   - Verify "Link Party" title is visible
+   - Verify "Link Party" title is visible (Fraunces serif font)
    - Verify tagline text is displayed
-   - Verify gradient background renders correctly
+   - Verify cream gradient background (#faf8f3) renders correctly
 
 3. Verify primary CTAs
-   - Verify "Start a Party" button is visible and tappable (44pt+ touch target)
-   - Verify "Join with Code" button is visible and tappable
+   - Verify "Start a Party" button is visible and tappable (44pt+ touch target, sage green)
+   - Verify "Join with Code" button is visible and tappable (secondary style)
 
 4. Verify navigation elements
    - Verify history icon button in top-right corner
-   - Verify "Sign in" link at bottom of screen
    - Verify iOS platform conventions (no hamburger menu, proper button styling)
 
 ---
@@ -88,6 +126,7 @@
    - Verify "Your Name" input field is present
    - Verify "Party Name" optional input is present
    - Verify settings display shows queue limit (100) and rate limit (5/min)
+   - Verify inputs use Fraunces font with cream/beige styling
 
 3. Enter display name
    - Tap the "Your Name" text field
@@ -113,7 +152,7 @@
    - Verify "Now Showing" section (empty state or content)
    - Verify "Members" section shows "TestUser1" with host badge
    - Verify "Up Next" queue section is present
-   - Verify floating "+" button for adding content
+   - Verify floating "+" button for adding content (sage green with pulse glow)
 
 8. Note the party code
    - Record the 6-character code displayed in header
@@ -199,7 +238,7 @@
 **Prerequisites:** In an active party room
 
 1. Open add content modal
-   - Tap the floating "+" button (bottom-right)
+   - Tap the floating "+" button (bottom-right, sage green)
    - Verify bottom sheet modal slides up
    - Verify URL input field is present
    - Verify "Write a note" button is present
@@ -210,7 +249,7 @@
    - Verify URL appears in field
 
 3. Detect content type
-   - Verify YouTube icon/indicator appears (content type detected)
+   - Verify YouTube icon/indicator appears (red badge, content type detected)
    - Verify "Continue" button becomes enabled
 
 4. Submit URL
@@ -252,7 +291,7 @@
    - Verify URL appears in field
 
 3. Detect content type
-   - Verify Twitter/X icon appears (content type detected)
+   - Verify Twitter/X icon appears (blue badge, content type detected)
    - Verify "Continue" button becomes enabled
 
 4. Submit URL
@@ -293,7 +332,7 @@
    - Verify URL appears in field
 
 3. Detect content type
-   - Verify Reddit icon appears (content type detected)
+   - Verify Reddit icon appears (orange badge, content type detected)
    - Verify "Continue" button becomes enabled
 
 4. Submit URL
@@ -349,7 +388,7 @@
    - Verify modal closes
 
 6. Verify in queue
-   - Verify note item appears in queue with note icon
+   - Verify note item appears in queue with note icon (gray badge)
    - Verify checkbox (CheckCircle) appears for note item
    - Verify note preview text visible
 
@@ -392,7 +431,6 @@
 
 7. Verify in queue
    - Verify note item appears with calendar icon indicator
-   - Verify due date text displayed on item
    - Verify completion checkbox visible
 
 ---
@@ -747,26 +785,42 @@
 When testing workflows, verify these iOS conventions are followed:
 
 ### Navigation
-- Primary navigation uses appropriate iOS patterns (not hamburger menu)
+
+- Primary navigation uses appropriate iOS patterns (no hamburger menu)
 - Back buttons show chevron with previous screen title or just chevron
 - Modals use bottom sheets (iOS 15+ style) with drag handle
 
 ### Touch Targets
+
 - All interactive elements are at least 44x44pt
 - Buttons have adequate padding for touch
-- Form fields are properly sized for mobile input
+- Form fields are properly sized for mobile input (52px minimum)
 
-### Visual Design
-- Uses native-feeling iOS components
+### Visual Design (Sage & Cream Theme)
+
+- Background uses warm cream (#faf8f3)
+- Primary buttons use sage green (#6b8f71)
+- Text uses deep forest color (#2d3a2e) for readability
+- Fonts: Fraunces (serif) for display, Source Sans 3 for body
 - Proper safe area handling for notch/Dynamic Island
 - Appropriate use of blur effects and transparency
-- Dark theme with proper contrast ratios
 
 ### Interactions
+
 - Scroll behavior feels native
 - Keyboard dismisses appropriately
 - Loading states provide feedback
 - Success/error states are clear
+
+### iOS Anti-Patterns to Avoid
+
+| Anti-Pattern                 | iOS Convention                | Status                          |
+| ---------------------------- | ----------------------------- | ------------------------------- |
+| Hamburger menu               | Tab bar or visible navigation | ✅ No hamburger                 |
+| Floating Action Button       | Nav bar buttons               | ⚠️ FAB used (mobile convention) |
+| Bottom sheets for navigation | Push navigation               | ✅ Sheets for modals only       |
+| Tiny tap targets (<44pt)     | 44pt minimum                  | ✅ Large touch targets          |
+| Web-style dropdowns          | iOS pickers                   | ⚠️ Check date pickers           |
 
 ---
 
@@ -774,14 +828,14 @@ When testing workflows, verify these iOS conventions are followed:
 
 Some workflows require state from previous workflows:
 
-| Workflow | Depends On |
-|----------|------------|
-| 3 (Join Party) | 2 (Create Party) - needs party code |
-| 4 (Leave Party) | 2 or 3 (active party) |
-| 5-10 (Content) | 2 or 3 (active party) |
-| 11-14 (Queue Mgmt) | 5-9 (items in queue) |
-| 15 (TV Mode) | 2 or 3 (active party) |
-| 18 (Add Image) | 2 or 3 (active party) |
-| 19 (Image Lightbox) | 18 (image in queue) |
+| Workflow            | Depends On                          |
+| ------------------- | ----------------------------------- |
+| 3 (Join Party)      | 2 (Create Party) - needs party code |
+| 4 (Leave Party)     | 2 or 3 (active party)               |
+| 5-10 (Content)      | 2 or 3 (active party)               |
+| 11-14 (Queue Mgmt)  | 5-9 (items in queue)                |
+| 15 (TV Mode)        | 2 or 3 (active party)               |
+| 18 (Add Image)      | 2 or 3 (active party)               |
+| 19 (Image Lightbox) | 18 (image in queue)                 |
 
 **Suggested execution order:** 1 → 2 → 5 → 8 → 9 → 10 → 11 → 12 → 13 → 14 → 18 → 19 → 15 → 4 → 3 → 16 → 17
