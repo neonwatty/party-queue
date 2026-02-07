@@ -3,8 +3,8 @@
 import { createClient } from '@supabase/supabase-js'
 import { logger } from './logger'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim()
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim()
 
 // Check if we're in mock mode (no real Supabase credentials)
 export const IS_MOCK_MODE =
