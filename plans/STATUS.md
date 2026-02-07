@@ -15,24 +15,28 @@
 ## Completed Features
 
 ### Core Functionality
+
 - Multi-user shared queues with 6-character party codes
 - Real-time synchronization via Supabase subscriptions
 - Drag-and-drop queue reordering
 - Item statuses: pending, showing, shown
 
 ### Content Types
+
 - YouTube videos (title, channel, duration, thumbnails)
 - Tweets (author, content, timestamp)
 - Reddit posts (subreddit, title, upvotes)
 - Notes/Reminders with due dates
 
 ### Authentication
+
 - Google OAuth sign-in
 - Email/password authentication with sign-up
 - Password reset functionality
 - Emoji avatar system (15 party-themed avatars)
 
 ### Platform Support
+
 - PWA with service worker and manifest
 - iOS native app via Capacitor
 - Push notification infrastructure

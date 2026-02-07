@@ -45,7 +45,12 @@ function formatDate(dateString: string): string {
   })
 }
 
-function StatCard({ label, value, subtext, color }: {
+function StatCard({
+  label,
+  value,
+  subtext,
+  color,
+}: {
   label: string
   value: string | number
   subtext?: string
@@ -114,17 +119,11 @@ export default function EmailEventsPage() {
 
   return (
     <div className="container-mobile bg-gradient-party flex flex-col px-6 py-8 min-h-screen">
-      <Link
-        href="/"
-        className="btn-ghost p-2 -ml-2 w-fit rounded-full mb-8"
-        aria-label="Go back to home"
-      >
+      <Link href="/" className="btn-ghost p-2 -ml-2 w-fit rounded-full mb-8" aria-label="Go back to home">
         <ChevronLeftIcon />
       </Link>
 
-      <h1 className="text-3xl font-bold mb-2 animate-fade-in-up opacity-0">
-        Email Events
-      </h1>
+      <h1 className="text-3xl font-bold mb-2 animate-fade-in-up opacity-0">Email Events</h1>
       <p className="text-text-secondary mb-8 animate-fade-in-up opacity-0 delay-100">
         Monitor email delivery and engagement
       </p>
@@ -136,23 +135,24 @@ export default function EmailEventsPage() {
             label="Delivery Rate"
             value={`${stats.deliveryRate}%`}
             subtext={`${stats.delivered} of ${stats.sent} delivered`}
-            color={stats.deliveryRate >= 95 ? 'text-green-400' : stats.deliveryRate >= 80 ? 'text-yellow-400' : 'text-red-400'}
+            color={
+              stats.deliveryRate >= 95
+                ? 'text-green-400'
+                : stats.deliveryRate >= 80
+                  ? 'text-yellow-400'
+                  : 'text-red-400'
+            }
           />
           <StatCard
             label="Open Rate"
             value={`${stats.openRate}%`}
             subtext={`${stats.opened} opens`}
-            color={stats.openRate >= 30 ? 'text-green-400' : stats.openRate >= 15 ? 'text-yellow-400' : 'text-text-secondary'}
+            color={
+              stats.openRate >= 30 ? 'text-green-400' : stats.openRate >= 15 ? 'text-yellow-400' : 'text-text-secondary'
+            }
           />
-          <StatCard
-            label="Total Sent"
-            value={stats.sent}
-          />
-          <StatCard
-            label="Bounced"
-            value={stats.bounced}
-            color={stats.bounced > 0 ? 'text-red-400' : ''}
-          />
+          <StatCard label="Total Sent" value={stats.sent} />
+          <StatCard label="Bounced" value={stats.bounced} color={stats.bounced > 0 ? 'text-red-400' : ''} />
         </div>
       )}
 
@@ -196,10 +196,7 @@ export default function EmailEventsPage() {
       {error && (
         <div className="card p-4 text-center text-red-400 animate-fade-in-up opacity-0 delay-250">
           {error}
-          <button
-            onClick={fetchEvents}
-            className="block mx-auto mt-2 text-sm text-primary hover:underline"
-          >
+          <button onClick={fetchEvents} className="block mx-auto mt-2 text-sm text-primary hover:underline">
             Try again
           </button>
         </div>
@@ -249,9 +246,7 @@ export default function EmailEventsPage() {
                         </div>
                       )}
                     </div>
-                    <div className="text-text-muted text-xs whitespace-nowrap">
-                      {formatDate(event.created_at)}
-                    </div>
+                    <div className="text-text-muted text-xs whitespace-nowrap">{formatDate(event.created_at)}</div>
                   </div>
                 </div>
               )
@@ -262,7 +257,7 @@ export default function EmailEventsPage() {
           {totalPages > 1 && (
             <div className="flex justify-center items-center gap-4 mt-6">
               <button
-                onClick={() => setPage(p => Math.max(0, p - 1))}
+                onClick={() => setPage((p) => Math.max(0, p - 1))}
                 disabled={page === 0}
                 className="btn-ghost px-4 py-2 rounded disabled:opacity-50 disabled:cursor-not-allowed"
               >
@@ -272,7 +267,7 @@ export default function EmailEventsPage() {
                 Page {page + 1} of {totalPages}
               </span>
               <button
-                onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}
+                onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
                 disabled={page >= totalPages - 1}
                 className="btn-ghost px-4 py-2 rounded disabled:opacity-50 disabled:cursor-not-allowed"
               >

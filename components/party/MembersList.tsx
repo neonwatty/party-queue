@@ -23,9 +23,7 @@ const MemberItem = memo(function MemberItem({ member, isCurrentUser }: MemberIte
       <span>{member.avatar}</span>
       <span>{isCurrentUser ? 'You' : member.name}</span>
       {member.isHost && (
-        <span className="text-[10px] bg-accent-500/20 text-accent-400 px-1.5 py-0.5 rounded-full">
-          HOST
-        </span>
+        <span className="text-[10px] bg-accent-500/20 text-accent-400 px-1.5 py-0.5 rounded-full">HOST</span>
       )}
     </div>
   )
@@ -44,12 +42,8 @@ export const MembersList = memo(function MembersList({ members, currentSessionId
         <span>{members.length} watching</span>
       </div>
       <div className="flex gap-2 mt-2 flex-wrap">
-        {members.map(member => (
-          <MemberItem
-            key={member.id}
-            member={member}
-            isCurrentUser={member.sessionId === currentSessionId}
-          />
+        {members.map((member) => (
+          <MemberItem key={member.id} member={member} isCurrentUser={member.sessionId === currentSessionId} />
         ))}
       </div>
     </div>

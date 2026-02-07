@@ -20,7 +20,7 @@ export function getUserFriendlyMessage(err: unknown): string {
 
     // Permission errors
     if (err.message.includes('permission') || err.message.includes('forbidden')) {
-      return 'You don\'t have permission for this action.'
+      return "You don't have permission for this action."
     }
 
     // Not found

@@ -37,7 +37,7 @@ class PendingChangesTracker {
   addChange(change: PendingChange): void {
     const itemChanges = this.changes.get(change.itemId) || []
     // Remove any existing change for the same field
-    const filtered = itemChanges.filter(c => c.field !== change.field)
+    const filtered = itemChanges.filter((c) => c.field !== change.field)
     filtered.push(change)
     this.changes.set(change.itemId, filtered)
 
@@ -90,7 +90,7 @@ export const pendingChanges = new PendingChangesTracker()
 export function detectConflict(
   localItem: QueueItem,
   serverItem: QueueItem,
-  pendingChange: PendingChange
+  pendingChange: PendingChange,
 ): ConflictInfo | null {
   // Server item was updated after we made our local change
   // If no updatedAt, we can't detect conflicts based on timing
@@ -145,11 +145,8 @@ export function detectConflict(
 /**
  * Detect if an item was deleted by another user
  */
-export function detectDeletion(
-  localItems: QueueItem[],
-  serverItems: QueueItem[]
-): ConflictInfo[] {
-  const serverIds = new Set(serverItems.map(item => item.id))
+export function detectDeletion(localItems: QueueItem[], serverItems: QueueItem[]): ConflictInfo[] {
+  const serverIds = new Set(serverItems.map((item) => item.id))
   const conflicts: ConflictInfo[] = []
 
   for (const localItem of localItems) {
@@ -182,7 +179,7 @@ export function detectDeletion(
  */
 export function mergeQueueState(
   localQueue: QueueItem[],
-  serverQueue: QueueItem[]
+  serverQueue: QueueItem[],
 ): { mergedQueue: QueueItem[]; conflicts: ConflictInfo[] } {
   const conflicts: ConflictInfo[] = []
 
@@ -191,11 +188,11 @@ export function mergeQueueState(
   conflicts.push(...deletionConflicts)
 
   // Create a map of server items for quick lookup
-  const serverItemMap = new Map(serverQueue.map(item => [item.id, item]))
+  const serverItemMap = new Map(serverQueue.map((item) => [item.id, item]))
 
   // Check for conflicts on items we have pending changes for
   for (const itemId of pendingChanges.getPendingItemIds()) {
-    const localItem = localQueue.find(item => item.id === itemId)
+    const localItem = localQueue.find((item) => item.id === itemId)
     const serverItem = serverItemMap.get(itemId)
 
     if (!localItem || !serverItem) continue

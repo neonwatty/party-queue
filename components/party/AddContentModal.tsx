@@ -126,9 +126,15 @@ export function AddContentModal({
                 autoFocus
               />
               <div className="flex items-center gap-4 mt-2 text-xs text-text-muted">
-                <span className="flex items-center gap-1"><YoutubeIcon size={12} /> YouTube</span>
-                <span className="flex items-center gap-1"><TwitterIcon size={12} /> Twitter/X</span>
-                <span className="flex items-center gap-1"><RedditIcon size={12} /> Reddit</span>
+                <span className="flex items-center gap-1">
+                  <YoutubeIcon size={12} /> YouTube
+                </span>
+                <span className="flex items-center gap-1">
+                  <TwitterIcon size={12} /> Twitter/X
+                </span>
+                <span className="flex items-center gap-1">
+                  <RedditIcon size={12} /> Reddit
+                </span>
               </div>
             </div>
 
@@ -163,9 +169,7 @@ export function AddContentModal({
               <ImageIcon size={20} />
               Upload an image
             </button>
-            <div className="text-xs text-text-muted text-center mt-2">
-              JPG, PNG, GIF, WebP up to 5MB
-            </div>
+            <div className="text-xs text-text-muted text-center mt-2">JPG, PNG, GIF, WebP up to 5MB</div>
             {imageValidationError && (
               <div className="text-xs text-red-400 text-center mt-1">{imageValidationError}</div>
             )}
@@ -187,7 +191,10 @@ export function AddContentModal({
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-xl font-bold">Write a note</h3>
               <button
-                onClick={() => { onResetToInput(); onNoteTextChange(''); }}
+                onClick={() => {
+                  onResetToInput()
+                  onNoteTextChange('')
+                }}
                 className="text-text-muted"
                 aria-label="Close note editor"
               >
@@ -234,7 +241,11 @@ export function AddContentModal({
 
             <div className="flex gap-3">
               <button
-                onClick={() => { onResetToInput(); onNoteTextChange(''); onNoteDueDateChange(''); }}
+                onClick={() => {
+                  onResetToInput()
+                  onNoteTextChange('')
+                  onNoteDueDateChange('')
+                }}
                 className="btn btn-secondary flex-1"
               >
                 Cancel
@@ -263,11 +274,7 @@ export function AddContentModal({
           <>
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-xl font-bold">Add to queue?</h3>
-              <button
-                onClick={onResetToInput}
-                className="text-text-muted"
-                aria-label="Close preview"
-              >
+              <button onClick={onResetToInput} className="text-text-muted" aria-label="Close preview">
                 <CloseIcon />
               </button>
             </div>
@@ -323,16 +330,16 @@ export function AddContentModal({
                       )}
                     </div>
                   </div>
-                  {fetchedPreview?.tweetContent && (
-                    <p className="text-sm">{fetchedPreview.tweetContent}</p>
-                  )}
+                  {fetchedPreview?.tweetContent && <p className="text-sm">{fetchedPreview.tweetContent}</p>}
                 </div>
               )}
 
               {detectedType === 'reddit' && (
                 <div>
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="text-orange-500"><RedditIcon size={16} /></span>
+                    <span className="text-orange-500">
+                      <RedditIcon size={16} />
+                    </span>
                     <span className="text-orange-500 text-sm">{fetchedPreview?.subreddit || 'Reddit'}</span>
                   </div>
                   <div className="font-medium text-sm mb-1">{fetchedPreview?.redditTitle || 'Reddit Post'}</div>
@@ -345,7 +352,9 @@ export function AddContentModal({
               {detectedType === 'note' && (
                 <div>
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="text-gray-400"><NoteIcon size={16} /></span>
+                    <span className="text-gray-400">
+                      <NoteIcon size={16} />
+                    </span>
                     <span className="text-gray-400 text-sm">Your note</span>
                   </div>
                   <p className="text-sm">{noteText}</p>
@@ -355,7 +364,9 @@ export function AddContentModal({
               {detectedType === 'image' && imagePreviewUrl && (
                 <div>
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="text-purple-400"><ImageIcon size={16} /></span>
+                    <span className="text-purple-400">
+                      <ImageIcon size={16} />
+                    </span>
                     <span className="text-purple-400 text-sm">Your image</span>
                   </div>
                   <div className="relative rounded-lg overflow-hidden bg-surface-800 max-h-48">
@@ -366,9 +377,7 @@ export function AddContentModal({
                       loading="lazy"
                     />
                   </div>
-                  {selectedImageFile && (
-                    <div className="text-text-muted text-xs mt-1">{selectedImageFile.name}</div>
-                  )}
+                  {selectedImageFile && <div className="text-text-muted text-xs mt-1">{selectedImageFile.name}</div>}
                   <textarea
                     placeholder="Add a caption (optional)..."
                     value={imageCaption}
@@ -388,9 +397,7 @@ export function AddContentModal({
               )}
             </div>
 
-            <div className="text-text-muted text-xs mb-4">
-              This will be added to the end of the queue
-            </div>
+            <div className="text-text-muted text-xs mb-4">This will be added to the end of the queue</div>
 
             <div className="flex gap-3 pb-2">
               <button

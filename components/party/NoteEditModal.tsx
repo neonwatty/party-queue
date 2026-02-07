@@ -11,13 +11,7 @@ interface NoteEditModalProps {
   onCancel: () => void
 }
 
-export function NoteEditModal({
-  isOpen,
-  noteText,
-  onNoteTextChange,
-  onSave,
-  onCancel,
-}: NoteEditModalProps) {
+export function NoteEditModal({ isOpen, noteText, onNoteTextChange, onSave, onCancel }: NoteEditModalProps) {
   // Handle Escape key to close modal
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -71,10 +65,7 @@ export function NoteEditModal({
         </div>
 
         <div className="flex gap-3">
-          <button
-            onClick={onCancel}
-            className="btn btn-secondary flex-1"
-          >
+          <button onClick={onCancel} className="btn btn-secondary flex-1">
             Cancel
           </button>
           <button

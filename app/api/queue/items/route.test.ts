@@ -8,10 +8,12 @@ vi.mock('@supabase/supabase-js', () => ({
     from: vi.fn(() => ({
       select: vi.fn(() => ({
         eq: vi.fn(() => ({
-          single: vi.fn(() => Promise.resolve({
-            data: { id: 'test-party-123', expires_at: new Date(Date.now() + 86400000).toISOString() },
-            error: null,
-          })),
+          single: vi.fn(() =>
+            Promise.resolve({
+              data: { id: 'test-party-123', expires_at: new Date(Date.now() + 86400000).toISOString() },
+              error: null,
+            }),
+          ),
           neq: vi.fn(() => ({
             order: vi.fn(() => Promise.resolve({ data: [], error: null })),
           })),
@@ -19,10 +21,12 @@ vi.mock('@supabase/supabase-js', () => ({
       })),
       insert: vi.fn(() => ({
         select: vi.fn(() => ({
-          single: vi.fn(() => Promise.resolve({
-            data: { id: 'new-item-123', party_id: 'test-party-123' },
-            error: null,
-          })),
+          single: vi.fn(() =>
+            Promise.resolve({
+              data: { id: 'new-item-123', party_id: 'test-party-123' },
+              error: null,
+            }),
+          ),
         })),
       })),
     })),

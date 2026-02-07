@@ -3,7 +3,15 @@
 import { useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
-import { supabase, getSessionId, getDisplayName, setDisplayName, getAvatar, setCurrentParty, IS_MOCK_MODE } from '@/lib/supabase'
+import {
+  supabase,
+  getSessionId,
+  getDisplayName,
+  setDisplayName,
+  getAvatar,
+  setCurrentParty,
+  IS_MOCK_MODE,
+} from '@/lib/supabase'
 import { logger } from '@/lib/logger'
 import { useAuth } from '@/contexts/AuthContext'
 import { ChevronLeftIcon, LoaderIcon } from '@/components/icons'
@@ -13,7 +21,7 @@ const log = logger.createLogger('JoinParty')
 export default function JoinWithCodeClient() {
   const router = useRouter()
   const params = useParams()
-  const initialCode = (params.code as string || '').toUpperCase()
+  const initialCode = ((params.code as string) || '').toUpperCase()
   const { user } = useAuth()
   const [code, setCode] = useState(initialCode)
   const [displayName, setDisplayNameInput] = useState(getDisplayName() || '')
@@ -88,11 +96,9 @@ export default function JoinWithCodeClient() {
       if (user?.id) {
         memberData.user_id = user.id
       }
-      const { error: memberError } = await supabase
-        .from('party_members')
-        .upsert(memberData, {
-          onConflict: 'party_id,session_id',
-        })
+      const { error: memberError } = await supabase.from('party_members').upsert(memberData, {
+        onConflict: 'party_id,session_id',
+      })
 
       if (memberError) throw memberError
 
@@ -111,27 +117,17 @@ export default function JoinWithCodeClient() {
 
   return (
     <div className="container-mobile bg-gradient-party flex flex-col px-6 py-8">
-      <Link
-        href="/"
-        className="btn-ghost p-2 -ml-2 w-fit rounded-full mb-8"
-        aria-label="Go back to home"
-      >
+      <Link href="/" className="btn-ghost p-2 -ml-2 w-fit rounded-full mb-8" aria-label="Go back to home">
         <ChevronLeftIcon />
       </Link>
 
       <div className="flex-1 flex flex-col">
-        <h1 className="text-3xl font-bold mb-2 animate-fade-in-up opacity-0">
-          Join a party
-        </h1>
-        <p className="text-text-secondary mb-8 animate-fade-in-up opacity-0 delay-100">
-          Enter your name to join
-        </p>
+        <h1 className="text-3xl font-bold mb-2 animate-fade-in-up opacity-0">Join a party</h1>
+        <p className="text-text-secondary mb-8 animate-fade-in-up opacity-0 delay-100">Enter your name to join</p>
 
         <div className="space-y-6 animate-fade-in-up opacity-0 delay-200">
           <div>
-            <label className="block text-sm text-text-secondary mb-2">
-              Your name
-            </label>
+            <label className="block text-sm text-text-secondary mb-2">Your name</label>
             <input
               type="text"
               placeholder="Enter your display name"
@@ -143,7 +139,9 @@ export default function JoinWithCodeClient() {
               maxLength={50}
             />
             <div className="flex justify-between mt-1">
-              <span className={`text-xs ${displayName.trim().length > 0 && displayName.trim().length < 2 ? 'text-red-400' : 'text-text-muted'}`}>
+              <span
+                className={`text-xs ${displayName.trim().length > 0 && displayName.trim().length < 2 ? 'text-red-400' : 'text-text-muted'}`}
+              >
                 {displayName.trim().length > 0 && displayName.trim().length < 2 ? 'Min 2 characters' : ''}
               </span>
               <span className={`text-xs ${displayName.length >= 45 ? 'text-yellow-400' : 'text-text-muted'}`}>
@@ -153,9 +151,7 @@ export default function JoinWithCodeClient() {
           </div>
 
           <div>
-            <label className="block text-sm text-text-secondary mb-2">
-              Party code
-            </label>
+            <label className="block text-sm text-text-secondary mb-2">Party code</label>
             <input
               type="text"
               placeholder="ABC123"
@@ -168,9 +164,7 @@ export default function JoinWithCodeClient() {
             />
           </div>
 
-          {error && (
-            <div className="text-red-400 text-sm text-center">{error}</div>
-          )}
+          {error && <div className="text-red-400 text-sm text-center">{error}</div>}
 
           <button
             onClick={handleJoin}
@@ -189,14 +183,8 @@ export default function JoinWithCodeClient() {
         </div>
 
         <div className="mt-auto pt-12 text-center animate-fade-in-up opacity-0 delay-300">
-          <p className="text-text-muted text-sm">
-            Ask your host for the 6-character code
-          </p>
-          {IS_MOCK_MODE && (
-            <p className="text-yellow-500 text-xs mt-2">
-              Dev mode: Any code will work
-            </p>
-          )}
+          <p className="text-text-muted text-sm">Ask your host for the 6-character code</p>
+          {IS_MOCK_MODE && <p className="text-yellow-500 text-xs mt-2">Dev mode: Any code will work</p>}
         </div>
       </div>
     </div>

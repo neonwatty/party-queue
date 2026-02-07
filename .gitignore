@@ -6,8 +6,8 @@
 # TypeScript build cache
 tsconfig.tsbuildinfo
 
-# Claude Code
-.claude/
+# Claude Code (keep .claude/plans/ local-only)
+.claude/plans/
 
 # Logs
 logs

@@ -89,12 +89,9 @@ function error(message: string, err?: unknown, context?: LogContext): void {
  */
 function createLogger(component: string) {
   return {
-    debug: (message: string, context?: Omit<LogContext, 'component'>) =>
-      debug(message, { ...context, component }),
-    info: (message: string, context?: Omit<LogContext, 'component'>) =>
-      info(message, { ...context, component }),
-    warn: (message: string, context?: Omit<LogContext, 'component'>) =>
-      warn(message, { ...context, component }),
+    debug: (message: string, context?: Omit<LogContext, 'component'>) => debug(message, { ...context, component }),
+    info: (message: string, context?: Omit<LogContext, 'component'>) => info(message, { ...context, component }),
+    warn: (message: string, context?: Omit<LogContext, 'component'>) => warn(message, { ...context, component }),
     error: (message: string, err?: unknown, context?: Omit<LogContext, 'component'>) =>
       error(message, err, { ...context, component }),
   }

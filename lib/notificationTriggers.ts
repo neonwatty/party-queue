@@ -31,10 +31,7 @@ export interface NotificationPayload {
  * Log a notification trigger to the database for later processing.
  * In a full implementation, this would trigger an Edge Function to send push notifications.
  */
-async function logNotificationTrigger(
-  recipientSessionId: string,
-  payload: NotificationPayload
-): Promise<void> {
+async function logNotificationTrigger(recipientSessionId: string, payload: NotificationPayload): Promise<void> {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   const isMockMode = !supabaseUrl || supabaseUrl.includes('placeholder')
 
@@ -44,15 +41,13 @@ async function logNotificationTrigger(
   }
 
   try {
-    const { error } = await supabase
-      .from('notification_logs')
-      .insert({
-        recipient_session_id: recipientSessionId,
-        party_id: payload.partyId,
-        queue_item_id: payload.itemId,
-        notification_type: payload.type,
-        status: 'pending',
-      })
+    const { error } = await supabase.from('notification_logs').insert({
+      recipient_session_id: recipientSessionId,
+      party_id: payload.partyId,
+      queue_item_id: payload.itemId,
+      notification_type: payload.type,
+      status: 'pending',
+    })
 
     if (error) {
       log.error('Failed to log notification trigger', error)
@@ -70,7 +65,7 @@ export async function triggerItemAddedNotification(
   partyId: string,
   item: Partial<QueueItem>,
   addedBySessionId: string,
-  partyMembers: Array<{ sessionId: string; name: string }>
+  partyMembers: Array<{ sessionId: string; name: string }>,
 ): Promise<void> {
   const payload: NotificationPayload = {
     type: 'item_added',
@@ -81,9 +76,7 @@ export async function triggerItemAddedNotification(
   }
 
   // Notify all party members except the one who added the item
-  const recipientIds = partyMembers
-    .filter(m => m.sessionId !== addedBySessionId)
-    .map(m => m.sessionId)
+  const recipientIds = partyMembers.filter((m) => m.sessionId !== addedBySessionId).map((m) => m.sessionId)
 
   for (const sessionId of recipientIds) {
     await logNotificationTrigger(sessionId, payload)

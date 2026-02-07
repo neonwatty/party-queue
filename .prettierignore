@@ -1,0 +1,9 @@
+node_modules
+.next
+dist
+out
+ios
+src
+playwright-report
+test-results
+package-lock.json

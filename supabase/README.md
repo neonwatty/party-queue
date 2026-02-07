@@ -22,6 +22,7 @@ Copy and paste each migration file into the SQL Editor and run them in order.
 Fetches metadata for YouTube, Twitter/X, and Reddit URLs.
 
 **Deploy:**
+
 ```bash
 supabase functions deploy fetch-content-metadata
 ```
@@ -29,6 +30,7 @@ supabase functions deploy fetch-content-metadata
 **Optional: YouTube API Key**
 
 For video duration support, set the `YOUTUBE_API_KEY` secret:
+
 ```bash
 supabase secrets set YOUTUBE_API_KEY=your_api_key_here
 ```

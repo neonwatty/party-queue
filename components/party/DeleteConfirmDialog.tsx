@@ -9,11 +9,7 @@ interface DeleteConfirmDialogProps {
   onCancel: () => void
 }
 
-export function DeleteConfirmDialog({
-  isOpen,
-  onConfirm,
-  onCancel,
-}: DeleteConfirmDialogProps) {
+export function DeleteConfirmDialog({ isOpen, onConfirm, onCancel }: DeleteConfirmDialogProps) {
   // Handle Escape key to close dialog
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -42,23 +38,19 @@ export function DeleteConfirmDialog({
           <div className="w-16 h-16 rounded-full bg-red-500/20 flex items-center justify-center mx-auto mb-4">
             <TrashIcon />
           </div>
-          <h3 id="delete-dialog-title" className="text-xl font-bold mb-2">Remove item?</h3>
+          <h3 id="delete-dialog-title" className="text-xl font-bold mb-2">
+            Remove item?
+          </h3>
           <p id="delete-dialog-description" className="text-text-muted text-sm">
             This item will be removed from the queue.
           </p>
         </div>
 
         <div className="flex gap-3">
-          <button
-            onClick={onCancel}
-            className="btn btn-secondary flex-1"
-          >
+          <button onClick={onCancel} className="btn btn-secondary flex-1">
             Cancel
           </button>
-          <button
-            onClick={onConfirm}
-            className="btn flex-1 bg-red-500 text-white hover:bg-red-600"
-          >
+          <button onClick={onConfirm} className="btn flex-1 bg-red-500 text-white hover:bg-red-600">
             Remove
           </button>
         </div>

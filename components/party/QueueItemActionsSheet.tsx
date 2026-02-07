@@ -69,14 +69,11 @@ export function QueueItemActionsSheet({
 
         {/* Item Info */}
         <div className="flex gap-3 mb-6 flex-shrink-0">
-          <div className={`w-20 h-12 rounded-lg overflow-hidden flex-shrink-0 ${badge.bg} flex items-center justify-center`}>
+          <div
+            className={`w-20 h-12 rounded-lg overflow-hidden flex-shrink-0 ${badge.bg} flex items-center justify-center`}
+          >
             {item.type === 'youtube' && item.thumbnail ? (
-              <img
-                src={item.thumbnail}
-                alt={item.title}
-                className="w-full h-full object-cover"
-                loading="lazy"
-              />
+              <img src={item.thumbnail} alt={item.title} className="w-full h-full object-cover" loading="lazy" />
             ) : (
               <span className={badge.color}>
                 <BadgeIcon size={24} />
@@ -107,12 +104,16 @@ export function QueueItemActionsSheet({
                 }}
                 className="w-full flex items-center gap-4 p-3 rounded-xl bg-green-900/30 hover:bg-surface-800 transition-colors text-left min-h-[64px]"
               >
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${item.isCompleted ? 'bg-gray-500/20 text-gray-400' : 'bg-green-500/20 text-green-400'}`}>
+                <div
+                  className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${item.isCompleted ? 'bg-gray-500/20 text-gray-400' : 'bg-green-500/20 text-green-400'}`}
+                >
                   <CheckCircleIcon size={20} filled={item.isCompleted} />
                 </div>
                 <div className="flex-1">
                   <div className="font-medium">{item.isCompleted ? 'Mark Incomplete' : 'Mark Complete'}</div>
-                  <div className="text-text-muted text-xs">{item.isCompleted ? 'Remove completion status' : 'Mark this note as done'}</div>
+                  <div className="text-text-muted text-xs">
+                    {item.isCompleted ? 'Remove completion status' : 'Mark this note as done'}
+                  </div>
                 </div>
               </button>
 
@@ -203,10 +204,7 @@ export function QueueItemActionsSheet({
           </button>
         </div>
 
-        <button
-          onClick={onClose}
-          className="btn btn-secondary w-full mt-4 flex-shrink-0"
-        >
+        <button onClick={onClose} className="btn btn-secondary w-full mt-4 flex-shrink-0">
           Cancel
         </button>
       </div>

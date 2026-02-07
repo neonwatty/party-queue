@@ -5,26 +5,10 @@ import type { QueueItem } from '@/hooks/useParty'
 import { getContentTypeBadge } from '@/utils/contentHelpers'
 import { getQueueItemTitle, getQueueItemSubtitle } from '@/utils/queueHelpers'
 import { isItemOverdue } from '@/utils/dateHelpers'
-import {
-  DndContext,
-  closestCenter,
-  DragOverlay,
-  type DragStartEvent,
-  type DragEndEvent,
-} from '@dnd-kit/core'
-import {
-  SortableContext,
-  verticalListSortingStrategy,
-  useSortable,
-} from '@dnd-kit/sortable'
+import { DndContext, closestCenter, DragOverlay, type DragStartEvent, type DragEndEvent } from '@dnd-kit/core'
+import { SortableContext, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import {
-  DragIcon,
-  EditIcon,
-  CheckCircleIcon,
-  ClockIcon,
-  AlertIcon,
-} from '@/components/icons'
+import { DragIcon, EditIcon, CheckCircleIcon, ClockIcon, AlertIcon } from '@/components/icons'
 
 interface QueueListItemProps {
   item: QueueItem
@@ -49,13 +33,7 @@ const QueueListItem = memo(function QueueListItem({
   const BadgeIcon = badge.icon
   const overdue = isItemOverdue(item)
 
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-  } = useSortable({ id: item.id })
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: item.id })
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -68,13 +46,16 @@ const QueueListItem = memo(function QueueListItem({
     onItemClick(item)
   }, [onItemClick, item])
 
-  const handleToggleComplete = useCallback((e: React.MouseEvent | React.TouchEvent) => {
-    e.stopPropagation()
-    if ('preventDefault' in e) {
-      e.preventDefault()
-    }
-    onToggleComplete(item.id)
-  }, [onToggleComplete, item.id])
+  const handleToggleComplete = useCallback(
+    (e: React.MouseEvent | React.TouchEvent) => {
+      e.stopPropagation()
+      if ('preventDefault' in e) {
+        e.preventDefault()
+      }
+      onToggleComplete(item.id)
+    },
+    [onToggleComplete, item.id],
+  )
 
   return (
     <div
@@ -95,24 +76,17 @@ const QueueListItem = memo(function QueueListItem({
           <CheckCircleIcon size={24} filled={item.isCompleted} />
         </div>
       ) : (
-        <div
-          {...attributes}
-          {...listeners}
-          className="touch-none cursor-grab active:cursor-grabbing"
-        >
+        <div {...attributes} {...listeners} className="touch-none cursor-grab active:cursor-grabbing">
           <DragIcon />
         </div>
       )}
 
       {/* Content type badge/preview */}
-      <div className={`relative w-20 h-12 rounded-lg overflow-hidden flex-shrink-0 ${badge.bg} flex items-center justify-center`}>
+      <div
+        className={`relative w-20 h-12 rounded-lg overflow-hidden flex-shrink-0 ${badge.bg} flex items-center justify-center`}
+      >
         {item.type === 'youtube' && item.thumbnail ? (
-          <img
-            src={item.thumbnail}
-            alt={item.title}
-            className="w-full h-full object-cover"
-            loading="lazy"
-          />
+          <img src={item.thumbnail} alt={item.title} className="w-full h-full object-cover" loading="lazy" />
         ) : item.type === 'image' && item.imageUrl ? (
           <img
             src={item.imageUrl}
@@ -129,9 +103,7 @@ const QueueListItem = memo(function QueueListItem({
             <BadgeIcon size={24} />
           </span>
         )}
-        {isOwnItem && (
-          <div className="absolute top-0.5 right-0.5 w-2 h-2 rounded-full bg-teal-500"></div>
-        )}
+        {isOwnItem && <div className="absolute top-0.5 right-0.5 w-2 h-2 rounded-full bg-teal-500"></div>}
         {overdue && (
           <div className="absolute bottom-0.5 right-0.5 text-red-500">
             <AlertIcon size={12} />
@@ -153,9 +125,7 @@ const QueueListItem = memo(function QueueListItem({
             </span>
           )}
         </div>
-        <div className={`text-xs ${overdue ? 'text-red-400' : 'text-text-muted'}`}>
-          {getQueueItemSubtitle(item)}
-        </div>
+        <div className={`text-xs ${overdue ? 'text-red-400' : 'text-text-muted'}`}>{getQueueItemSubtitle(item)}</div>
       </div>
 
       <div className="text-text-muted">
@@ -173,40 +143,35 @@ interface QueueListProps {
   onReorder?: (activeId: string, overId: string) => void
 }
 
-export function QueueList({
-  items,
-  currentSessionId,
-  onItemClick,
-  onToggleComplete,
-  onReorder,
-}: QueueListProps) {
+export function QueueList({ items, currentSessionId, onItemClick, onToggleComplete, onReorder }: QueueListProps) {
   const [activeId, setActiveId] = useState<string | null>(null)
 
   const handleDragStart = useCallback((event: DragStartEvent) => {
     setActiveId(event.active.id as string)
   }, [])
 
-  const handleDragEnd = useCallback((event: DragEndEvent) => {
-    const { active, over } = event
-    setActiveId(null)
+  const handleDragEnd = useCallback(
+    (event: DragEndEvent) => {
+      const { active, over } = event
+      setActiveId(null)
 
-    if (over && active.id !== over.id && onReorder) {
-      onReorder(active.id as string, over.id as string)
-    }
-  }, [onReorder])
+      if (over && active.id !== over.id && onReorder) {
+        onReorder(active.id as string, over.id as string)
+      }
+    },
+    [onReorder],
+  )
 
   const handleDragCancel = useCallback(() => {
     setActiveId(null)
   }, [])
 
-  const activeItem = activeId ? items.find(item => item.id === activeId) : null
+  const activeItem = activeId ? items.find((item) => item.id === activeId) : null
 
   return (
     <div className="flex-1 overflow-auto">
       <div className="px-4 py-3 flex items-center justify-between sticky top-0 bg-surface-950/95 backdrop-blur z-10">
-        <div className="text-sm text-text-secondary">
-          Up next · {items.length} items
-        </div>
+        <div className="text-sm text-text-secondary">Up next · {items.length} items</div>
         <div className="text-xs text-text-muted">Tap to edit</div>
       </div>
 
@@ -216,7 +181,7 @@ export function QueueList({
         onDragEnd={handleDragEnd}
         onDragCancel={handleDragCancel}
       >
-        <SortableContext items={items.map(item => item.id)} strategy={verticalListSortingStrategy}>
+        <SortableContext items={items.map((item) => item.id)} strategy={verticalListSortingStrategy}>
           <div className="px-4 pb-24">
             {items.map((item, index) => (
               <QueueListItem

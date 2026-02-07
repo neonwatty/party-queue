@@ -37,9 +37,7 @@ export function ConflictToast({ conflicts, onDismiss }: ConflictToastProps) {
         <div className="flex-shrink-0">
           <AlertIcon size={20} />
         </div>
-        <div className="flex-1 text-sm font-medium">
-          {getMessage()}
-        </div>
+        <div className="flex-1 text-sm font-medium">{getMessage()}</div>
         <button
           onClick={onDismiss}
           className="flex-shrink-0 p-1 hover:bg-black/10 rounded-full transition-colors"

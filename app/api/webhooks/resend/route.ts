@@ -33,10 +33,7 @@ interface ResendWebhookPayload {
 }
 
 // Verify Resend webhook signature using Svix
-async function verifyWebhookSignature(
-  payload: string,
-  headers: Headers
-): Promise<boolean> {
+async function verifyWebhookSignature(payload: string, headers: Headers): Promise<boolean> {
   const signingSecret = process.env.RESEND_WEBHOOK_SECRET
 
   if (!signingSecret) {
@@ -70,20 +67,16 @@ async function verifyWebhookSignature(
     secretBytes.buffer as ArrayBuffer,
     { name: 'HMAC', hash: 'SHA-256' },
     false,
-    ['sign']
+    ['sign'],
   )
 
-  const signatureBytes = await crypto.subtle.sign(
-    'HMAC',
-    key,
-    new TextEncoder().encode(signedContent)
-  )
+  const signatureBytes = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(signedContent))
 
   const expectedSignature = `v1,${uint8ArrayToBase64(new Uint8Array(signatureBytes))}`
 
   // Compare signatures (svix-signature may contain multiple signatures)
   const signatures = svixSignature.split(' ')
-  return signatures.some(sig => sig === expectedSignature)
+  return signatures.some((sig) => sig === expectedSignature)
 }
 
 function base64ToUint8Array(base64: string): Uint8Array {
@@ -185,9 +178,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ received: true }, { status: 200 })
   } catch (err) {
     console.error('Webhook processing error:', err)
-    return NextResponse.json(
-      { error: `Server error: ${err}` },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: `Server error: ${err}` }, { status: 500 })
   }
 }

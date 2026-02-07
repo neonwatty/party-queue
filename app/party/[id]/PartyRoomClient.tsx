@@ -14,6 +14,7 @@ import { validateImage, createPreviewUrl, revokePreviewUrl, deleteImage } from '
 import { UploadToast } from '@/components/ui/UploadToast'
 import { ImageLightbox } from '@/components/ui/ImageLightbox'
 import { ConflictToast } from '@/components/ui/ConflictToast'
+import { TwinklingStars } from '@/components/ui/TwinklingStars'
 import { PlusIcon, LoaderIcon } from '@/components/icons'
 import {
   PartyHeader,
@@ -348,33 +349,45 @@ export default function PartyRoomClient() {
   }, [])
 
   // Queue item actions
-  const handleMoveUp = useCallback(async (itemId: string) => {
-    await moveItem(itemId, 'up')
-    setSelectedItem(null)
-  }, [moveItem])
+  const handleMoveUp = useCallback(
+    async (itemId: string) => {
+      await moveItem(itemId, 'up')
+      setSelectedItem(null)
+    },
+    [moveItem],
+  )
 
-  const handleMoveDown = useCallback(async (itemId: string) => {
-    await moveItem(itemId, 'down')
-    setSelectedItem(null)
-  }, [moveItem])
+  const handleMoveDown = useCallback(
+    async (itemId: string) => {
+      await moveItem(itemId, 'down')
+      setSelectedItem(null)
+    },
+    [moveItem],
+  )
 
   // Handle drag-and-drop reorder
-  const handleReorder = useCallback(async (activeId: string, overId: string) => {
-    const oldIndex = pendingItems.findIndex(item => item.id === activeId)
-    const newIndex = pendingItems.findIndex(item => item.id === overId)
+  const handleReorder = useCallback(
+    async (activeId: string, overId: string) => {
+      const oldIndex = pendingItems.findIndex((item) => item.id === activeId)
+      const newIndex = pendingItems.findIndex((item) => item.id === overId)
 
-    if (oldIndex === -1 || newIndex === -1 || oldIndex === newIndex) return
+      if (oldIndex === -1 || newIndex === -1 || oldIndex === newIndex) return
 
-    const direction = newIndex > oldIndex ? 'down' : 'up'
-    const steps = Math.abs(newIndex - oldIndex)
+      const direction = newIndex > oldIndex ? 'down' : 'up'
+      const steps = Math.abs(newIndex - oldIndex)
 
-    await moveItem(activeId, direction, steps)
-  }, [pendingItems, moveItem])
+      await moveItem(activeId, direction, steps)
+    },
+    [pendingItems, moveItem],
+  )
 
-  const handleShowNext = useCallback(async (itemId: string) => {
-    await showNext(itemId)
-    setSelectedItem(null)
-  }, [showNext])
+  const handleShowNext = useCallback(
+    async (itemId: string) => {
+      await showNext(itemId)
+      setSelectedItem(null)
+    },
+    [showNext],
+  )
 
   // Party actions
   const handleLeave = useCallback(() => {
@@ -476,7 +489,10 @@ export default function PartyRoomClient() {
   }
 
   return (
-    <div className="container-mobile bg-surface-950 flex flex-col min-h-screen">
+    <div className="container-mobile bg-surface-950 flex flex-col min-h-screen relative">
+      {/* Twinkling Stars */}
+      <TwinklingStars count={30} />
+
       <PartyHeader
         partyName={partyInfo?.name || 'Party'}
         partyCode={partyCode}
@@ -494,10 +510,7 @@ export default function PartyRoomClient() {
         />
       )}
 
-      <MembersList
-        members={members}
-        currentSessionId={sessionId}
-      />
+      <MembersList members={members} currentSessionId={sessionId} />
 
       <QueueList
         items={pendingItems}

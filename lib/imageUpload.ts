@@ -58,7 +58,7 @@ function calculateDimensions(
   width: number,
   height: number,
   maxWidth: number,
-  maxHeight: number
+  maxHeight: number,
 ): { width: number; height: number } {
   if (width <= maxWidth && height <= maxHeight) {
     return { width, height }
@@ -74,12 +74,7 @@ function calculateDimensions(
 /**
  * Convert a canvas to a File object
  */
-function canvasToFile(
-  canvas: HTMLCanvasElement,
-  fileName: string,
-  mimeType: string,
-  quality: number
-): Promise<File> {
+function canvasToFile(canvas: HTMLCanvasElement, fileName: string, mimeType: string, quality: number): Promise<File> {
   return new Promise((resolve, reject) => {
     canvas.toBlob(
       (blob) => {
@@ -91,7 +86,7 @@ function canvasToFile(
         resolve(file)
       },
       mimeType,
-      quality
+      quality,
     )
   })
 }
@@ -112,19 +107,15 @@ export async function optimizeImage(file: File): Promise<OptimizationResult> {
   }
 
   // Skip small files that don't need optimization
-  if (file.size < 100 * 1024) { // Under 100KB
+  if (file.size < 100 * 1024) {
+    // Under 100KB
     log.debug('Skipping optimization for small file')
     return { file, originalSize, optimizedSize: originalSize, wasOptimized: false }
   }
 
   try {
     const img = await loadImage(file)
-    const { width: newWidth, height: newHeight } = calculateDimensions(
-      img.width,
-      img.height,
-      MAX_WIDTH,
-      MAX_HEIGHT
-    )
+    const { width: newWidth, height: newHeight } = calculateDimensions(img.width, img.height, MAX_WIDTH, MAX_HEIGHT)
 
     // If no resize needed and file is reasonably small, skip
     const needsResize = newWidth !== img.width || newHeight !== img.height
@@ -170,7 +161,9 @@ export async function optimizeImage(file: File): Promise<OptimizationResult> {
     }
 
     const savings = ((1 - optimizedFile.size / originalSize) * 100).toFixed(1)
-    log.debug(`Image optimized: ${savings}% smaller (${formatBytes(originalSize)} -> ${formatBytes(optimizedFile.size)})`)
+    log.debug(
+      `Image optimized: ${savings}% smaller (${formatBytes(originalSize)} -> ${formatBytes(optimizedFile.size)})`,
+    )
 
     return {
       file: optimizedFile,
@@ -214,10 +207,7 @@ export function validateImage(file: File): ImageValidationResult {
 }
 
 // Upload image to Supabase Storage
-export async function uploadImage(
-  file: File,
-  partyId: string
-): Promise<ImageUploadResult> {
+export async function uploadImage(file: File, partyId: string): Promise<ImageUploadResult> {
   // Generate unique filename
   const timestamp = Date.now()
   const randomId = Math.random().toString(36).substring(2, 8)
@@ -226,21 +216,17 @@ export async function uploadImage(
   const storagePath = `${partyId}/${fileName}`
 
   // Upload to Supabase Storage
-  const { error: uploadError } = await supabase.storage
-    .from('queue-images')
-    .upload(storagePath, file, {
-      contentType: file.type,
-      upsert: false,
-    })
+  const { error: uploadError } = await supabase.storage.from('queue-images').upload(storagePath, file, {
+    contentType: file.type,
+    upsert: false,
+  })
 
   if (uploadError) {
     throw new Error(`Upload failed: ${uploadError.message}`)
   }
 
   // Get public URL
-  const { data: urlData } = supabase.storage
-    .from('queue-images')
-    .getPublicUrl(storagePath)
+  const { data: urlData } = supabase.storage.from('queue-images').getPublicUrl(storagePath)
 
   return {
     url: urlData.publicUrl,
@@ -253,9 +239,7 @@ export async function uploadImage(
 export async function deleteImage(storagePath: string): Promise<boolean> {
   if (!storagePath) return true
 
-  const { error } = await supabase.storage
-    .from('queue-images')
-    .remove([storagePath])
+  const { error } = await supabase.storage.from('queue-images').remove([storagePath])
 
   if (error) {
     log.error('Failed to delete image', error)
