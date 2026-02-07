@@ -104,7 +104,9 @@ import { createClient } from '@/lib/supabase'
 
 export async function POST(request: Request) {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
   if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 })
 
   // validate input, query database, return response
@@ -144,6 +146,7 @@ export async function POST(request: Request) {
 ## Database
 
 Supabase with 9 migrations:
+
 1. `001_initial_schema.sql` — parties, party_members, queue_items
 2. `002_add_completion_fields.sql` — user tracking
 3. `003_database_security.sql` — RLS policies
@@ -179,6 +182,32 @@ Supabase with 9 migrations:
 
 - When deploying database changes, always verify migrations are applied to ALL environments (production AND staging). After applying migrations, verify the schema cache is refreshed and RLS policies are updated.
 - Never edit existing migration files — create new ones instead.
+
+## Claude Code Automations
+
+### MCP Servers (`.mcp.json`)
+
+- **context7** — Live documentation lookup for React, Next.js, Supabase, Tailwind, @dnd-kit. Use when referencing library APIs or looking up framework patterns.
+- **Supabase MCP** — Direct database operations, schema inspection, and migration management.
+
+### Subagents (`.claude/agents/`)
+
+- **security-reviewer** — Run after implementing auth, API routes, or data access changes. Checks for XSS, CSRF, RLS bypass, and secret exposure.
+- **performance-analyzer** — Run after implementing React components, realtime subscriptions, or drag-and-drop features. Checks for re-render issues, subscription leaks, bundle size, and network efficiency.
+
+### Skills (`.claude/skills/`)
+
+- `/gen-test <file>` — Generate Vitest unit tests for a source file following project conventions.
+- `/db-migrate <description>` — Scaffold a new numbered Supabase migration file (never edits existing migrations).
+- `/new-component <Name> [party|ui]` — Scaffold a new React component with barrel file export.
+- `/monitor-ci` — Monitor GitHub Actions CI status for the current branch.
+- `/ship` — Ship the current branch (commit, push, create PR).
+- `/validate` — Run all local checks (lint, typecheck, format, tests, dead code). Available via installed plugin.
+
+### Hooks (`.claude/settings.json`)
+
+- **PreToolUse (Edit|Write)**: `protect-files.sh` blocks edits to `.env`, `package-lock.json`, and existing migration files.
+- **PostToolUse (Edit|Write)**: Auto-runs `eslint --fix` then `prettier --write` on changed `.ts/.tsx/.js/.jsx` files.
 
 ## Git Conventions
 
