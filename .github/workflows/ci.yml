@@ -134,9 +134,10 @@ jobs:
         with:
           version: latest
       - name: Start Supabase
-        run: supabase start --exclude studio,inbucket,edge-runtime
-      - name: Verify Supabase
-        run: supabase status
+        run: supabase start --exclude studio,mailpit,edge-runtime
+      - name: Export Supabase env
+        run: |
+          supabase status -o env | grep -E "^(API_URL|ANON_KEY)=" >> "$GITHUB_ENV"
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -149,8 +150,8 @@ jobs:
       - name: Run E2E tests
         run: npm run test:e2e
         env:
-          NEXT_PUBLIC_SUPABASE_URL: http://localhost:54321
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0
+          NEXT_PUBLIC_SUPABASE_URL: ${{ env.API_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ env.ANON_KEY }}
       - name: Upload Playwright report
         uses: actions/upload-artifact@v4
         if: always()
