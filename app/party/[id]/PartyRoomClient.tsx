@@ -48,6 +48,7 @@ export default function PartyRoomClient() {
     showNext,
     updateNoteContent,
     toggleComplete,
+    leaveParty,
     lastConflict,
     clearConflict,
     pendingItems: memoizedPendingItems,
@@ -390,10 +391,11 @@ export default function PartyRoomClient() {
   )
 
   // Party actions
-  const handleLeave = useCallback(() => {
+  const handleLeave = useCallback(async () => {
+    await leaveParty()
     clearCurrentParty()
     router.push('/')
-  }, [router])
+  }, [leaveParty, router])
 
   const copyToClipboard = useCallback(async (text: string) => {
     try {
