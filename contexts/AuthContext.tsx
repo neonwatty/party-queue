@@ -32,6 +32,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSession(session)
       setUser(session?.user ?? null)
       setIsLoading(false)
+
+      // Regenerate session_id when a different user logs in
+      if (session?.user?.id) {
+        const currentOwner = localStorage.getItem('link-party-session-id-owner')
+        if (session.user.id !== currentOwner) {
+          localStorage.setItem('link-party-session-id', crypto.randomUUID())
+          localStorage.setItem('link-party-session-id-owner', session.user.id)
+        }
+      }
     })
 
     return () => {
@@ -40,6 +49,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const handleSignOut = async () => {
+    localStorage.removeItem('link-party-session-id-owner')
     await authSignOut()
     setUser(null)
     setSession(null)

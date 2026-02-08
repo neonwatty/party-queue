@@ -1094,6 +1094,16 @@ export function useParty(partyId: string | null) {
     [partyId],
   )
 
+  const leaveParty = useCallback(async () => {
+    if (!partyId || IS_MOCK_MODE) return
+    const sessionId = getSessionId()
+    try {
+      await supabase.from('party_members').delete().eq('party_id', partyId).eq('session_id', sessionId)
+    } catch (err) {
+      log.error('Failed to delete member on leave', err)
+    }
+  }, [partyId])
+
   // Helper to check if a specific item is syncing
   const isSyncing = useCallback((itemId: string) => syncingItemIds.has(itemId), [syncingItemIds])
 
@@ -1122,6 +1132,7 @@ export function useParty(partyId: string | null) {
     updateNoteContent,
     toggleComplete,
     updateDueDate,
+    leaveParty,
     refetch: fetchData,
     // Memoized filtered queue items
     pendingItems,
