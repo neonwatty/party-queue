@@ -18,7 +18,9 @@ export function PartyHeader({ partyName, partyCode, onLeave, onTvMode, onShare }
       </button>
       <div className="text-center">
         <div className="font-semibold">{partyName}</div>
-        <div className="text-xs text-text-muted font-mono">{partyCode}</div>
+        <div className="text-xs text-text-muted font-mono" data-testid="party-code">
+          {partyCode}
+        </div>
       </div>
       <div className="flex gap-0">
         <button onClick={onTvMode} className="btn-ghost icon-btn rounded-full" aria-label="Open TV mode">

@@ -55,6 +55,7 @@ function extractYouTubeVideoId(url: string): string | null {
 // Parse YouTube ISO 8601 duration to human readable format
 function parseYouTubeDuration(isoDuration: string): string {
   if (!isoDuration) return ''
+  // eslint-disable-next-line security/detect-unsafe-regex
   const match = isoDuration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/)
   if (!match) return ''
   const [, hours, minutes, seconds] = match

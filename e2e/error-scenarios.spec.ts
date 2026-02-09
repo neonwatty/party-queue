@@ -85,7 +85,7 @@ test.describe('Error Scenarios', () => {
       await page.getByRole('button', { name: 'Create Party' }).click()
 
       // Should successfully create (navigate to party room)
-      await expect(page.locator('text=/[A-Z0-9]{6}/')).toBeVisible({ timeout: 10000 })
+      await expect(page.getByTestId('party-code')).toBeVisible({ timeout: 10000 })
     })
   })
 
@@ -103,7 +103,7 @@ test.describe('Error Scenarios', () => {
       await page.getByRole('button', { name: 'Create Party' }).click()
 
       // Should successfully create party
-      await expect(page.locator('text=/[A-Z0-9]{6}/')).toBeVisible({ timeout: 10000 })
+      await expect(page.getByTestId('party-code')).toBeVisible({ timeout: 10000 })
     })
 
     test('whitespace-only display name shows error', async ({ page }) => {
@@ -188,9 +188,10 @@ test.describe('Error Scenarios', () => {
 
       // Navigate away to home
       await page.getByRole('link', { name: /go back to home/i }).click()
+      await expect(page.getByRole('link', { name: 'Start a Party' })).toBeVisible()
 
       // Navigate back to login
-      await page.goto('/login')
+      await page.goto('/login', { waitUntil: 'domcontentloaded' })
 
       // Errors should not persist
       await expect(page.getByText(/email is required/i)).not.toBeVisible()
