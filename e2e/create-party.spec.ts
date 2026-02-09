@@ -38,7 +38,7 @@ test.describe('Create Party Flow', () => {
 
     // Should navigate to party room (mock mode creates party instantly)
     // Wait for party room elements - look for the party code which should be visible
-    await expect(page.locator('text=/[A-Z0-9]{6}/')).toBeVisible({ timeout: 10000 })
+    await expect(page.getByTestId('party-code')).toBeVisible({ timeout: 10000 })
   })
 
   test('displays party code after creation', async ({ page }) => {
@@ -54,7 +54,7 @@ test.describe('Create Party Flow', () => {
     await page.getByRole('button', { name: 'Create Party' }).click()
 
     // Should show a party code (6 characters)
-    await expect(page.locator('text=/[A-Z0-9]{6}/')).toBeVisible({ timeout: 10000 })
+    await expect(page.getByTestId('party-code')).toBeVisible({ timeout: 10000 })
   })
 
   test('can go back to home from create party screen', async ({ page }) => {

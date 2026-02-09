@@ -15,7 +15,7 @@ test.describe('Share and Invite Flows', () => {
     await page.getByRole('button', { name: 'Create Party' }).click()
 
     // Wait for party room to load
-    await expect(page.locator('text=/[A-Z0-9]{6}/')).toBeVisible({ timeout: 10000 })
+    await expect(page.getByTestId('party-code')).toBeVisible({ timeout: 10000 })
   })
 
   test.describe('Share Button', () => {
@@ -50,14 +50,14 @@ test.describe('Share and Invite Flows', () => {
   test.describe('Party Code Display', () => {
     test('displays party code prominently', async ({ page }) => {
       // Party code should be visible (6 alphanumeric characters)
-      const codeElement = page.locator('text=/[A-Z0-9]{6}/')
+      const codeElement = page.getByTestId('party-code')
       await expect(codeElement).toBeVisible()
     })
 
     test('party code is in correct format', async ({ page }) => {
       // Get the party code text
-      const codeElement = page.locator('.font-mono').first()
-      const codeText = await codeElement.textContent()
+      const codeElement = page.getByTestId('party-code')
+      const codeText = (await codeElement.textContent())?.trim()
 
       // Should be 6 characters, alphanumeric, uppercase
       expect(codeText).toMatch(/^[A-Z0-9]{6}$/)
@@ -67,8 +67,8 @@ test.describe('Share and Invite Flows', () => {
   test.describe('Join via Code Flow', () => {
     test('can join a party using a valid code', async ({ page, context }) => {
       // Get the party code from current page
-      const codeElement = page.locator('.font-mono').first()
-      const partyCode = await codeElement.textContent()
+      const codeElement = page.getByTestId('party-code')
+      const partyCode = (await codeElement.textContent())?.trim()
 
       // Open a new page to simulate another user joining
       const newPage = await context.newPage()

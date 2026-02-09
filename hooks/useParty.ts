@@ -1096,9 +1096,16 @@ export function useParty(partyId: string | null) {
 
   const leaveParty = useCallback(async () => {
     if (!partyId || IS_MOCK_MODE) return
-    const sessionId = getSessionId()
+    const currentSessionId = getSessionId()
     try {
-      await supabase.from('party_members').delete().eq('party_id', partyId).eq('session_id', sessionId)
+      const { error } = await supabase
+        .from('party_members')
+        .delete()
+        .eq('party_id', partyId)
+        .eq('session_id', currentSessionId)
+      if (error) {
+        log.error('Failed to delete member on leave', { error: error.message, code: error.code })
+      }
     } catch (err) {
       log.error('Failed to delete member on leave', err)
     }

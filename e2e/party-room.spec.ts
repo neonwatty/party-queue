@@ -15,12 +15,12 @@ test.describe('Party Room', () => {
     await page.getByRole('button', { name: 'Create Party' }).click()
 
     // Wait for party room to load - look for party code
-    await expect(page.locator('text=/[A-Z0-9]{6}/')).toBeVisible({ timeout: 10000 })
+    await expect(page.getByTestId('party-code')).toBeVisible({ timeout: 10000 })
   })
 
   test('displays party code in the header', async ({ page }) => {
     // Should show a party code (6 uppercase alphanumeric characters)
-    await expect(page.locator('text=/[A-Z0-9]{6}/')).toBeVisible()
+    await expect(page.getByTestId('party-code')).toBeVisible()
   })
 
   test('party room has interactive elements', async ({ page }) => {
