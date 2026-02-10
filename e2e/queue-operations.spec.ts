@@ -1,4 +1,16 @@
-import { test, expect } from '@playwright/test'
+import { test, expect, type Page } from '@playwright/test'
+
+// Helper: add a note to the queue and wait for modal to close
+async function addNoteToQueue(page: Page, noteText: string): Promise<void> {
+  await page.locator('.fab').click()
+  await expect(page.getByRole('dialog', { name: /add content to queue/i })).toBeVisible()
+  await page.getByRole('button', { name: /write a note/i }).click()
+  await page.getByPlaceholder(/share a thought/i).fill(noteText)
+  await page.getByRole('button', { name: /preview/i }).click()
+  await page.getByRole('button', { name: /add to queue/i }).click()
+  await expect(page.getByText('Added to queue!')).toBeVisible()
+  await expect(page.getByRole('dialog', { name: /add content to queue/i })).toBeHidden({ timeout: 5000 })
+}
 
 test.describe('Queue Operations', () => {
   test.beforeEach(async ({ page }) => {
@@ -16,22 +28,6 @@ test.describe('Queue Operations', () => {
 
     // Wait for party room to load - look for party code
     await expect(page.getByTestId('party-code')).toBeVisible({ timeout: 10000 })
-  })
-
-  test('party room loads with mock queue items', async ({ page }) => {
-    // In mock mode, the party room starts with pre-populated queue items
-    // There should be a "Now Showing" item and pending items in the queue
-    // The pending queue header should be visible with item count
-    await expect(page.getByText(/up next/i)).toBeVisible({ timeout: 5000 })
-    await expect(page.getByText(/items/i)).toBeVisible()
-  })
-
-  test('displays pending queue items from mock data', async ({ page }) => {
-    // Mock mode provides 3 pending notes and 1 showing note
-    // Check that the pending items are displayed in the queue list
-    await expect(page.getByText('First test note for removal')).toBeVisible({ timeout: 5000 })
-    await expect(page.getByText('Second test note in queue')).toBeVisible()
-    await expect(page.getByText('Third note to test queue operations')).toBeVisible()
   })
 
   test('opens add content modal via FAB button', async ({ page }) => {
@@ -111,19 +107,17 @@ test.describe('Queue Operations', () => {
   })
 
   test('click a queue item to open actions sheet', async ({ page }) => {
-    // Wait for mock queue items to load
-    await expect(page.getByText('First test note for removal')).toBeVisible({ timeout: 5000 })
+    // Add a note first so we have a queue item to interact with
+    await addNoteToQueue(page, 'Test note for actions sheet')
 
-    // Click on a queue item to open the actions sheet
-    await page.getByText('First test note for removal').click()
+    // Click on the queue item to open the actions sheet
+    await page.getByText('Test note for actions sheet').click()
 
     // The actions sheet should be visible
     await expect(page.getByRole('dialog', { name: /queue item actions/i })).toBeVisible()
 
     // Should show available actions
     await expect(page.getByText('Show Next')).toBeVisible()
-    await expect(page.getByText('Move Up')).toBeVisible()
-    await expect(page.getByText('Move Down')).toBeVisible()
     await expect(page.getByText('Remove from Queue')).toBeVisible()
 
     // Note-specific actions
@@ -133,11 +127,12 @@ test.describe('Queue Operations', () => {
   })
 
   test('delete a queue item via actions sheet', async ({ page }) => {
-    // Wait for mock queue items to load
-    await expect(page.getByText('First test note for removal')).toBeVisible({ timeout: 5000 })
+    // Add notes so we have items to delete
+    await addNoteToQueue(page, 'Note to be deleted')
+    await addNoteToQueue(page, 'Note to keep in queue')
 
     // Click on the item to open the actions sheet
-    await page.getByText('First test note for removal').click()
+    await page.getByText('Note to be deleted').click()
 
     // The actions sheet should be visible
     await expect(page.getByRole('dialog', { name: /queue item actions/i })).toBeVisible()
@@ -154,19 +149,18 @@ test.describe('Queue Operations', () => {
     await page.getByRole('button', { name: /^remove$/i }).click()
 
     // The item should be removed from the queue
-    await expect(page.getByText('First test note for removal')).toBeHidden({ timeout: 5000 })
+    await expect(page.getByText('Note to be deleted')).toBeHidden({ timeout: 5000 })
 
     // Other items should still be visible
-    await expect(page.getByText('Second test note in queue')).toBeVisible()
-    await expect(page.getByText('Third note to test queue operations')).toBeVisible()
+    await expect(page.getByText('Note to keep in queue')).toBeVisible()
   })
 
   test('cancel delete does not remove the item', async ({ page }) => {
-    // Wait for mock queue items to load
-    await expect(page.getByText('First test note for removal')).toBeVisible({ timeout: 5000 })
+    // Add a note to interact with
+    await addNoteToQueue(page, 'Note for cancel delete test')
 
     // Click on the item to open the actions sheet
-    await page.getByText('First test note for removal').click()
+    await page.getByText('Note for cancel delete test').click()
 
     // Click "Remove from Queue"
     await page.getByText('Remove from Queue').click()
@@ -184,15 +178,15 @@ test.describe('Queue Operations', () => {
     await expect(page.getByRole('alertdialog')).toBeHidden()
 
     // The item should still be visible in the queue
-    await expect(page.getByText('First test note for removal')).toBeVisible()
+    await expect(page.getByText('Note for cancel delete test')).toBeVisible()
   })
 
   test('close actions sheet with Cancel button', async ({ page }) => {
-    // Wait for mock queue items to load
-    await expect(page.getByText('First test note for removal')).toBeVisible({ timeout: 5000 })
+    // Add a note to interact with
+    await addNoteToQueue(page, 'Note for close actions test')
 
     // Click on a queue item
-    await page.getByText('First test note for removal').click()
+    await page.getByText('Note for close actions test').click()
 
     // The actions sheet should be visible
     await expect(page.getByRole('dialog', { name: /queue item actions/i })).toBeVisible()

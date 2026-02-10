@@ -112,7 +112,7 @@ export function LandingPage() {
               Get Started
             </Link>
             <Link href="/login" className="text-sm text-text-muted hover:text-text-secondary transition-colors">
-              Sign in
+              Already have an account?
             </Link>
           </div>
         </div>
