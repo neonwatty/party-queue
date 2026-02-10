@@ -62,7 +62,13 @@ async function verifyWebhookSignature(payload: string, headers: Headers): Promis
   const signedContent = `${svixId}.${svixTimestamp}.${payload}`
   const secretBytes = base64ToUint8Array(signingSecret.replace('whsec_', ''))
 
-  const key = await crypto.subtle.importKey('raw', secretBytes, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign'])
+  const key = await crypto.subtle.importKey(
+    'raw',
+    new Uint8Array(secretBytes).buffer,
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign'],
+  )
 
   const signatureBytes = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(signedContent))
 
