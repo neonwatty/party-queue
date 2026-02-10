@@ -311,7 +311,7 @@ test.describe('Multi-User Flows', () => {
  * NEXT_PUBLIC_SUPABASE_ANON_KEY are set to valid values.
  */
 test.describe.skip('Real-Time Sync (requires live Supabase)', () => {
-  test('member count updates in real-time when guest joins', async ({ browser }) => {
+  test('member count updates in real-time when guest joins', async () => {
     // OUTLINE:
     // 1. Host creates party in context1 — sees "1 watching"
     // 2. Guest joins party in context2 using the party code
@@ -319,7 +319,7 @@ test.describe.skip('Real-Time Sync (requires live Supabase)', () => {
     // 4. Assert host page shows "2 watching" within 5 seconds
   })
 
-  test('queue item added by host appears on guest view in real-time', async ({ browser }) => {
+  test('queue item added by host appears on guest view in real-time', async () => {
     // OUTLINE:
     // 1. Host creates party, guest joins
     // 2. Host adds a note to the queue
@@ -327,7 +327,7 @@ test.describe.skip('Real-Time Sync (requires live Supabase)', () => {
     // 4. Assert the note content is visible on guest page within 5 seconds
   })
 
-  test('member count decreases when guest leaves', async ({ browser }) => {
+  test('member count decreases when guest leaves', async () => {
     // OUTLINE:
     // 1. Host creates party, guest joins — both see "2 watching"
     // 2. Guest clicks "Leave party"
@@ -335,7 +335,7 @@ test.describe.skip('Real-Time Sync (requires live Supabase)', () => {
     // 4. Assert host page shows "1 watching" within 5 seconds
   })
 
-  test('queue advance by host reflects on guest view', async ({ browser }) => {
+  test('queue advance by host reflects on guest view', async () => {
     // OUTLINE:
     // 1. Host creates party, guest joins
     // 2. Both see the same "Now Showing" item

@@ -109,7 +109,7 @@ export function LandingPage() {
           <p className="text-text-secondary mb-8">Works on mobile, desktop, and TV. No downloads needed.</p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link href="/create" className="btn btn-primary text-lg px-8 py-3">
-              Start a Party
+              Get Started
             </Link>
             <Link href="/login" className="text-sm text-text-muted hover:text-text-secondary transition-colors">
               Sign in

@@ -13,7 +13,7 @@ Object.defineProperty(globalThis, 'crypto', {
 })
 
 // Mock Supabase
-const mockInsert = vi.fn(() => Promise.resolve({ error: null }))
+const mockInsert = vi.fn(() => Promise.resolve({ error: null as null | { message: string } }))
 const mockFrom = vi.fn(() => ({ insert: mockInsert }))
 
 vi.mock('@supabase/supabase-js', () => ({
@@ -27,36 +27,13 @@ const originalEnv = process.env
 
 // Helper to compute HMAC-SHA256 signature for webhook verification
 async function computeSignature(secret: string, svixId: string, timestamp: string, payload: string): Promise<string> {
-  const secretBytes = base64ToUint8Array(secret.replace('whsec_', ''))
+  const secretBuffer = Buffer.from(secret.replace('whsec_', ''), 'base64')
   const signedContent = `${svixId}.${timestamp}.${payload}`
 
-  const key = await webcrypto.subtle.importKey(
-    'raw',
-    secretBytes.buffer as ArrayBuffer,
-    { name: 'HMAC', hash: 'SHA-256' },
-    false,
-    ['sign'],
-  )
+  const key = await webcrypto.subtle.importKey('raw', secretBuffer, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign'])
 
   const signatureBytes = await webcrypto.subtle.sign('HMAC', key, new TextEncoder().encode(signedContent))
-  return `v1,${uint8ArrayToBase64(new Uint8Array(signatureBytes))}`
-}
-
-function base64ToUint8Array(base64: string): Uint8Array {
-  const binary = atob(base64)
-  const bytes = new Uint8Array(binary.length)
-  for (let i = 0; i < binary.length; i++) {
-    bytes[i] = binary.charCodeAt(i)
-  }
-  return bytes
-}
-
-function uint8ArrayToBase64(bytes: Uint8Array): string {
-  let binary = ''
-  for (let i = 0; i < bytes.length; i++) {
-    binary += String.fromCharCode(bytes[i])
-  }
-  return btoa(binary)
+  return `v1,${Buffer.from(new Uint8Array(signatureBytes)).toString('base64')}`
 }
 
 // A known base64-encoded secret for testing
