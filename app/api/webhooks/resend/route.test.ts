@@ -2,11 +2,43 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { NextRequest } from 'next/server'
 import { webcrypto } from 'node:crypto'
 
-// Polyfill crypto.subtle for jsdom environment (used by both test helpers and the route under test)
+// Convert jsdom-realm ArrayBuffer/TypedArray to Node.js-realm Buffer.
+// jsdom creates objects in its own JS realm; Node.js webcrypto.subtle rejects
+// cross-realm ArrayBuffers (instanceof check fails). Buffer.from() creates
+// objects in Node.js's realm that webcrypto accepts.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function toNodeArrayBuffer(data: any): ArrayBuffer {
+  const buf =
+    data instanceof ArrayBuffer
+      ? Buffer.from(new Uint8Array(data))
+      : ArrayBuffer.isView(data)
+        ? Buffer.from(data.buffer, data.byteOffset, data.byteLength)
+        : Buffer.from(data)
+  return buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength) as ArrayBuffer
+}
+
+// Polyfill crypto.subtle for jsdom environment (used by both test helpers and the route under test).
+// Wraps importKey and sign to convert jsdom-realm buffers to Node.js-realm buffers.
+const originalImportKey = webcrypto.subtle.importKey.bind(webcrypto.subtle)
+const originalSign = webcrypto.subtle.sign.bind(webcrypto.subtle)
+
 Object.defineProperty(globalThis, 'crypto', {
   value: {
     ...globalThis.crypto,
-    subtle: webcrypto.subtle,
+    subtle: {
+      ...webcrypto.subtle,
+      importKey: (...args: Parameters<typeof webcrypto.subtle.importKey>) => {
+        const [format, keyData, ...rest] = args
+        if (format === 'raw') {
+          return originalImportKey(format, toNodeArrayBuffer(keyData as BufferSource), ...rest)
+        }
+        return originalImportKey(...args)
+      },
+      sign: (...args: Parameters<typeof webcrypto.subtle.sign>) => {
+        const [algorithm, key, data] = args
+        return originalSign(algorithm, key, toNodeArrayBuffer(data))
+      },
+    },
     randomUUID: () => 'test-uuid-1234',
   },
   writable: true,
