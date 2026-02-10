@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
+import { useFocusTrap } from '@/hooks/useFocusTrap'
 import type { QueueItem } from '@/hooks/useParty'
 import { NoteIcon, CloseIcon, EditIcon } from '@/components/icons'
 
@@ -13,6 +14,9 @@ interface NoteViewModalProps {
 }
 
 export function NoteViewModal({ isOpen, note, isOwnNote, onClose, onEdit }: NoteViewModalProps) {
+  const modalRef = useRef<HTMLDivElement>(null)
+  useFocusTrap(modalRef, isOpen)
+
   // Handle Escape key to close modal
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -31,6 +35,7 @@ export function NoteViewModal({ isOpen, note, isOwnNote, onClose, onEdit }: Note
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end justify-center z-50">
       <div
+        ref={modalRef}
         role="dialog"
         aria-modal="true"
         aria-label="View note"

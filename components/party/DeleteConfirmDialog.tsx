@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
+import { useFocusTrap } from '@/hooks/useFocusTrap'
 import { TrashIcon } from '@/components/icons'
 
 interface DeleteConfirmDialogProps {
@@ -10,6 +11,9 @@ interface DeleteConfirmDialogProps {
 }
 
 export function DeleteConfirmDialog({ isOpen, onConfirm, onCancel }: DeleteConfirmDialogProps) {
+  const modalRef = useRef<HTMLDivElement>(null)
+  useFocusTrap(modalRef, isOpen)
+
   // Handle Escape key to close dialog
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -28,6 +32,7 @@ export function DeleteConfirmDialog({ isOpen, onConfirm, onCancel }: DeleteConfi
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-6">
       <div
+        ref={modalRef}
         role="alertdialog"
         aria-modal="true"
         aria-labelledby="delete-dialog-title"

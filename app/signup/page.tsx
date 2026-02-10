@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { signInWithGoogle, signUpWithEmail } from '@/lib/auth'
 import { validateEmail, validatePassword, validateDisplayName } from '@/lib/validation'
@@ -17,6 +17,10 @@ export default function SignupPage() {
   const [emailError, setEmailError] = useState<string | null>(null)
   const [passwordError, setPasswordError] = useState<string | null>(null)
   const [signupSuccess, setSignupSuccess] = useState(false)
+
+  useEffect(() => {
+    document.title = 'Sign Up | Link Party'
+  }, [])
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !isLoading) {

@@ -5,9 +5,9 @@ import { useRouter, useParams } from 'next/navigation'
 import { useParty } from '@/hooks/useParty'
 import { getQueueItemTitle } from '@/utils/queueHelpers'
 import { getContentTypeBadge } from '@/utils/contentHelpers'
-import { getCurrentParty } from '@/lib/supabase'
+import { getCurrentParty, getSessionId } from '@/lib/supabase'
 import { ImageLightbox } from '@/components/ui/ImageLightbox'
-import { ChevronLeftIcon, TwitterIcon, RedditIcon, NoteIcon, ImageIcon, UsersIcon } from '@/components/icons'
+import { ChevronLeftIcon, TwitterIcon, RedditIcon, NoteIcon, ImageIcon, UsersIcon, SkipIcon } from '@/components/icons'
 
 export default function TVModeClient() {
   const router = useRouter()
@@ -15,11 +15,16 @@ export default function TVModeClient() {
   const partyId = params.id as string
   const partyCode = getCurrentParty()?.partyCode || ''
 
-  const { queue, members, partyInfo } = useParty(partyId)
+  const { queue, members, partyInfo, advanceQueue } = useParty(partyId)
   const [lightboxImage, setLightboxImage] = useState<{ url: string; caption?: string } | null>(null)
 
+  const sessionId = getSessionId()
+  const isHost = partyInfo?.hostSessionId === sessionId
+
   const currentItem = queue.find((v) => v.status === 'showing')
-  const upNext = queue.filter((v) => v.status === 'pending').slice(0, 3)
+  const pendingItems = queue.filter((v) => v.status === 'pending')
+  const upNext = pendingItems.slice(0, 3)
+  const hasNext = pendingItems.length > 0
 
   const handleExit = () => {
     router.push(`/party/${partyId}`)
@@ -165,6 +170,21 @@ export default function TVModeClient() {
               {currentItem?.type === 'image' && `Added by ${currentItem.addedBy}`}
             </p>
           </div>
+
+          {/* Host playback controls */}
+          {isHost && (currentItem || hasNext) && (
+            <div className="flex-shrink-0">
+              <button
+                onClick={advanceQueue}
+                disabled={!hasNext && !currentItem}
+                className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-white font-medium transition-all active:scale-95 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                aria-label="Show next item"
+              >
+                <SkipIcon />
+                Next
+              </button>
+            </div>
+          )}
 
           {/* Up next */}
           {upNext.length > 0 && (

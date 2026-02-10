@@ -37,8 +37,8 @@ async function verifyWebhookSignature(payload: string, headers: Headers): Promis
   const signingSecret = process.env.RESEND_WEBHOOK_SECRET
 
   if (!signingSecret) {
-    console.warn('RESEND_WEBHOOK_SECRET not configured - skipping signature verification')
-    return true
+    console.warn('RESEND_WEBHOOK_SECRET not configured - rejecting webhook')
+    return false
   }
 
   const svixId = headers.get('svix-id')
@@ -64,7 +64,7 @@ async function verifyWebhookSignature(payload: string, headers: Headers): Promis
 
   const key = await crypto.subtle.importKey(
     'raw',
-    secretBytes.buffer as ArrayBuffer,
+    new Uint8Array(secretBytes).buffer,
     { name: 'HMAC', hash: 'SHA-256' },
     false,
     ['sign'],

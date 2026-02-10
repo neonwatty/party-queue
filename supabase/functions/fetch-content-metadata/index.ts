@@ -258,6 +258,44 @@ serve(async (req) => {
       })
     }
 
+    // SSRF protection: validate URL scheme and hostname before any fetching
+    let parsed: URL
+    try {
+      parsed = new URL(url)
+    } catch {
+      return new Response(JSON.stringify({ success: false, error: 'Invalid URL format' }), {
+        status: 400,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        },
+      })
+    }
+
+    if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') {
+      return new Response(JSON.stringify({ success: false, error: 'URL domain not supported' }), {
+        status: 400,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        },
+      })
+    }
+
+    const ALLOWED_HOSTS = ['youtube.com', 'youtu.be', 'twitter.com', 'x.com', 'reddit.com']
+    const hostname = parsed.hostname.toLowerCase()
+    const isAllowed = ALLOWED_HOSTS.some((h) => hostname === h || hostname.endsWith('.' + h))
+
+    if (!isAllowed) {
+      return new Response(JSON.stringify({ success: false, error: 'URL domain not supported' }), {
+        status: 400,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        },
+      })
+    }
+
     const contentType = detectContentType(url)
 
     if (!contentType) {

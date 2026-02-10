@@ -16,6 +16,22 @@ const nextConfig: NextConfig = {
   // Trailing slashes help with static hosting
   trailingSlash: true,
 
+  // Security response headers (ignored during static export / Capacitor builds)
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'X-Frame-Options', value: 'DENY' },
+          { key: 'X-XSS-Protection', value: '1; mode=block' },
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+          { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
+        ],
+      },
+    ]
+  },
+
   // Note: Redirects don't work with static export
   // Handle /?join=CODE -> /join/CODE client-side in the home page
 }

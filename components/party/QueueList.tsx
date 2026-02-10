@@ -8,7 +8,7 @@ import { isItemOverdue } from '@/utils/dateHelpers'
 import { DndContext, closestCenter, DragOverlay, type DragStartEvent, type DragEndEvent } from '@dnd-kit/core'
 import { SortableContext, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { DragIcon, EditIcon, CheckCircleIcon, ClockIcon, AlertIcon } from '@/components/icons'
+import { DragIcon, EditIcon, CheckCircleIcon, ClockIcon, AlertIcon, PlusIcon } from '@/components/icons'
 
 interface QueueListItemProps {
   item: QueueItem
@@ -141,9 +141,17 @@ interface QueueListProps {
   onItemClick: (item: QueueItem) => void
   onToggleComplete: (itemId: string) => void
   onReorder?: (activeId: string, overId: string) => void
+  hasShowingItem?: boolean
 }
 
-export function QueueList({ items, currentSessionId, onItemClick, onToggleComplete, onReorder }: QueueListProps) {
+export function QueueList({
+  items,
+  currentSessionId,
+  onItemClick,
+  onToggleComplete,
+  onReorder,
+  hasShowingItem,
+}: QueueListProps) {
   const [activeId, setActiveId] = useState<string | null>(null)
 
   const handleDragStart = useCallback((event: DragStartEvent) => {
@@ -167,6 +175,20 @@ export function QueueList({ items, currentSessionId, onItemClick, onToggleComple
   }, [])
 
   const activeItem = activeId ? items.find((item) => item.id === activeId) : null
+
+  if (items.length === 0 && !hasShowingItem) {
+    return (
+      <div className="flex-1 flex flex-col items-center justify-center px-4 pb-24 animate-fade-in-up opacity-0">
+        <div className="text-text-muted mb-4">
+          <PlusIcon />
+        </div>
+        <div className="text-text-secondary text-lg font-medium">No content yet</div>
+        <div className="text-text-muted text-sm mt-1 text-center">
+          Tap + to add YouTube videos, tweets, notes, and more
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="flex-1 overflow-auto">

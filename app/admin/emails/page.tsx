@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { ChevronLeftIcon } from '@/components/icons'
+import { useAuth } from '@/contexts/AuthContext'
 
 interface EmailEvent {
   id: string
@@ -66,6 +67,7 @@ function StatCard({
 }
 
 export default function EmailEventsPage() {
+  const { isAuthenticated, isLoading: authLoading, session } = useAuth()
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [events, setEvents] = useState<EmailEvent[]>([])
@@ -76,7 +78,13 @@ export default function EmailEventsPage() {
   const [page, setPage] = useState(0)
   const limit = 20
 
+  useEffect(() => {
+    document.title = 'Email Admin | Link Party'
+  }, [])
+
   const fetchEvents = useCallback(async () => {
+    if (!session?.access_token) return
+
     try {
       setLoading(true)
       setError(null)
@@ -93,7 +101,9 @@ export default function EmailEventsPage() {
         params.set('recipient', search)
       }
 
-      const response = await fetch(`/api/emails/events?${params}`)
+      const response = await fetch(`/api/emails/events?${params}`, {
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      })
       const data = await response.json()
 
       if (!response.ok) {
@@ -109,13 +119,33 @@ export default function EmailEventsPage() {
     } finally {
       setLoading(false)
     }
-  }, [filter, search, page])
+  }, [filter, search, page, session?.access_token])
 
   useEffect(() => {
     fetchEvents()
   }, [fetchEvents])
 
   const totalPages = Math.ceil(total / limit)
+
+  if (authLoading) {
+    return (
+      <div className="container-mobile bg-gradient-party flex items-center justify-center min-h-screen">
+        <div className="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full"></div>
+      </div>
+    )
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div className="container-mobile bg-gradient-party flex flex-col items-center justify-center min-h-screen px-6">
+        <h1 className="text-2xl font-bold mb-4">Sign in required</h1>
+        <p className="text-text-secondary mb-6">You must be signed in to view email events.</p>
+        <Link href="/login" className="btn-primary px-6 py-3 rounded-full">
+          Sign in
+        </Link>
+      </div>
+    )
+  }
 
   return (
     <div className="container-mobile bg-gradient-party flex flex-col px-6 py-8 min-h-screen">

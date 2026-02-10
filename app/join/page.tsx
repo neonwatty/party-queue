@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import {
@@ -26,6 +26,10 @@ export default function JoinPartyPage() {
   const [displayName, setDisplayNameInput] = useState(getDisplayName() || '')
   const [isJoining, setIsJoining] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    document.title = 'Join Party | Link Party'
+  }, [])
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !isJoining && code.length === 6 && displayName.trim()) {
