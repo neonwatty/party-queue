@@ -26,6 +26,7 @@ import {
   DeleteConfirmDialog,
   NoteViewModal,
   NoteEditModal,
+  InviteModal,
 } from '@/components/party'
 
 const log = logger.createLogger('PartyRoom')
@@ -62,6 +63,7 @@ export default function PartyRoomClient() {
   const [showEditNote, setShowEditNote] = useState(false)
   const [showViewNote, setShowViewNote] = useState(false)
   const [viewingNote, setViewingNote] = useState<QueueItem | null>(null)
+  const [showInvite, setShowInvite] = useState(false)
 
   // Add content form states
   const [addContentStep, setAddContentStep] = useState<AddContentStep>('input')
@@ -481,6 +483,14 @@ export default function PartyRoomClient() {
     setAddContentStep('note')
   }, [])
 
+  const handleOpenInvite = useCallback(() => {
+    setShowInvite(true)
+  }, [])
+
+  const handleCloseInvite = useCallback(() => {
+    setShowInvite(false)
+  }, [])
+
   if (isLoading) {
     return (
       <div className="container-mobile bg-surface-950 flex flex-col items-center justify-center">
@@ -501,6 +511,7 @@ export default function PartyRoomClient() {
         onLeave={handleLeave}
         onTvMode={handleTvMode}
         onShare={handleShare}
+        onInvite={handleOpenInvite}
       />
 
       {currentItem && (
@@ -520,6 +531,7 @@ export default function PartyRoomClient() {
         onItemClick={setSelectedItem}
         onToggleComplete={toggleComplete}
         onReorder={handleReorder}
+        hasShowingItem={!!currentItem}
       />
 
       {/* Add Content FAB */}
@@ -599,6 +611,15 @@ export default function PartyRoomClient() {
         onNoteTextChange={setEditNoteText}
         onSave={handleSaveNote}
         onCancel={handleCancelEditNote}
+      />
+
+      {/* Invite Modal */}
+      <InviteModal
+        isOpen={showInvite}
+        partyCode={partyCode}
+        partyName={partyInfo?.name || 'Party'}
+        inviterName={currentUserDisplayName}
+        onClose={handleCloseInvite}
       />
 
       {/* Conflict Toast */}

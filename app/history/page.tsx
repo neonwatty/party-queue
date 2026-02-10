@@ -23,6 +23,10 @@ export default function HistoryPage() {
   const [parties, setParties] = useState<PartyHistoryItem[]>([])
 
   useEffect(() => {
+    document.title = 'Party History | Link Party'
+  }, [])
+
+  useEffect(() => {
     async function fetchPartyHistory() {
       try {
         setLoading(true)

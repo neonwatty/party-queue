@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { updatePassword } from '@/lib/auth'
 import { validatePassword } from '@/lib/validation'
@@ -14,6 +14,10 @@ export default function ResetPasswordPage() {
   const [passwordError, setPasswordError] = useState<string | null>(null)
   const [confirmError, setConfirmError] = useState<string | null>(null)
   const [resetSuccess, setResetSuccess] = useState(false)
+
+  useEffect(() => {
+    document.title = 'Reset Password | Link Party'
+  }, [])
 
   const handleUpdatePassword = async () => {
     setPasswordError(null)

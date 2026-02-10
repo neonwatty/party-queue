@@ -52,7 +52,7 @@
   /* Text colors (light on dark) */
   --color-text-primary: #f5f0e8; /* Warm white */
   --color-text-secondary: #b8b2a8; /* Muted cream */
-  --color-text-muted: #7a756c; /* Dim */
+  --color-text-muted: #948e84; /* Dim (5:1 contrast on #1a1d2e) */
 
   /* Fonts */
   --font-display: 'Instrument Serif', Georgia, serif;
@@ -89,7 +89,7 @@
   /* Text colors (light on dark) */
   --color-text-primary: #f5f0e8; /* Warm white */
   --color-text-secondary: #b8b2a8; /* Muted cream */
-  --color-text-muted: #7a756c; /* Dim */
+  --color-text-muted: #948e84; /* Dim (5:1 contrast on #1a1d2e) */
 
   /* Fonts */
   --font-display: 'Instrument Serif', Georgia, serif;
@@ -442,6 +442,22 @@ body {
 .btn-primary:active {
   transform: scale(0.97);
   box-shadow: 0 4px 15px var(--color-primary-glow);
+}
+
+/* Focus visible for keyboard navigation */
+.btn:focus-visible {
+  outline: 2px solid var(--color-accent-400);
+  outline-offset: 2px;
+}
+
+.icon-btn:focus-visible {
+  outline: 2px solid var(--color-accent-400);
+  outline-offset: 2px;
+}
+
+.fab:focus-visible {
+  outline: 2px solid var(--color-accent-400);
+  outline-offset: 2px;
 }
 
 /* ========================================

@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
+import { useFocusTrap } from '@/hooks/useFocusTrap'
 import type { QueueItem } from '@/hooks/useParty'
 import { getContentTypeBadge } from '@/utils/contentHelpers'
 import { getQueueItemTitle } from '@/utils/queueHelpers'
@@ -39,6 +40,9 @@ export function QueueItemActionsSheet({
   onViewNote,
   onEditNote,
 }: QueueItemActionsSheetProps) {
+  const modalRef = useRef<HTMLDivElement>(null)
+  useFocusTrap(modalRef, !!item)
+
   // Handle Escape key to close sheet
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -60,6 +64,7 @@ export function QueueItemActionsSheet({
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end justify-center z-50">
       <div
+        ref={modalRef}
         role="dialog"
         aria-modal="true"
         aria-label="Queue item actions"

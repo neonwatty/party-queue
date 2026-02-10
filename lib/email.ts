@@ -3,6 +3,19 @@
  * Server-side only - do not import in client components
  */
 
+/**
+ * Escape user-provided strings before interpolating into HTML templates
+ * to prevent XSS / HTML injection.
+ */
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
 // Base URL for the app
 const getBaseUrl = () => {
   if (process.env.VERCEL_URL) {
@@ -140,7 +153,7 @@ function generatePartyInviteHtml(options: {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>You're Invited to ${partyName}</title>
+  <title>You're Invited to ${escapeHtml(partyName)}</title>
 </head>
 <body style="margin: 0; padding: 0; background-color: #0a0a0a; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
   <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #0a0a0a;">
@@ -166,16 +179,16 @@ function generatePartyInviteHtml(options: {
                 You're invited!
               </h2>
               <p style="margin: 0 0 24px; font-size: 16px; line-height: 1.6; color: #a3a3a3;">
-                <strong style="color: #ffffff;">${inviterName}</strong> has invited you to join their party:
+                <strong style="color: #ffffff;">${escapeHtml(inviterName)}</strong> has invited you to join their party:
               </p>
 
               <!-- Party Card -->
               <div style="background-color: #262626; border-radius: 12px; padding: 20px; margin-bottom: 24px;">
                 <p style="margin: 0 0 8px; font-size: 18px; font-weight: 600; color: #ffffff;">
-                  ${partyName}
+                  ${escapeHtml(partyName)}
                 </p>
                 <p style="margin: 0; font-size: 14px; color: #a3a3a3;">
-                  Party Code: <span style="font-family: monospace; font-size: 16px; font-weight: 600; color: #a78bfa; letter-spacing: 2px;">${partyCode}</span>
+                  Party Code: <span style="font-family: monospace; font-size: 16px; font-weight: 600; color: #a78bfa; letter-spacing: 2px;">${escapeHtml(partyCode)}</span>
                 </p>
               </div>
 
@@ -185,7 +198,7 @@ function generatePartyInviteHtml(options: {
               <!-- Personal Message -->
               <div style="background-color: #1f1f1f; border-left: 3px solid #7c3aed; border-radius: 0 8px 8px 0; padding: 16px; margin-bottom: 24px;">
                 <p style="margin: 0; font-size: 14px; font-style: italic; color: #d4d4d4;">
-                  "${personalMessage}"
+                  "${escapeHtml(personalMessage)}"
                 </p>
               </div>
               `

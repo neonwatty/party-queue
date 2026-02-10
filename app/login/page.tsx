@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { signInWithGoogle, signInWithEmail, resetPassword } from '@/lib/auth'
@@ -18,6 +18,10 @@ export default function LoginPage() {
   const [passwordError, setPasswordError] = useState<string | null>(null)
   const [showForgotPassword, setShowForgotPassword] = useState(false)
   const [resetEmailSent, setResetEmailSent] = useState(false)
+
+  useEffect(() => {
+    document.title = 'Sign In | Link Party'
+  }, [])
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !isLoading) {

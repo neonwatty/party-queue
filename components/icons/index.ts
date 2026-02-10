@@ -11,6 +11,7 @@ export {
   ArrowDownIcon,
   PlayNextIcon,
   ShareIcon,
+  MailIcon,
 } from './ActionIcons'
 
 export { ChevronLeftIcon, CloseIcon } from './NavigationIcons'

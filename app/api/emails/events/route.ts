@@ -23,11 +23,29 @@ interface EmailStats {
 }
 
 export async function GET(request: NextRequest) {
+  // Verify the caller is authenticated using the anon key client (respects auth)
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
   const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
-  if (!supabaseUrl || !supabaseServiceKey) {
+  if (!supabaseUrl || !supabaseAnonKey || !supabaseServiceKey) {
     return NextResponse.json({ error: 'Server configuration error' }, { status: 500 })
+  }
+
+  // Extract the access token from the Authorization header
+  const authHeader = request.headers.get('authorization')
+  if (!authHeader?.startsWith('Bearer ')) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  const authClient = createClient(supabaseUrl, supabaseAnonKey, {
+    global: { headers: { Authorization: authHeader } },
+  })
+  const {
+    data: { user },
+  } = await authClient.auth.getUser()
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
   const supabase = createClient(supabaseUrl, supabaseServiceKey)

@@ -1,6 +1,7 @@
 'use client'
 
 import { useRef, useEffect } from 'react'
+import { useFocusTrap } from '@/hooks/useFocusTrap'
 import type { ContentType, AddContentStep } from '@/types'
 import type { ContentMetadataResponse } from '@/lib/contentMetadata'
 import { detectContentType } from '@/utils/contentHelpers'
@@ -75,6 +76,8 @@ export function AddContentModal({
   onResetToInput,
 }: AddContentModalProps) {
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const modalRef = useRef<HTMLDivElement>(null)
+  useFocusTrap(modalRef, isOpen)
 
   // Handle Escape key to close modal
   useEffect(() => {
@@ -94,6 +97,7 @@ export function AddContentModal({
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end justify-center z-50">
       <div
+        ref={modalRef}
         role="dialog"
         aria-modal="true"
         aria-label="Add content to queue"
