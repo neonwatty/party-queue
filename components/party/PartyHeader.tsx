@@ -29,11 +29,8 @@ export function PartyHeader({
       </button>
       <div className="text-center">
         <div className="font-semibold">{partyName}</div>
-        <div
-          className="text-xs text-text-muted font-mono flex items-center justify-center gap-2"
-          data-testid="party-code"
-        >
-          <span>{partyCode}</span>
+        <div className="text-xs text-text-muted font-mono flex items-center justify-center gap-2">
+          <span data-testid="party-code">{partyCode}</span>
           {expiresAt && <ExpirationBadge expiresAt={expiresAt} />}
         </div>
       </div>
