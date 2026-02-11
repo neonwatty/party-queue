@@ -201,8 +201,34 @@ Supabase with 9 migrations:
 - `/db-migrate <description>` — Scaffold a new numbered Supabase migration file (never edits existing migrations).
 - `/new-component <Name> [party|ui]` — Scaffold a new React component with barrel file export.
 - `/monitor-ci` — Monitor GitHub Actions CI status for the current branch.
-- `/ship` — Ship the current branch (commit, push, create PR).
+- `/ship` — Check CI, merge PR, pull main, and verify Vercel deployment. Use after PR is approved and CI passes.
 - `/validate` — Run all local checks (lint, typecheck, format, tests, dead code). Available via installed plugin.
+
+### Installed Plugin Skills
+
+#### CI & Deployment (used every PR cycle)
+
+- `/pr-creator` — Create a PR from current changes, monitor GitHub CI, and debug failures until CI passes. Does NOT merge — stops when CI is green and provides the PR link. Use this to open PRs; use `/ship` to merge them.
+- `/validator` — Auto-detect language/framework and run linting, type checking, tests, and dead code detection. Runs the same checks as `npm run lint && tsc && vitest run && knip`.
+
+#### Browser Workflow Pipeline (QA testing)
+
+- `/browser-workflow-generator` — Explore the codebase and generate comprehensive browser workflow files at `workflows/browser-workflows.md`. Creates numbered workflows with substeps covering all user-facing features.
+- `/browser-workflow-executor` — Execute workflows from `workflows/browser-workflows.md` using Claude-in-Chrome. Tests each step, captures before/after screenshots, generates HTML reports.
+- `/browser-workflow-to-playwright` — Translate refined browser workflows into Playwright E2E tests for CI. Use after workflows pass manual execution to promote them to automated CI tests.
+- iOS equivalents: `/ios-workflow-generator`, `/ios-workflow-executor`, `/ios-workflow-to-playwright`
+
+#### Debugging & Investigation
+
+- `/systematic-debugging` (superpowers) — Structured bug investigation: reproduce → hypothesize → test → isolate → fix. Use before proposing fixes for non-trivial bugs.
+- `/bug-interview` — Interview-style bug triage. Asks probing questions about reproduction steps, environment, patterns, and context before investigating. Use when reporting or receiving a bug.
+
+#### Development Workflow
+
+- `/dispatching-parallel-agents` (superpowers) — Run 2+ independent tasks in parallel with separate agents. Use for PRs that touch multiple unrelated concerns (e.g., lint + tests + feature work).
+- `/verification-before-completion` (superpowers) — Require running verification commands and confirming output before claiming work is done. Prevents "it should work" without evidence.
+- `/code-review` — Review a pull request against the plan and coding standards.
+- `/feature-interview` — Deep interview about a feature idea before implementation. Asks about technical approach, edge cases, tradeoffs, and constraints.
 
 ### Hooks (`.claude/settings.json`)
 

@@ -27,6 +27,7 @@ import {
   NoteViewModal,
   NoteEditModal,
   InviteModal,
+  PushPrompt,
 } from '@/components/party'
 
 const log = logger.createLogger('PartyRoom')
@@ -514,6 +515,8 @@ export default function PartyRoomClient() {
         onShare={handleShare}
         onInvite={handleOpenInvite}
       />
+
+      <PushPrompt />
 
       {currentItem && (
         <NowShowingSection
