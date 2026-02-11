@@ -84,6 +84,38 @@ export async function triggerItemAddedNotification(
 
   if (recipientIds.length > 0) {
     log.debug(`Queued ${recipientIds.length} notifications for item added`)
+    sendPushNotifications(partyId, payload, addedBySessionId).catch((err) => {
+      log.error('Failed to send push notifications', err)
+    })
+  }
+}
+
+/**
+ * Send push notifications to party members via the server-side API route.
+ */
+async function sendPushNotifications(
+  partyId: string,
+  payload: NotificationPayload,
+  excludeSessionId: string,
+): Promise<void> {
+  try {
+    const response = await fetch('/api/push/send', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        partyId,
+        title: 'Link Party',
+        body: `${payload.addedBy || 'Someone'} added: ${payload.itemTitle || 'New item'}`,
+        url: `/party/${partyId}`,
+        excludeSessionId,
+      }),
+    })
+
+    if (!response.ok) {
+      log.error('Push API returned error', await response.text())
+    }
+  } catch (err) {
+    log.error('Failed to call push API', err)
   }
 }
 
