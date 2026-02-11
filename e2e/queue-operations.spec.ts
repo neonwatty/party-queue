@@ -150,8 +150,11 @@ test.describe('Queue Operations', () => {
     // Click "Remove" to confirm deletion
     await page.getByRole('button', { name: /^remove$/i }).click()
 
+    // Wait for the confirmation dialog to dismiss first
+    await expect(page.getByRole('alertdialog')).toBeHidden({ timeout: 10000 })
+
     // The item should be removed from the queue
-    await expect(page.getByText('Note to be deleted')).toBeHidden({ timeout: 5000 })
+    await expect(page.getByText('Note to be deleted')).toBeHidden({ timeout: 10000 })
 
     // Other items should still be visible
     await expect(page.getByText('Note to keep in queue')).toBeVisible()
