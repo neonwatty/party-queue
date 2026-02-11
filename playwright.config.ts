@@ -12,8 +12,8 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
-  /* Opt out of parallel tests on CI */
-  workers: process.env.CI ? 1 : undefined,
+  /* Use half available CPUs on CI (sharding handles the rest) */
+  workers: process.env.CI ? '50%' : undefined,
   /* Reporter to use */
   reporter: [['html', { open: 'never' }], ['list']],
   /* Shared settings for all the projects below */
@@ -55,7 +55,7 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: process.env.CI ? 'npm run build && npm start' : 'npm run dev:local',
+    command: process.env.CI ? 'npm start' : 'npm run dev:local',
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,
