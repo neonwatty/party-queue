@@ -14,6 +14,8 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   /* Use half available CPUs on CI (sharding handles the rest) */
   workers: process.env.CI ? '50%' : undefined,
+  /* Increase test timeout on CI — WebKit on Linux needs more headroom */
+  timeout: process.env.CI ? 60_000 : 30_000,
   /* Reporter to use */
   reporter: [['html', { open: 'never' }], ['list']],
   /* Shared settings for all the projects below */
@@ -47,7 +49,11 @@ export default defineConfig({
     },
     {
       name: 'Mobile Safari',
-      use: { ...devices['iPhone 12'] },
+      use: {
+        ...devices['iPhone 12'],
+        /* WebKit on Linux CI cold-starts slowly — give navigation extra headroom */
+        ...(process.env.CI ? { navigationTimeout: 45_000, actionTimeout: 15_000 } : {}),
+      },
     },
   ],
 
