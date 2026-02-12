@@ -3,18 +3,9 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import {
-  supabase,
-  generatePartyCode,
-  getSessionId,
-  getDisplayName,
-  setDisplayName,
-  getAvatar,
-  setCurrentParty,
-} from '@/lib/supabase'
+import { getSessionId, getDisplayName, setDisplayName, getAvatar, setCurrentParty } from '@/lib/supabase'
 import { logger } from '@/lib/logger'
 import { tryAction } from '@/lib/rateLimit'
-import { hashPassword } from '@/lib/passwordHash'
 import { useAuth } from '@/contexts/AuthContext'
 import { ChevronLeftIcon, LoaderIcon, LockIcon } from '@/components/icons'
 import { TwinklingStars } from '@/components/ui/TwinklingStars'
@@ -60,7 +51,6 @@ export default function CreatePartyPage() {
 
     try {
       const sessionId = getSessionId()
-      const code = generatePartyCode()
       const avatar = getAvatar()
 
       // Check if we're in mock mode (no Supabase)
@@ -70,48 +60,38 @@ export default function CreatePartyPage() {
       if (isMockMode) {
         // Mock party creation
         const mockPartyId = `mock-party-${Date.now()}`
+        const mockCode = 'MOCK01'
         setDisplayName(displayName.trim())
-        setCurrentParty(mockPartyId, code)
+        setCurrentParty(mockPartyId, mockCode)
         router.push(`/party/${mockPartyId}`)
         return
       }
 
-      // Hash password if enabled
-      const passwordHash = passwordEnabled && password ? await hashPassword(password) : null
+      const res = await fetch('/api/parties/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sessionId,
+          displayName: displayName.trim(),
+          avatar,
+          partyName: partyName.trim() || undefined,
+          password: passwordEnabled && password ? password : undefined,
+          userId: user?.id || undefined,
+        }),
+      })
 
-      // Create the party
-      const insertData: Record<string, unknown> = {
-        code,
-        name: partyName.trim() || null,
-        host_session_id: sessionId,
+      const data = await res.json()
+
+      if (!res.ok) {
+        setError(data.error || 'Failed to create party. Please try again.')
+        return
       }
-      if (passwordHash) insertData.password_hash = passwordHash
-
-      const { data: party, error: partyError } = await supabase.from('parties').insert(insertData).select().single()
-
-      if (partyError) throw partyError
-
-      // Add host as a member
-      const memberData: Record<string, unknown> = {
-        party_id: party.id,
-        session_id: sessionId,
-        display_name: displayName.trim(),
-        avatar,
-        is_host: true,
-      }
-      // Only include user_id if user is logged in
-      if (user?.id) {
-        memberData.user_id = user.id
-      }
-      const { error: memberError } = await supabase.from('party_members').insert(memberData)
-
-      if (memberError) throw memberError
 
       // Save display name for future use
       setDisplayName(displayName.trim())
-      setCurrentParty(party.id, code)
+      setCurrentParty(data.party.id, data.party.code)
 
-      router.push(`/party/${party.id}`)
+      router.push(`/party/${data.party.id}`)
     } catch (err) {
       log.error('Failed to create party', err)
       setError('Failed to create party. Please try again.')

@@ -1,3 +1,13 @@
+/** Server-enforced limit error messages */
+export const LIMITS = {
+  MAX_PARTIES: 'You can have at most 5 active parties. Close or let one expire first.',
+  MAX_MEMBERS: 'This party is full (max 20 members).',
+  MAX_IMAGES: 'This party has reached the image limit (max 20 images).',
+  PARTY_EXPIRED: 'This party has expired.',
+  INCORRECT_PASSWORD: 'Incorrect party password.',
+  PARTY_NOT_FOUND: 'Party not found. Check the code and try again.',
+} as const
+
 /**
  * Convert errors to user-friendly messages
  */

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { LIMITS } from '@/lib/errorMessages'
 
 // Required for Capacitor static export (output: 'export')
 export const dynamic = 'force-static'
@@ -19,6 +20,7 @@ const RATE_LIMIT = {
 }
 
 const QUEUE_LIMIT = 100 // Max items per party
+const IMAGE_LIMIT = 20 // Max images per party
 
 // In-memory rate limit storage (use Redis in production for multi-instance)
 const rateLimitMap = new Map<string, { timestamps: number[] }>()
@@ -221,6 +223,24 @@ export async function POST(request: NextRequest) {
 
     if ((count ?? 0) >= QUEUE_LIMIT) {
       return NextResponse.json({ error: `Queue is full. Maximum ${QUEUE_LIMIT} items allowed.` }, { status: 400 })
+    }
+
+    // Check image limit
+    if (body.type === 'image') {
+      const { count: imageCount, error: imageCountError } = await supabase
+        .from('queue_items')
+        .select('*', { count: 'exact', head: true })
+        .eq('party_id', body.partyId)
+        .eq('type', 'image')
+
+      if (imageCountError) {
+        console.error('Failed to count images:', imageCountError)
+        return NextResponse.json({ error: 'Failed to check image limit' }, { status: 500 })
+      }
+
+      if ((imageCount ?? 0) >= IMAGE_LIMIT) {
+        return NextResponse.json({ error: LIMITS.MAX_IMAGES }, { status: 400 })
+      }
     }
 
     // Insert the queue item
