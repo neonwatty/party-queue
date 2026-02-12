@@ -38,10 +38,10 @@ export async function POST(request: NextRequest) {
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
-    // Look up party by code
+    // Look up party by code (select * to be resilient to schema drift)
     const { data: party, error: partyError } = await supabase
       .from('parties')
-      .select('id, code, password_hash, expires_at')
+      .select('*')
       .eq('code', code.toUpperCase())
       .single()
 
