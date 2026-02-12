@@ -3,17 +3,8 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import {
-  supabase,
-  getSessionId,
-  getDisplayName,
-  setDisplayName,
-  getAvatar,
-  setCurrentParty,
-  IS_MOCK_MODE,
-} from '@/lib/supabase'
+import { getSessionId, getDisplayName, setDisplayName, getAvatar, setCurrentParty, IS_MOCK_MODE } from '@/lib/supabase'
 import { logger } from '@/lib/logger'
-import { hashPassword, verifyHash } from '@/lib/passwordHash'
 import { useAuth } from '@/contexts/AuthContext'
 import { ChevronLeftIcon, LoaderIcon, LockIcon } from '@/components/icons'
 import { TwinklingStars } from '@/components/ui/TwinklingStars'
@@ -27,7 +18,6 @@ export default function JoinPartyPage() {
   const [displayName, setDisplayNameInput] = useState(getDisplayName() || '')
   const [password, setPassword] = useState('')
   const [needsPassword, setNeedsPassword] = useState(false)
-  const [pendingParty, setPendingParty] = useState<{ id: string; code: string; password_hash: string } | null>(null)
   const [isJoining, setIsJoining] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -75,74 +65,39 @@ export default function JoinPartyPage() {
         return
       }
 
-      // Look up party by code
-      let party = pendingParty
-      if (!party) {
-        const { data, error: partyError } = await supabase
-          .from('parties')
-          .select('*')
-          .eq('code', code.toUpperCase())
-          .single()
-
-        if (partyError) {
-          if (partyError.code === 'PGRST116') {
-            setError('Party not found. Check the code and try again.')
-          } else {
-            throw partyError
-          }
-          return
-        }
-        party = data
-
-        // If password protected, prompt for password
-        if (data.password_hash && !needsPassword) {
-          setPendingParty(data)
-          setNeedsPassword(true)
-          setIsJoining(false)
-          return
-        }
-      }
-
-      if (!party) return
-
-      // Verify password if required
-      if (party.password_hash) {
-        if (!password) {
-          setError('Please enter the party password')
-          setIsJoining(false)
-          return
-        }
-        const hash = await hashPassword(password)
-        if (!verifyHash(hash, party.password_hash)) {
-          setError('Incorrect password')
-          setIsJoining(false)
-          return
-        }
-      }
-
-      // Upsert member (in case they've joined before)
-      const memberData: Record<string, unknown> = {
-        party_id: party.id,
-        session_id: sessionId,
-        display_name: displayName.trim(),
-        avatar,
-        is_host: false,
-      }
-      // Only include user_id if user is logged in
-      if (user?.id) {
-        memberData.user_id = user.id
-      }
-      const { error: memberError } = await supabase.from('party_members').upsert(memberData, {
-        onConflict: 'party_id,session_id',
+      const res = await fetch('/api/parties/join', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          code: code.toUpperCase(),
+          sessionId,
+          displayName: displayName.trim(),
+          avatar,
+          password: needsPassword ? password : undefined,
+          userId: user?.id || undefined,
+        }),
       })
 
-      if (memberError) throw memberError
+      const data = await res.json()
+
+      // Server says password is required — show password field
+      if (data.needsPassword && !needsPassword) {
+        setNeedsPassword(true)
+        setIsJoining(false)
+        return
+      }
+
+      if (!res.ok) {
+        setError(data.error || 'Failed to join party. Please try again.')
+        setIsJoining(false)
+        return
+      }
 
       // Save display name for future use
       setDisplayName(displayName.trim())
-      setCurrentParty(party.id, party.code)
+      setCurrentParty(data.party.id, data.party.code)
 
-      router.push(`/party/${party.id}`)
+      router.push(`/party/${data.party.id}`)
     } catch (err) {
       log.error('Failed to join party', err)
       setError('Failed to join party. Please try again.')
