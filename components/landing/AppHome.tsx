@@ -1,12 +1,13 @@
 'use client'
 
 import Link from 'next/link'
-import { HistoryIcon } from '@/components/icons'
+import { HistoryIcon, UserIcon } from '@/components/icons'
 import { TwinklingStars } from '@/components/ui/TwinklingStars'
 import { useAuth } from '@/contexts/AuthContext'
 
 export function AppHome() {
-  const { signOut } = useAuth()
+  const { signOut, user } = useAuth()
+  const displayName = user?.user_metadata?.display_name || ''
 
   return (
     <div className="container-mobile bg-gradient-party flex flex-col px-6 py-8 safe-area-bottom relative">
@@ -17,18 +18,26 @@ export function AppHome() {
       <div className="campfire-glow" />
 
       {/* Header */}
-      <div className="flex justify-between mb-4 relative z-10">
+      <div className="flex justify-between items-center mb-4 relative z-10">
         <button onClick={signOut} className="text-text-muted text-sm hover:text-text-secondary transition-colors">
           Sign out
         </button>
-        <Link href="/history" className="icon-btn">
-          <HistoryIcon />
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link href="/profile" className="icon-btn" aria-label="Profile">
+            <UserIcon />
+          </Link>
+          <Link href="/history" className="icon-btn" aria-label="History">
+            <HistoryIcon />
+          </Link>
+        </div>
       </div>
 
       {/* Hero */}
       <div className="flex-1 flex flex-col justify-center relative z-10">
         <div className="animate-fade-in-up">
+          {/* Greeting */}
+          {displayName && <p className="text-text-secondary text-center mb-2">Hey, {displayName}</p>}
+
           {/* Logo Icon */}
           <div className="logo-icon mx-auto mb-6">
             <svg width="40" height="40" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 40 40">
@@ -61,13 +70,6 @@ export function AppHome() {
               </svg>
               Join with Code
             </Link>
-
-            {/* Sign in link */}
-            <div className="text-center pt-4">
-              <Link href="/login" className="text-text-muted text-sm hover:text-text-secondary transition-colors">
-                Already have an account? <span className="text-accent-400 hover:text-accent-300">Sign in</span>
-              </Link>
-            </div>
           </div>
         </div>
       </div>
