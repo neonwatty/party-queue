@@ -1,6 +1,7 @@
 'use client'
 
 import { supabase } from '@/lib/supabase'
+import { validateDisplayName } from '@/lib/validation'
 
 export interface UserProfile {
   id: string
@@ -40,6 +41,11 @@ export async function updateProfile(updates: {
   } = await supabase.auth.getUser()
   if (!user) return { data: null, error: 'Not authenticated' }
 
+  if (updates.display_name !== undefined) {
+    const validation = validateDisplayName(updates.display_name)
+    if (!validation.isValid) return { data: null, error: validation.error ?? 'Invalid display name' }
+  }
+
   const { data, error } = await supabase
     .from('user_profiles')
     .update({ ...updates, updated_at: new Date().toISOString() })
@@ -65,11 +71,14 @@ export async function searchProfiles(query: string): Promise<UserProfile[]> {
   const trimmed = query.trim().toLowerCase()
   if (trimmed.length < 2) return []
 
+  const escaped = trimmed.replace(/[,.*()]/g, '')
+  if (escaped.length < 2) return []
+
   // Search by username or display_name
   const { data, error } = await supabase
     .from('user_profiles')
     .select('*')
-    .or(`username.ilike.%${trimmed}%,display_name.ilike.%${trimmed}%`)
+    .or(`username.ilike.%${escaped}%,display_name.ilike.%${escaped}%`)
     .limit(20)
 
   if (error) return []
