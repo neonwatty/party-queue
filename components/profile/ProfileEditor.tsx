@@ -105,7 +105,10 @@ export default function ProfileEditor() {
 
   // Debounced username availability check
   useEffect(() => {
-    if (!username || username.length < 3) return
+    if (!username || username.length < 3) {
+      setUsernameAvailable(null)
+      return
+    }
 
     const timer = setTimeout(() => {
       // If username hasn't changed from profile, skip check
@@ -136,7 +139,7 @@ export default function ProfileEditor() {
     setSaving(true)
 
     const updates: Parameters<typeof updateProfile>[0] = {
-      display_name: displayName,
+      display_name: displayName.trim(),
       avatar_type: 'emoji' as const,
       avatar_value: avatarValue,
     }
