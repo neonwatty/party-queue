@@ -5,13 +5,15 @@ import { FRIENDS } from '@/lib/errorMessages'
 // Required for Capacitor static export (output: 'export')
 export const dynamic = 'force-static'
 
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     const { friendshipId } = body
 
-    // Validate friendshipId
-    if (!friendshipId || typeof friendshipId !== 'string' || friendshipId.trim().length === 0) {
+    // Validate friendshipId format
+    if (!friendshipId || typeof friendshipId !== 'string' || !UUID_REGEX.test(friendshipId)) {
       return NextResponse.json({ error: 'Missing or invalid friendshipId' }, { status: 400 })
     }
 
@@ -85,8 +87,9 @@ export async function POST(request: NextRequest) {
 
     if (reverseError) {
       console.error('Failed to insert reverse friendship row:', reverseError)
-      // The original row was already updated; log but don't fail the request
-      // The reverse row can be reconciled later
+      // Revert the original update to maintain consistency
+      await supabase.from('friendships').update({ status: 'pending' }).eq('id', friendshipId)
+      return NextResponse.json({ error: 'Failed to accept friend request' }, { status: 500 })
     }
 
     return NextResponse.json({ success: true })

@@ -7,12 +7,14 @@ export const dynamic = 'force-static'
 
 type RouteContext = { params: Promise<{ id: string }> }
 
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
 export async function DELETE(request: NextRequest, context: RouteContext) {
   try {
     const { id } = await context.params
 
-    // Validate friendship id
-    if (!id || typeof id !== 'string' || id.trim().length === 0) {
+    // Validate friendship id format
+    if (!id || !UUID_REGEX.test(id)) {
       return NextResponse.json({ error: 'Missing or invalid friendship id' }, { status: 400 })
     }
 

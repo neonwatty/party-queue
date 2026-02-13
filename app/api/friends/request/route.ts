@@ -5,13 +5,15 @@ import { FRIENDS } from '@/lib/errorMessages'
 // Required for Capacitor static export (output: 'export')
 export const dynamic = 'force-static'
 
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     const { friendId } = body
 
-    // Validate friendId
-    if (!friendId || typeof friendId !== 'string' || friendId.trim().length === 0) {
+    // Validate friendId format
+    if (!friendId || typeof friendId !== 'string' || !UUID_REGEX.test(friendId)) {
       return NextResponse.json({ error: 'Missing or invalid friendId' }, { status: 400 })
     }
 
@@ -84,7 +86,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Insert the friend request
+    // Insert the friend request — unique constraint handles race conditions
     const { data: friendship, error: insertError } = await supabase
       .from('friendships')
       .insert({ user_id: user.id, friend_id: friendId, status: 'pending' })
@@ -92,6 +94,10 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (insertError) {
+      // Unique constraint violation — race condition (simultaneous cross-requests)
+      if (insertError.code === '23505') {
+        return NextResponse.json({ error: FRIENDS.REQUEST_EXISTS }, { status: 409 })
+      }
       console.error('Failed to insert friend request:', insertError)
       return NextResponse.json({ error: 'Failed to send friend request' }, { status: 500 })
     }
