@@ -38,6 +38,12 @@ export default function LoginPage() {
     setIsLoading(true)
     setError(null)
     try {
+      // Preserve redirect target through OAuth flow
+      const params = new URLSearchParams(window.location.search)
+      const redirect = params.get('redirect')
+      if (redirect) {
+        sessionStorage.setItem('auth-redirect', redirect)
+      }
       await signInWithGoogle()
     } catch {
       setError('Failed to sign in with Google')
@@ -72,7 +78,8 @@ export default function LoginPage() {
       setError(result.error || 'Failed to sign in')
     } else {
       const params = new URLSearchParams(window.location.search)
-      const redirect = params.get('redirect') || '/'
+      const rawRedirect = params.get('redirect') || '/'
+      const redirect = rawRedirect.startsWith('/') && !rawRedirect.startsWith('//') ? rawRedirect : '/'
       router.push(redirect)
     }
   }
