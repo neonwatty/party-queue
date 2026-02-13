@@ -24,6 +24,8 @@ import {
   searchUsers,
   sendFriendRequest,
   acceptFriendRequest,
+  declineFriendRequest,
+  cancelFriendRequest,
   removeFriend,
 } from './friends'
 
@@ -332,6 +334,56 @@ describe('friends', () => {
     it('returns error when not authenticated', async () => {
       mockGetSession.mockResolvedValue({ data: { session: null } })
       const result = await acceptFriendRequest('fs-1')
+      expect(result.error).toBe('Not authenticated')
+    })
+  })
+
+  describe('declineFriendRequest', () => {
+    it('calls fetch with correct URL and method', async () => {
+      mockFetch.mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({ success: true }),
+      })
+
+      const result = await declineFriendRequest('fs-1')
+      expect(result.error).toBeNull()
+      expect(mockFetch).toHaveBeenCalledWith('/api/friends/fs-1?action=decline', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer test-token-123',
+        },
+      })
+    })
+
+    it('returns error when not authenticated', async () => {
+      mockGetSession.mockResolvedValue({ data: { session: null } })
+      const result = await declineFriendRequest('fs-1')
+      expect(result.error).toBe('Not authenticated')
+    })
+  })
+
+  describe('cancelFriendRequest', () => {
+    it('calls fetch with correct URL and method', async () => {
+      mockFetch.mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({ success: true }),
+      })
+
+      const result = await cancelFriendRequest('fs-1')
+      expect(result.error).toBeNull()
+      expect(mockFetch).toHaveBeenCalledWith('/api/friends/fs-1?action=cancel', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer test-token-123',
+        },
+      })
+    })
+
+    it('returns error when not authenticated', async () => {
+      mockGetSession.mockResolvedValue({ data: { session: null } })
+      const result = await cancelFriendRequest('fs-1')
       expect(result.error).toBe('Not authenticated')
     })
   })
