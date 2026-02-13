@@ -17,13 +17,29 @@ export function AppHome() {
       <div className="campfire-glow" />
 
       {/* Header */}
-      <div className="flex justify-between mb-4 relative z-10">
+      <div className="flex justify-between items-center mb-4 relative z-10">
         <button onClick={signOut} className="text-text-muted text-sm hover:text-text-secondary transition-colors">
           Sign out
         </button>
-        <Link href="/history" className="icon-btn">
-          <HistoryIcon />
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link href="/profile" className="icon-btn" aria-label="Profile">
+            <svg
+              aria-hidden="true"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+          </Link>
+          <Link href="/history" className="icon-btn" aria-label="History">
+            <HistoryIcon />
+          </Link>
+        </div>
       </div>
 
       {/* Hero */}
@@ -61,13 +77,6 @@ export function AppHome() {
               </svg>
               Join with Code
             </Link>
-
-            {/* Sign in link */}
-            <div className="text-center pt-4">
-              <Link href="/login" className="text-text-muted text-sm hover:text-text-secondary transition-colors">
-                Already have an account? <span className="text-accent-400 hover:text-accent-300">Sign in</span>
-              </Link>
-            </div>
           </div>
         </div>
       </div>
