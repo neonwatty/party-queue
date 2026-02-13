@@ -24,10 +24,11 @@ export function NotificationDropdown({
   const dropdownRef = useRef<HTMLDivElement>(null)
   const hasUnread = notifications.some((n) => !n.read)
 
-  // Close on click outside
+  // Close on click outside (excludes the parent container which holds the bell toggle)
   useEffect(() => {
     function handleMouseDown(e: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+      const parent = dropdownRef.current?.parentElement
+      if (parent && !parent.contains(e.target as Node)) {
         onClose()
       }
     }
