@@ -102,7 +102,7 @@ export async function POST(request: NextRequest) {
         user_id: friendship.user_id,
         type: 'friend_accepted',
         title: `${acceptorName} accepted your friend request`,
-        data: { friendshipId: friendship.id, senderId: user.id, senderName: acceptorName },
+        data: { friendshipId: friendship.id, acceptorId: user.id, acceptorName },
       })
 
       if (notifError) {
