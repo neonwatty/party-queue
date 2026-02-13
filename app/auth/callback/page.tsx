@@ -8,18 +8,26 @@ export default function AuthCallbackPage() {
   const router = useRouter()
 
   useEffect(() => {
+    const getRedirectPath = () => {
+      const savedRedirect = sessionStorage.getItem('auth-redirect')
+      if (savedRedirect) {
+        sessionStorage.removeItem('auth-redirect')
+      }
+      return savedRedirect && savedRedirect.startsWith('/') && !savedRedirect.startsWith('//') ? savedRedirect : '/'
+    }
+
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event) => {
       if (event === 'SIGNED_IN') {
-        router.replace('/')
+        router.replace(getRedirectPath())
       }
     })
 
     // Fallback: if the session is already set by the time this runs
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
-        router.replace('/')
+        router.replace(getRedirectPath())
       }
     })
 

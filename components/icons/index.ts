@@ -29,4 +29,5 @@ export {
   TvIcon,
   HistoryIcon,
   LockIcon,
+  UserIcon,
 } from './StatusIcons'
