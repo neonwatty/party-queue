@@ -83,9 +83,16 @@ export function InviteModal({ isOpen, partyId, partyCode, partyName, inviterName
     setStatus('sending')
     setErrorMessage('')
     try {
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+      const {
+        data: { session },
+      } = await supabase.auth.getSession()
+      if (session?.access_token) {
+        headers['Authorization'] = `Bearer ${session.access_token}`
+      }
       const res = await fetch('/api/emails/invite', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({
           email,
           partyCode,
