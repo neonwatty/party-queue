@@ -622,6 +622,7 @@ export default function PartyRoomClient() {
       {/* Invite Modal */}
       <InviteModal
         isOpen={showInvite}
+        partyId={partyId}
         partyCode={partyCode}
         partyName={partyInfo?.name || 'Party'}
         inviterName={currentUserDisplayName}
