@@ -30,9 +30,12 @@ async function createUserContext(browser: Browser): Promise<BrowserContext> {
   return context
 }
 
-async function resetSession(page: Page): Promise<void> {
+async function resetSession(page: Page, displayName = 'Test User'): Promise<void> {
   await page.goto('/')
-  await page.evaluate(() => localStorage.clear())
+  await page.evaluate((name) => {
+    localStorage.clear()
+    localStorage.setItem('link-party-display-name', name)
+  }, displayName)
   await page.reload()
 }
 
