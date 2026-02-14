@@ -1,5 +1,7 @@
 import { test, expect, type Browser, type BrowserContext, type Page } from '@playwright/test'
 
+const FAKE_AUTH_COOKIE = { name: 'sb-mock-auth-token', value: 'test-session', domain: 'localhost', path: '/' }
+
 /**
  * Multi-user real-time synchronization tests.
  *
@@ -17,27 +19,31 @@ import { test, expect, type Browser, type BrowserContext, type Page } from '@pla
  * navigation flows, UI state rendering, and form interactions across two contexts.
  */
 
-// Helper: create a fresh browser context with cleared localStorage
+// Helper: create a fresh browser context with auth cookie and cleared localStorage
 async function createUserContext(browser: Browser): Promise<BrowserContext> {
-  return browser.newContext()
+  const context = await browser.newContext()
+  await context.addCookies([FAKE_AUTH_COOKIE])
+  return context
 }
 
 // Helper: navigate to home and clear localStorage for a clean session
-async function resetSession(page: Page): Promise<void> {
+async function resetSession(page: Page, displayName = 'Test User'): Promise<void> {
   await page.goto('/')
-  await page.evaluate(() => localStorage.clear())
+  await page.evaluate((name) => {
+    localStorage.clear()
+    localStorage.setItem('link-party-display-name', name)
+  }, displayName)
   await page.reload()
 }
 
 // Helper: create a party as host and return the party code
-async function createPartyAsHost(page: Page, displayName: string): Promise<string> {
+async function createPartyAsHost(page: Page): Promise<string> {
   await resetSession(page)
 
   // Navigate to create party (use .first() because landing page has two "Start a Party" links)
   await page.getByRole('link', { name: 'Start a Party' }).first().click()
 
-  // Enter display name and create
-  await page.getByPlaceholder(/enter your display name/i).fill(displayName)
+  // Create party (no display name input — derived from auth user)
   await page.getByRole('button', { name: 'Create Party' }).click()
 
   // Wait for party room to load
@@ -49,14 +55,13 @@ async function createPartyAsHost(page: Page, displayName: string): Promise<strin
 }
 
 // Helper: join a party as guest and wait for the party room
-async function joinPartyAsGuest(page: Page, displayName: string, partyCode: string): Promise<void> {
+async function joinPartyAsGuest(page: Page, _displayName: string, partyCode: string): Promise<void> {
   await resetSession(page)
 
   // Navigate to join party
   await page.getByRole('link', { name: 'Join with Code' }).click()
 
-  // Enter display name and party code
-  await page.getByPlaceholder(/enter your display name/i).fill(displayName)
+  // Enter party code
   await page.getByPlaceholder('ABC123').fill(partyCode)
 
   // Click join
@@ -88,7 +93,7 @@ test.describe('Multi-User Flows', () => {
 
   test.describe('Host Creates Party, Guest Joins', () => {
     test('host can create a party and see the party room', async () => {
-      const partyCode = await createPartyAsHost(hostPage, 'Host User')
+      const partyCode = await createPartyAsHost(hostPage)
 
       // Verify the party code is a valid 6-character alphanumeric string
       expect(partyCode).toMatch(/^[A-Z0-9]{6}$/)
@@ -101,7 +106,7 @@ test.describe('Multi-User Flows', () => {
 
     test('guest can join a party with a valid code and see the party room', async () => {
       // Host creates party
-      const partyCode = await createPartyAsHost(hostPage, 'Host User')
+      const partyCode = await createPartyAsHost(hostPage)
 
       // Guest joins using the party code
       // NOTE: In mock mode, the guest creates an independent mock party with this code.
@@ -119,7 +124,7 @@ test.describe('Multi-User Flows', () => {
 
     test('both host and guest see a party room simultaneously', async () => {
       // Host creates party
-      const partyCode = await createPartyAsHost(hostPage, 'Host User')
+      const partyCode = await createPartyAsHost(hostPage)
 
       // Guest joins
       await joinPartyAsGuest(guestPage, 'Guest User', partyCode)
@@ -140,14 +145,14 @@ test.describe('Multi-User Flows', () => {
 
   test.describe('Member Count Display', () => {
     test('host sees member count after creating a party', async () => {
-      await createPartyAsHost(hostPage, 'Host User')
+      await createPartyAsHost(hostPage)
 
       // In mock mode, the host is the only member — should show "1 watching"
       await expect(hostPage.getByText(/1 watching/)).toBeVisible()
     })
 
     test('guest sees member count after joining a party', async () => {
-      const partyCode = await createPartyAsHost(hostPage, 'Host User')
+      const partyCode = await createPartyAsHost(hostPage)
       await joinPartyAsGuest(guestPage, 'Guest User', partyCode)
 
       // In mock mode, each context runs independently — guest sees their own mock member list
@@ -157,14 +162,14 @@ test.describe('Multi-User Flows', () => {
     })
 
     test('host member list shows "You" label for current user', async () => {
-      await createPartyAsHost(hostPage, 'Host User')
+      await createPartyAsHost(hostPage)
 
       // The host should see themselves labeled as "You" in the members list
       await expect(hostPage.getByText('You', { exact: true })).toBeVisible({ timeout: 5000 })
     })
 
     test('host member list shows HOST badge', async () => {
-      await createPartyAsHost(hostPage, 'Host User')
+      await createPartyAsHost(hostPage)
 
       // The host should see the HOST badge next to their name
       await expect(hostPage.getByText('HOST')).toBeVisible()
@@ -173,7 +178,7 @@ test.describe('Multi-User Flows', () => {
 
   test.describe('Party Room UI Access', () => {
     test('host sees party code and interactive elements', async () => {
-      const partyCode = await createPartyAsHost(hostPage, 'Host User')
+      const partyCode = await createPartyAsHost(hostPage)
 
       // Party code is visible
       await expect(hostPage.getByTestId('party-code')).toHaveText(partyCode)
@@ -186,7 +191,7 @@ test.describe('Multi-User Flows', () => {
     })
 
     test('guest sees party code and interactive elements', async () => {
-      const partyCode = await createPartyAsHost(hostPage, 'Host User')
+      const partyCode = await createPartyAsHost(hostPage)
       await joinPartyAsGuest(guestPage, 'Guest User', partyCode)
 
       // Party code is visible on guest view
@@ -199,7 +204,7 @@ test.describe('Multi-User Flows', () => {
     })
 
     test('host sees party room with FAB and queue area', async () => {
-      await createPartyAsHost(hostPage, 'Host User')
+      await createPartyAsHost(hostPage)
 
       // The party room should show the FAB button for adding content
       await expect(hostPage.locator('.fab')).toBeVisible()
@@ -217,7 +222,7 @@ test.describe('Multi-User Flows', () => {
     })
 
     test('guest sees party room with FAB and queue area', async () => {
-      const partyCode = await createPartyAsHost(hostPage, 'Host User')
+      const partyCode = await createPartyAsHost(hostPage)
       await joinPartyAsGuest(guestPage, 'Guest User', partyCode)
 
       // Guest should see the FAB button and either queue content or empty state
@@ -236,7 +241,7 @@ test.describe('Multi-User Flows', () => {
 
   test.describe('Guest Leaves Party', () => {
     test('guest can leave party and return to home page', async () => {
-      const partyCode = await createPartyAsHost(hostPage, 'Host User')
+      const partyCode = await createPartyAsHost(hostPage)
       await joinPartyAsGuest(guestPage, 'Guest User', partyCode)
 
       // Verify guest is in the party room
@@ -250,7 +255,7 @@ test.describe('Multi-User Flows', () => {
     })
 
     test('host remains in party after guest leaves', async () => {
-      const partyCode = await createPartyAsHost(hostPage, 'Host User')
+      const partyCode = await createPartyAsHost(hostPage)
       await joinPartyAsGuest(guestPage, 'Guest User', partyCode)
 
       // Guest leaves
@@ -267,7 +272,7 @@ test.describe('Multi-User Flows', () => {
     })
 
     test('host can leave party and return to home page', async () => {
-      await createPartyAsHost(hostPage, 'Host User')
+      await createPartyAsHost(hostPage)
 
       // Verify host is in the party room
       await expect(hostPage.getByTestId('party-code')).toBeVisible()
